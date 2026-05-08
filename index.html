@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fantasy Calendar Builder</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0e17;
+      color: #fffffe;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid #ffffff18;
+    }
+    .logo { font-size: 1.1rem; font-weight: 600; color: #a78bfa; }
+    .nav-links a {
+      color: #ffffffaa;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.9rem;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-block;
+      background: #a78bfa22;
+      color: #a78bfa;
+      border: 1px solid #a78bfa55;
+      padding: 0.3rem 1rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.2rem;
+      color: #fffffe;
+    }
+    h1 span { color: #a78bfa; }
+    .subtitle {
+      font-size: 1.1rem;
+      color: #ffffffaa;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: #a78bfa;
+      color: #0f0e17;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-secondary {
+      border: 1px solid #ffffff33;
+      color: #ffffffcc;
+      padding: 0.85rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: border-color .2s;
+    }
+    .btn-secondary:hover { border-color: #ffffff88; }
+
+    /* PREVIEW CARD */
+    .preview {
+      max-width: 780px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .calendar-card {
+      background: #1a1826;
+      border: 1px solid #ffffff18;
+      border-radius: 16px;
+      padding: 2rem;
+    }
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .cal-world { font-size: 1.1rem; font-weight: 600; }
+    .cal-moons { font-size: 0.85rem; color: #a78bfa; }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .cal-month {
+      background: #0f0e17;
+      border: 1px solid #ffffff12;
+      border-radius: 10px;
+      padding: 0.75rem;
+    }
+    .month-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #a78bfa;
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .month-days {
+      font-size: 0.7rem;
+      color: #ffffff66;
+    }
+    .month-event {
+      margin-top: 0.4rem;
+      font-size: 0.65rem;
+      color: #f4b942;
+      background: #f4b94218;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* FEATURES */
+    .features {
+      max-width: 860px;
+      margin: 5rem auto;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+    .features h2 { font-size: 1.8rem; margin-bottom: 0.75rem; }
+    .features p { color: #ffffffaa; margin-bottom: 3rem; }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      text-align: left;
+    }
+    .feature-item {
+      background: #1a1826;
+      border: 1px solid #ffffff12;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .feature-item h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+    .feature-item p { font-size: 0.88rem; color: #ffffffaa; line-height: 1.6; margin: 0; }
+
+    /* FOOTER CTA */
+    .footer-cta {
+      text-align: center;
+      padding: 5rem 1.5rem;
+      border-top: 1px solid #ffffff12;
+      margin-top: 4rem;
+    }
+    .footer-cta h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+    .footer-cta p { color: #ffffffaa; margin-bottom: 2rem; }
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.8rem;
+      color: #ffffff44;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">🌙 Fantasy Calendar Builder</div>
+    <div class="nav-links">
+      <a href="#">Gallery</a>
+      <a href="#">Pricing</a>
+      <a href="#" style="color:#a78bfa">Build free →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="badge">✦ Free for worldbuilders</div>
+    <h1>Build your world's <span>calendar</span> in 10 minutes</h1>
+    <p class="subtitle">
+      Custom months, moon phases, holidays, and seasons —<br>
+      for fantasy writers, D&D dungeon masters, and worldbuilders.
+    </p>
+    <div class="cta-group">
+      <a href="#" class="btn-primary">Build your calendar — it's free</a>
+      <a href="#" class="btn-secondary">See the gallery</a>
+    </div>
+  </section>
+
+  <!-- EXAMPLE CALENDAR PREVIEW -->
+  <div class="preview">
+    <div class="calendar-card">
+      <div class="cal-header">
+        <div>
+          <div class="cal-world">The World of Aethermoor</div>
+          <div style="font-size:.8rem;color:#ffffff66;margin-top:2px">Year of the Silver Age • 2 moons • 10 months</div>
+        </div>
+        <div class="cal-moons">🌕 Lumis &nbsp; 🌗 Vael</div>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-month">
+          <div class="month-name">Frostmere</div>
+          <div class="month-days">32 days</div>
+          <div class="month-event">❄ Winter Rite</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Ashveil</div>
+          <div class="month-days">28 days</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Bloomtide</div>
+          <div class="month-days">30 days</div>
+          <div class="month-event">🌸 Petal Festival</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Goldenmark</div>
+          <div class="month-days">31 days</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Emberholt</div>
+          <div class="month-days">30 days</div>
+          <div class="month-event">🔥 Sun's Peak</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Duskfall</div>
+          <div class="month-days">29 days</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Silvane</div>
+          <div class="month-days">33 days</div>
+          <div class="month-event">🌕 Twin Moons</div>
+        </div>
+        <div class="cal-month">
+          <div class="month-name">Harrowend</div>
+          <div class="month-days">28 days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <h2>Everything your world needs</h2>
+    <p>No spreadsheets. No blank paper. Just fill in the details and get a beautiful calendar.</p>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-icon">📅</div>
+        <h3>Custom time system</h3>
+        <p>Your own month names, week length, and year structure. No limits on how different it can be.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🌙</div>
+        <h3>Moon phases</h3>
+        <p>Add up to 3 moons, each with their own cycle. Moon phase icons render automatically on every day.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🌸</div>
+        <h3>Holidays & seasons</h3>
+        <p>Pin festivals, holy days, and historical events to specific dates. Add custom seasons with colors.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔗</div>
+        <h3>Share instantly</h3>
+        <p>Every calendar gets a unique link. Share it with your players, readers, or post it to Reddit.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta">
+    <h2>Your world deserves its own calendar</h2>
+    <p>Free to build. Beautiful to share. Ready in 10 minutes.</p>
+    <a href="#" class="btn-primary">Start building — it's free</a>
+  </section>
+
+  <footer>
+    © 2026 Fantasy Calendar Builder &nbsp;·&nbsp; Made for worldbuilders
+  </footer>
+
+</body>
+</html>
