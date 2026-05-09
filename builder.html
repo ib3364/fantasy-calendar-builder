@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Build Your Calendar — Fantasy Calendar Builder</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0e17;
+      color: #fffffe;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #ffffff18;
+    }
+    .logo { font-size: 1rem; font-weight: 600; color: #a78bfa; text-decoration:none; }
+    .nav-step { font-size: 0.85rem; color: #ffffff66; }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #ffffff12;
+    }
+    .prog-step {
+      flex: 1;
+      text-align: center;
+      padding: .6rem;
+      font-size: .75rem;
+      color: #ffffff44;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+    }
+    .prog-step.active {
+      color: #a78bfa;
+      border-bottom: 2px solid #a78bfa;
+    }
+    .prog-step.done {
+      color: #6ee7b7;
+      border-bottom: 2px solid #6ee7b7;
+    }
+
+    /* LAYOUT */
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      min-height: calc(100vh - 105px);
+    }
+
+    /* LEFT — FORM PANEL */
+    .form-panel {
+      border-right: 1px solid #ffffff12;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+
+    .step-block { display: none; }
+    .step-block.active { display: block; }
+
+    .step-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: .4rem;
+    }
+    .step-subtitle {
+      font-size: .85rem;
+      color: #ffffff66;
+      margin-bottom: 1.8rem;
+      line-height: 1.5;
+    }
+
+    /* FORM ELEMENTS */
+    .field { margin-bottom: 1.2rem; }
+    .field label {
+      display: block;
+      font-size: .8rem;
+      color: #ffffffaa;
+      margin-bottom: .4rem;
+      font-weight: 500;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: #1a1826;
+      border: 1px solid #ffffff22;
+      border-radius: 8px;
+      padding: .7rem 1rem;
+      color: #fff;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s;
+      font-family: inherit;
+    }
+    .field input:focus, .field select:focus {
+      border-color: #a78bfa;
+    }
+    .field input::placeholder { color: #ffffff33; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+    }
+
+    /* MONTH FIELDS */
+    .month-fields { display: flex; flex-direction: column; gap: .8rem; }
+    .month-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: .6rem;
+      align-items: center;
+    }
+    .month-num {
+      font-size: .75rem;
+      color: #a78bfa;
+      margin-bottom: .3rem;
+      font-weight: 600;
+    }
+
+    /* BUTTONS */
+    .btn-row {
+      display: flex;
+      gap: .8rem;
+      margin-top: 2rem;
+    }
+    .btn-primary {
+      flex: 1;
+      background: #a78bfa;
+      color: #0f0e17;
+      border: none;
+      padding: .8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .88; }
+    .btn-secondary {
+      background: transparent;
+      color: #ffffffaa;
+      border: 1px solid #ffffff22;
+      padding: .8rem 1.5rem;
+      border-radius: 8px;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .btn-secondary:hover { border-color: #ffffff55; }
+
+    .hint {
+      font-size: .78rem;
+      color: #ffffff44;
+      margin-top: .4rem;
+      line-height: 1.5;
+    }
+
+    /* RIGHT — PREVIEW PANEL */
+    .preview-panel {
+      padding: 2rem;
+      overflow-y: auto;
+      background: #0d0c14;
+    }
+
+    .preview-label {
+      font-size: .75rem;
+      color: #ffffff33;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 1rem;
+    }
+
+    .cal-card {
+      background: #1a1826;
+      border: 1px solid #ffffff18;
+      border-radius: 16px;
+      padding: 1.5rem;
+      min-height: 300px;
+    }
+
+    .cal-world-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: .2rem;
+    }
+    .cal-meta {
+      font-size: .8rem;
+      color: #ffffff55;
+      margin-bottom: 1.2rem;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .cal-month-card {
+      background: #0f0e17;
+      border: 1px solid #ffffff12;
+      border-radius: 8px;
+      padding: .7rem;
+    }
+    .cal-month-name {
+      font-size: .7rem;
+      font-weight: 700;
+      color: #a78bfa;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .2rem;
+    }
+    .cal-month-days {
+      font-size: .7rem;
+      color: #ffffff44;
+    }
+
+    .empty-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 280px;
+      color: #ffffff22;
+      text-align: center;
+      gap: .8rem;
+    }
+    .empty-preview .icon { font-size: 2.5rem; }
+    .empty-preview p { font-size: .85rem; line-height: 1.6; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .builder-layout {
+        grid-template-columns: 1fr;
+      }
+      .preview-panel {
+        border-top: 1px solid #ffffff12;
+        padding: 1.2rem;
+      }
+      .cal-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
+  <span class="nav-step">Step <span id="current-step-num">1</span> of 2</span>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar">
+  <div class="prog-step active" id="prog-1">① World basics</div>
+  <div class="prog-step" id="prog-2">② Month names</div>
+  <div class="prog-step" id="prog-3">③ Preview</div>
+</div>
+
+<!-- BUILDER LAYOUT -->
+<div class="builder-layout">
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+
+    <!-- STEP 1: World Basics -->
+    <div class="step-block active" id="step-1">
+      <div class="step-title">Tell me about your world ✦</div>
+      <div class="step-subtitle">Start with the basics. You can always change these later.</div>
+
+      <div class="field">
+        <label>World name</label>
+        <input type="text" id="world-name" placeholder="e.g. The Realm of Aethermoor" oninput="updatePreview()"/>
+      </div>
+
+      <div class="field">
+        <label>Era or age name <span style="color:#ffffff33">(optional)</span></label>
+        <input type="text" id="era-name" placeholder="e.g. The Age of Silver" oninput="updatePreview()"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Number of months</label>
+          <select id="num-months" onchange="updatePreview()">
+            <option value="4">4 months</option>
+            <option value="6">6 months</option>
+            <option value="8">8 months</option>
+            <option value="10" selected>10 months</option>
+            <option value="12">12 months</option>
+            <option value="13">13 months</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Days per week</label>
+          <select id="days-week" onchange="updatePreview()">
+            <option value="5">5 days</option>
+            <option value="6">6 days</option>
+            <option value="7" selected>7 days</option>
+            <option value="8">8 days</option>
+            <option value="10">10 days</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Default days per month</label>
+        <select id="days-month" onchange="updatePreview()">
+          <option value="28">28 days</option>
+          <option value="30" selected>30 days</option>
+          <option value="32">32 days</option>
+          <option value="36">36 days</option>
+          <option value="40">40 days</option>
+        </select>
+        <div class="hint">You can customise each month individually in the next step.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goStep(2)">Next: Name your months →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Month Names -->
+    <div class="step-block" id="step-2">
+      <div class="step-title">Name your months ✦</div>
+      <div class="step-subtitle">Give each month a name that fits your world. Adjust the day count if needed.</div>
+
+      <div class="month-fields" id="month-fields"></div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary" onclick="goStep(3)">Preview my calendar →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Done -->
+    <div class="step-block" id="step-3">
+      <div class="step-title">Your calendar is ready! 🎉</div>
+      <div class="step-subtitle">Here's what you've built. More features — moons, holidays, and export — are coming in the next update.</div>
+
+      <div style="background:#1a1826;border-radius:12px;padding:1.2rem;margin-bottom:1.5rem">
+        <div style="font-size:.8rem;color:#ffffff55;margin-bottom:.8rem">YOUR WORLD AT A GLANCE</div>
+        <div id="summary"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(2)">← Edit months</button>
+        <button class="btn-primary" onclick="goStep(1)" style="background:#6ee7b7">Start a new world</button>
+      </div>
+
+      <div style="margin-top:1.5rem;padding:1rem;border:1px solid #ffffff12;border-radius:10px;text-align:center">
+        <div style="font-size:.8rem;color:#ffffff44;margin-bottom:.5rem">🔗 Shareable links & export coming soon</div>
+        <div style="font-size:.75rem;color:#ffffff33">Save your progress by bookmarking this page</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel">
+    <div class="preview-label">Live preview</div>
+    <div class="cal-card" id="cal-preview">
+      <div class="empty-preview">
+        <div class="icon">🌙</div>
+        <p>Your calendar will appear here<br/>as you fill in the form</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── STATE ──
+  const state = {
+    worldName: '',
+    eraName: '',
+    numMonths: 10,
+    daysWeek: 7,
+    daysMonth: 30,
+    months: []
+  };
+
+  // ── STEP NAVIGATION ──
+  function goStep(n) {
+    document.querySelectorAll('.step-block').forEach(el => el.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+    document.getElementById('current-step-num').textContent = n;
+
+    // Update progress bar
+    for (let i = 1; i <= 3; i++) {
+      const p = document.getElementById('prog-' + i);
+      p.classList.remove('active', 'done');
+      if (i < n) p.classList.add('done');
+      if (i === n) p.classList.add('active');
+    }
+
+    if (n === 2) buildMonthFields();
+    if (n === 3) buildSummary();
+
+    updatePreview();
+  }
+
+  // ── BUILD MONTH FIELDS DYNAMICALLY ──
+  function buildMonthFields() {
+    const num = parseInt(document.getElementById('num-months').value);
+    const defaultDays = document.getElementById('days-month').value;
+    const container = document.getElementById('month-fields');
+
+    // Keep existing values if already filled
+    const existing = state.months;
+
+    container.innerHTML = '';
+    state.months = [];
+
+    for (let i = 0; i < num; i++) {
+      const name = existing[i] ? existing[i].name : '';
+      const days = existing[i] ? existing[i].days : defaultDays;
+
+      state.months.push({ name, days });
+
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div class="month-num">Month ${i + 1}</div>
+        <div class="month-row">
+          <input
+            type="text"
+            placeholder="Month name e.g. Frostmere"
+            value="${name}"
+            oninput="updateMonth(${i}, 'name', this.value)"
+            style="background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .9rem;color:#fff;font-size:.88rem;outline:none;font-family:inherit;transition:border-color .2s"
+            onfocus="this.style.borderColor='#a78bfa'"
+            onblur="this.style.borderColor='#ffffff22'"
+          />
+          <select
+            onchange="updateMon
