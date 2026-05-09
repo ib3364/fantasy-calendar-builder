@@ -106,11 +106,27 @@
     }
     .cal-world { font-size: 1.1rem; font-weight: 600; }
     .cal-moons { font-size: 0.85rem; color: #a78bfa; }
-    .cal-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .cal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-card {
+    padding: 1.2rem;
+  }
+
+  .cal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
     .cal-month {
       background: #0f0e17;
       border: 1px solid #ffffff12;
