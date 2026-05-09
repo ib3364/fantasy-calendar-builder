@@ -439,4 +439,94 @@
             onblur="this.style.borderColor='#ffffff22'"
           />
           <select
-            onchange="updateMon
+            onchange="updateMonth(${i}, 'days', this.value)"
+            style="background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .7rem;color:#fff;font-size:.85rem;outline:none;font-family:inherit"
+          >
+            ${[24,26,28,29,30,31,32,33,36,40].map(d =>
+              `<option value="${d}" ${d == days ? 'selected' : ''}>${d} days</option>`
+            ).join('')}
+          </select>
+        </div>
+      `;
+      container.appendChild(wrapper);
+    }
+  }
+
+  function updateMonth(i, field, value) {
+    state.months[i][field] = value;
+    updatePreview();
+  }
+
+  // ── READ FORM INTO STATE ──
+  function updatePreview() {
+    state.worldName = document.getElementById('world-name').value;
+    state.eraName   = document.getElementById('era-name').value;
+    state.numMonths = parseInt(document.getElementById('num-months').value);
+    state.daysWeek  = parseInt(document.getElementById('days-week').value);
+    state.daysMonth = parseInt(document.getElementById('days-month').value);
+    renderPreview();
+  }
+
+  // ── RENDER PREVIEW ──
+  function renderPreview() {
+    const preview = document.getElementById('cal-preview');
+
+    if (!state.worldName && state.months.every(m => !m.name)) {
+      preview.innerHTML = `
+        <div class="empty-preview">
+          <div class="icon">🌙</div>
+          <p>Your calendar will appear here<br/>as you fill in the form</p>
+        </div>`;
+      return;
+    }
+
+    const worldName = state.worldName || 'Your World';
+    const era = state.eraName ? ` • ${state.eraName}` : '';
+    const monthCount = state.numMonths;
+
+    const monthsToShow = state.months.length > 0 ? state.months : 
+      Array.from({length: monthCount}, (_, i) => ({ name: `Month ${i+1}`, days: state.daysMonth }));
+
+    const monthCards = monthsToShow.map((m, i) => {
+      const name = m.name || `Month ${i + 1}`;
+      const days = m.days || state.daysMonth;
+      return `
+        <div class="cal-month-card">
+          <div class="cal-month-name">${name}</div>
+          <div class="cal-month-days">${days} days</div>
+        </div>`;
+    }).join('');
+
+    const totalDays = monthsToShow.reduce((sum, m) => sum + parseInt(m.days || state.daysMonth), 0);
+
+    preview.innerHTML = `
+      <div class="cal-world-name">${worldName}</div>
+      <div class="cal-meta">${era ? era.slice(3) + ' • ' : ''}${monthCount} months • ${totalDays} days per year • ${state.daysWeek}-day week</div>
+      <div class="cal-grid">${monthCards}</div>
+    `;
+  }
+
+  // ── SUMMARY (step 3) ──
+  function buildSummary() {
+    const el = document.getElementById('summary');
+    const totalDays = state.months.reduce((s, m) => s + parseInt(m.days || state.daysMonth), 0);
+    const rows = [
+      ['World', state.worldName || '—'],
+      ['Era', state.eraName || '—'],
+      ['Months', state.numMonths],
+      ['Days per week', state.daysWeek],
+      ['Days per year', totalDays],
+      ['Month names', state.months.filter(m => m.name).map(m => m.name).join(', ') || '—'],
+    ];
+    el.innerHTML = rows.map(([k, v]) => `
+      <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #ffffff0d;font-size:.85rem">
+        <span style="color:#ffffff55">${k}</span>
+        <span style="color:#fffffe;text-align:right;max-width:60%">${v}</span>
+      </div>`).join('');
+  }
+
+  // ── INIT ──
+  updatePreview();
+</script>
+</body>
+</html>
