@@ -75,7 +75,7 @@
     .event-item {
       background:#1a1826; border:1px solid #ffffff15; border-radius:10px; padding:1rem;
     }
-   .event-row { display:grid; grid-template-columns:2fr 1fr 1fr; gap:.6rem; align-items:center; }
+   .event-row { display:grid; grid-template-columns:2fr 1fr 1fr; gap:.6rem; align-items:center; flex-wrap:wrap; }
 
     /* buttons */
     .btn-row { display:flex; gap:.8rem; margin-top:2rem; }
@@ -151,7 +151,14 @@
   .builder-layout { grid-template-columns:1fr; }
   .preview-panel { border-top:1px solid #ffffff12; padding:1.2rem; }
   .cal-grid { grid-template-columns:repeat(2,1fr); }
-  .event-row { grid-template-columns:1fr 1fr 1fr; gap:.5rem; }
+  .event-row { 
+    display:flex; 
+    flex-direction:column; 
+    gap:.5rem; 
+  }
+  .event-row input, .event-row select { 
+    width:100%; 
+  }
 }
   </style>
 </head>
