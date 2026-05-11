@@ -491,23 +491,8 @@ function renderPreview(){
 
 function downloadCalendar(){
   if(!state.worldName&&state.months.every(m=>!m.name)){alert('Fill in your world name first!');return;}
-  const el=document.getElementById('cal-preview');
-  if(window.html2canvas){
-    doDownload(el);
-  } else {
-    const script=document.createElement('script');
-    script.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    script.onload=()=>doDownload(el);
-    document.head.appendChild(script);
-  }
-}
-function doDownload(el){
-  html2canvas(el,{backgroundColor:null,scale:2,useCORS:true}).then(canvas=>{
-    const link=document.createElement('a');
-    link.download=(state.worldName||'my-world').toLowerCase().replace(/\s+/g,'-')+'-calendar.png';
-    link.href=canvas.toDataURL('image/png');
-    link.click();
-  });
+  const monthsToShow=state.months.length>0?state.months:Array.from({length:state.numMonths},(_,i)=>({name:`Month ${i+1}`,days:state.daysMonth}));
+  drawAndDownload(state.worldName||'Your World',state.eraName,state.numMonths,state.daysWeek,state.daysMonth,monthsToShow,state.moons,state.events);
 }
 
 function startFresh(){
