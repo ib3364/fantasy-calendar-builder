@@ -4,162 +4,131 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Build Your Calendar — Fantasy Calendar Builder</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',sans-serif; background:#0f0e17; color:#fffffe; min-height:100vh; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh}
 
-    nav {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:1rem 2rem; border-bottom:1px solid #ffffff18;
-    }
-    .logo { font-size:1rem; font-weight:600; color:#a78bfa; text-decoration:none; }
-    .nav-step { font-size:.85rem; color:#ffffff66; }
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid #ffffff18}
+    .logo{font-size:1rem;font-weight:600;color:#a78bfa;text-decoration:none}
+    .nav-step{font-size:.85rem;color:#ffffff66}
 
-    .progress-bar { display:flex; border-bottom:1px solid #ffffff12; }
-    .prog-step {
-      flex:1; text-align:center; padding:.6rem; font-size:.72rem;
-      color:#ffffff44; border-bottom:2px solid transparent; transition:all .2s;
-    }
-    .prog-step.active { color:#a78bfa; border-bottom:2px solid #a78bfa; }
-    .prog-step.done   { color:#6ee7b7; border-bottom:2px solid #6ee7b7; }
+    .progress-bar{display:flex;border-bottom:1px solid #ffffff12}
+    .prog-step{flex:1;text-align:center;padding:.6rem;font-size:.72rem;color:#ffffff44;border-bottom:2px solid transparent;transition:all .2s}
+    .prog-step.active{color:#a78bfa;border-bottom:2px solid #a78bfa}
+    .prog-step.done{color:#6ee7b7;border-bottom:2px solid #6ee7b7}
 
-    .builder-layout {
-      display:grid; grid-template-columns:420px 1fr;
-      min-height:calc(100vh - 105px);
-    }
+    .builder-layout{display:grid;grid-template-columns:420px 1fr;min-height:calc(100vh - 105px)}
+    .form-panel{border-right:1px solid #ffffff12;overflow-y:auto;padding:2rem}
+    .step-block{display:none}
+    .step-block.active{display:block}
+    .step-title{font-size:1.2rem;font-weight:600;margin-bottom:.4rem}
+    .step-subtitle{font-size:.85rem;color:#ffffff66;margin-bottom:1.8rem;line-height:1.5}
 
-    .form-panel { border-right:1px solid #ffffff12; overflow-y:auto; padding:2rem; }
-    .step-block { display:none; }
-    .step-block.active { display:block; }
+    .field{margin-bottom:1.2rem}
+    .field label{display:block;font-size:.8rem;color:#ffffffaa;margin-bottom:.4rem;font-weight:500}
+    .field input,.field select{width:100%;background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.7rem 1rem;color:#fff;font-size:.95rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .field input:focus,.field select:focus{border-color:#a78bfa}
+    .field input::placeholder{color:#ffffff33}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 
-    .step-title  { font-size:1.2rem; font-weight:600; margin-bottom:.4rem; }
-    .step-subtitle { font-size:.85rem; color:#ffffff66; margin-bottom:1.8rem; line-height:1.5; }
+    .month-fields{display:flex;flex-direction:column;gap:.8rem}
+    .month-row{display:grid;grid-template-columns:2fr 1fr;gap:.6rem;align-items:center}
+    .month-num{font-size:.75rem;color:#a78bfa;margin-bottom:.3rem;font-weight:600}
 
-    .field { margin-bottom:1.2rem; }
-    .field label { display:block; font-size:.8rem; color:#ffffffaa; margin-bottom:.4rem; font-weight:500; }
-    .field input, .field select {
-      width:100%; background:#1a1826; border:1px solid #ffffff22; border-radius:8px;
-      padding:.7rem 1rem; color:#fff; font-size:.95rem; outline:none;
-      transition:border-color .2s; font-family:inherit;
-    }
-    .field input:focus, .field select:focus { border-color:#a78bfa; }
-    .field input::placeholder { color:#ffffff33; }
-    .field-row { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; }
+    .moon-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:1rem}
+    .moon-item{background:#1a1826;border:1px solid #ffffff15;border-radius:10px;padding:1rem}
+    .moon-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+    .moon-label{font-size:.8rem;color:#a78bfa;font-weight:600}
+    .btn-remove{background:none;border:none;color:#ffffff33;cursor:pointer;font-size:.8rem;transition:color .2s}
+    .btn-remove:hover{color:#ff6b6b}
+    .btn-add-moon{width:100%;background:transparent;border:1px dashed #ffffff22;border-radius:8px;color:#ffffff55;padding:.7rem;cursor:pointer;font-size:.85rem;transition:all .2s;font-family:inherit}
+    .btn-add-moon:hover{border-color:#a78bfa;color:#a78bfa}
 
-    /* month fields */
-    .month-fields { display:flex; flex-direction:column; gap:.8rem; }
-    .month-row { display:grid; grid-template-columns:2fr 1fr; gap:.6rem; align-items:center; }
-    .month-num { font-size:.75rem; color:#a78bfa; margin-bottom:.3rem; font-weight:600; }
+    .event-list{display:flex;flex-direction:column;gap:.8rem;margin-bottom:1rem}
+    .event-item{background:#1a1826;border:1px solid #ffffff15;border-radius:10px;padding:1rem}
+    .event-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.6rem;align-items:center}
 
-    /* moon fields */
-    .moon-list { display:flex; flex-direction:column; gap:1rem; margin-bottom:1rem; }
-    .moon-item {
-      background:#1a1826; border:1px solid #ffffff15; border-radius:10px; padding:1rem;
-    }
-    .moon-item-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.8rem; }
-    .moon-label { font-size:.8rem; color:#a78bfa; font-weight:600; }
-    .btn-remove {
-      background:none; border:none; color:#ffffff33; cursor:pointer;
-      font-size:.8rem; transition:color .2s;
-    }
-    .btn-remove:hover { color:#ff6b6b; }
-    .btn-add-moon {
-      width:100%; background:transparent; border:1px dashed #ffffff22; border-radius:8px;
-      color:#ffffff55; padding:.7rem; cursor:pointer; font-size:.85rem;
-      transition:all .2s; font-family:inherit;
-    }
-    .btn-add-moon:hover { border-color:#a78bfa; color:#a78bfa; }
+    .btn-row{display:flex;gap:.8rem;margin-top:2rem}
+    .btn-primary{flex:1;background:#a78bfa;color:#0f0e17;border:none;padding:.8rem 1.5rem;border-radius:8px;font-weight:600;font-size:.95rem;cursor:pointer;transition:opacity .2s}
+    .btn-primary:hover{opacity:.88}
+    .btn-secondary{background:transparent;color:#ffffffaa;border:1px solid #ffffff22;padding:.8rem 1.5rem;border-radius:8px;font-size:.95rem;cursor:pointer;transition:border-color .2s}
+    .btn-secondary:hover{border-color:#ffffff55}
+    .hint{font-size:.78rem;color:#ffffff44;margin-top:.4rem;line-height:1.5}
 
-    /* event fields */
-    .event-list { display:flex; flex-direction:column; gap:.8rem; margin-bottom:1rem; }
-    .event-item {
-      background:#1a1826; border:1px solid #ffffff15; border-radius:10px; padding:1rem;
-    }
-   .event-row { display:grid; grid-template-columns:2fr 1fr 1fr; gap:.6rem; align-items:center; flex-wrap:wrap; }
+    .share-box{background:#1a1826;border:1px solid #ffffff15;border-radius:12px;padding:1.2rem;margin-top:1.5rem}
+    .share-box-title{font-size:.8rem;color:#ffffff55;margin-bottom:.8rem}
+    .share-url-row{display:flex;gap:.6rem}
+    .share-url-input{flex:1;background:#0f0e17;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .9rem;color:#ffffff88;font-size:.78rem;outline:none;font-family:inherit}
+    .btn-copy{background:#a78bfa;color:#0f0e17;border:none;border-radius:8px;padding:.6rem 1rem;font-weight:600;font-size:.82rem;cursor:pointer;white-space:nowrap}
+    .copy-confirm{font-size:.75rem;color:#6ee7b7;margin-top:.5rem;display:none}
 
-    /* buttons */
-    .btn-row { display:flex; gap:.8rem; margin-top:2rem; }
-    .btn-primary {
-      flex:1; background:#a78bfa; color:#0f0e17; border:none; padding:.8rem 1.5rem;
-      border-radius:8px; font-weight:600; font-size:.95rem; cursor:pointer; transition:opacity .2s;
-    }
-    .btn-primary:hover { opacity:.88; }
-    .btn-secondary {
-      background:transparent; color:#ffffffaa; border:1px solid #ffffff22;
-      padding:.8rem 1.5rem; border-radius:8px; font-size:.95rem; cursor:pointer; transition:border-color .2s;
-    }
-    .btn-secondary:hover { border-color:#ffffff55; }
-    .hint { font-size:.78rem; color:#ffffff44; margin-top:.4rem; line-height:1.5; }
+    /* ── PREVIEW PANEL ── */
+    .preview-panel{padding:1.5rem;overflow-y:auto;background:#0d0c14}
+    .preview-label{font-size:.75rem;color:#ffffff33;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem}
+    .preview-actions{display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+    .btn-download{background:#6ee7b7;color:#0a2218;border:none;border-radius:8px;padding:.55rem 1.1rem;font-weight:600;font-size:.82rem;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;gap:.4rem}
+    .btn-download:hover{opacity:.88}
+    .btn-view{background:transparent;border:1px solid #ffffff22;color:#ffffffaa;border-radius:8px;padding:.55rem 1.1rem;font-size:.82rem;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:.4rem;transition:border-color .2s}
+    .btn-view:hover{border-color:#a78bfa;color:#a78bfa}
 
-    /* share box */
-    .share-box {
-      background:#1a1826; border:1px solid #ffffff15; border-radius:12px;
-      padding:1.2rem; margin-top:1.5rem;
+    /* ── CALENDAR CARD (the designed one) ── */
+    #cal-preview{
+      background:linear-gradient(135deg,#1a1040 0%,#12102a 60%,#0d1a2a 100%);
+      border:1px solid #a78bfa33;
+      border-radius:16px;
+      padding:1.8rem;
+      min-height:300px;
+      position:relative;
+      overflow:hidden;
     }
-    .share-box-title { font-size:.8rem; color:#ffffff55; margin-bottom:.8rem; }
-    .share-url-row { display:flex; gap:.6rem; }
-    .share-url-input {
-      flex:1; background:#0f0e17; border:1px solid #ffffff22; border-radius:8px;
-      padding:.6rem .9rem; color:#ffffff88; font-size:.78rem; outline:none; font-family:inherit;
+    #cal-preview::before{
+      content:'';position:absolute;top:-60px;right:-60px;
+      width:200px;height:200px;
+      background:radial-gradient(circle,#a78bfa18 0%,transparent 70%);
+      pointer-events:none;
     }
-    .btn-copy {
-      background:#a78bfa; color:#0f0e17; border:none; border-radius:8px;
-      padding:.6rem 1rem; font-weight:600; font-size:.82rem; cursor:pointer; white-space:nowrap;
-    }
-    .copy-confirm { font-size:.75rem; color:#6ee7b7; margin-top:.5rem; display:none; }
+    .cal-world-name{font-size:1.3rem;font-weight:700;margin-bottom:.25rem;letter-spacing:-.01em}
+    .cal-era{font-size:.82rem;color:#a78bfa99;margin-bottom:.5rem;font-style:italic}
+    .cal-meta-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
+    .cal-meta-pill{background:#ffffff0d;border:1px solid #ffffff12;border-radius:99px;padding:.2rem .7rem;font-size:.7rem;color:#ffffff77}
+    .cal-moons-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+    .moon-pill{background:#a78bfa18;border:1px solid #a78bfa44;color:#c4b5fd;padding:.22rem .8rem;border-radius:99px;font-size:.72rem}
 
-    /* preview */
-    .preview-panel { padding:2rem; overflow-y:auto; background:#0d0c14; }
-    .preview-label { font-size:.75rem; color:#ffffff33; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1rem; }
-    .cal-card {
-      background:#1a1826; border:1px solid #ffffff18; border-radius:16px;
-      padding:1.5rem; min-height:300px;
+    .cal-months-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .cal-month-tile{
+      background:#ffffff08;
+      border:1px solid #ffffff10;
+      border-radius:10px;
+      padding:.85rem .8rem;
+      position:relative;
+      transition:background .2s;
     }
-    .cal-world-name { font-size:1.1rem; font-weight:600; margin-bottom:.2rem; }
-    .cal-meta { font-size:.8rem; color:#ffffff55; margin-bottom:.8rem; }
-    .cal-moons { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
-    .moon-pill {
-      background:#a78bfa22; border:1px solid #a78bfa44; color:#a78bfa;
-      padding:.2rem .7rem; border-radius:99px; font-size:.72rem;
-    }
-    .cal-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-    .cal-month-card {
-      background:#0f0e17; border:1px solid #ffffff12; border-radius:8px; padding:.7rem;
-    }
-    .cal-month-name { font-size:.7rem; font-weight:700; color:#a78bfa; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.2rem; }
-    .cal-month-days { font-size:.7rem; color:#ffffff44; }
-    .cal-event-tag {
-      display:inline-block; margin-top:.3rem; font-size:.65rem;
-      background:#f4b94218; color:#f4b942; padding:2px 6px; border-radius:4px;
-    }
-    .empty-preview {
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      height:280px; color:#ffffff22; text-align:center; gap:.8rem;
-    }
-    .empty-preview .icon { font-size:2.5rem; }
-    .empty-preview p { font-size:.85rem; line-height:1.6; }
+    .cal-month-tile:hover{background:#ffffff12}
+    .cal-month-accent{position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0}
+    .cal-month-name{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#c4b5fd;margin-bottom:.2rem;margin-top:.15rem}
+    .cal-month-days{font-size:.68rem;color:#ffffff44}
+    .cal-event-badge{display:inline-flex;align-items:center;gap:3px;margin-top:.4rem;font-size:.63rem;background:#f4b94215;color:#f4b942;padding:2px 6px;border-radius:4px;border:1px solid #f4b94225}
 
-    /* summary */
-    .summary-row {
-      display:flex; justify-content:space-between; padding:.4rem 0;
-      border-bottom:1px solid #ffffff0d; font-size:.85rem;
-    }
-    .summary-key { color:#ffffff55; }
-    .summary-val { color:#fffffe; text-align:right; max-width:60%; }
+    .cal-footer{margin-top:1.2rem;padding-top:.8rem;border-top:1px solid #ffffff0d;display:flex;justify-content:space-between;align-items:center}
+    .cal-footer-brand{font-size:.65rem;color:#ffffff22}
+    .cal-footer-stats{font-size:.65rem;color:#ffffff33}
 
-   @media (max-width:768px) {
-  .builder-layout { grid-template-columns:1fr; }
-  .preview-panel { border-top:1px solid #ffffff12; padding:1.2rem; }
-  .cal-grid { grid-template-columns:repeat(2,1fr); }
-  .event-row { 
-    display:flex; 
-    flex-direction:column; 
-    gap:.5rem; 
-  }
-  .event-row input, .event-row select { 
-    width:100%; 
-  }
-}
+    .empty-preview{display:flex;flex-direction:column;align-items:center;justify-content:center;height:280px;color:#ffffff22;text-align:center;gap:.8rem}
+    .empty-preview .icon{font-size:2.5rem}
+    .empty-preview p{font-size:.85rem;line-height:1.6}
+
+    .summary-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #ffffff0d;font-size:.85rem}
+    .summary-key{color:#ffffff55}
+    .summary-val{color:#fffffe;text-align:right;max-width:60%}
+
+    @media(max-width:768px){
+      .builder-layout{grid-template-columns:1fr}
+      .preview-panel{border-top:1px solid #ffffff12;padding:1.2rem}
+      .cal-months-grid{grid-template-columns:repeat(2,1fr)}
+      .event-row{display:flex;flex-direction:column;gap:.5rem}
+      .event-row input,.event-row select{width:100%}
+    }
   </style>
 </head>
 <body>
@@ -179,10 +148,9 @@
 
 <div class="builder-layout">
 
-  <!-- ═══ FORM PANEL ═══ -->
   <div class="form-panel">
 
-    <!-- STEP 1: Basics -->
+    <!-- STEP 1 -->
     <div class="step-block active" id="step-1">
       <div class="step-title">Tell me about your world ✦</div>
       <div class="step-subtitle">Start with the basics. You can always change these later.</div>
@@ -233,7 +201,7 @@
       </div>
     </div>
 
-    <!-- STEP 2: Month Names -->
+    <!-- STEP 2 -->
     <div class="step-block" id="step-2">
       <div class="step-title">Name your months ✦</div>
       <div class="step-subtitle">Give each month a name that fits your world. Adjust day counts if needed.</div>
@@ -244,7 +212,7 @@
       </div>
     </div>
 
-    <!-- STEP 3: Moons -->
+    <!-- STEP 3 -->
     <div class="step-block" id="step-3">
       <div class="step-title">Add moons 🌙</div>
       <div class="step-subtitle">Does your world have moons? Add up to 3. Each gets its own name and cycle length.</div>
@@ -256,7 +224,7 @@
       </div>
     </div>
 
-    <!-- STEP 4: Holidays -->
+    <!-- STEP 4 -->
     <div class="step-block" id="step-4">
       <div class="step-title">Holidays & events 🎉</div>
       <div class="step-subtitle">Pin up to 5 special events to your calendar. Festivals, holy days, historical moments.</div>
@@ -268,16 +236,14 @@
       </div>
     </div>
 
-    <!-- STEP 5: Share -->
+    <!-- STEP 5 -->
     <div class="step-block" id="step-5">
       <div class="step-title">Your world is complete! 🎉</div>
       <div class="step-subtitle">Share your calendar with your players, readers, or the worldbuilding community.</div>
-
       <div style="background:#1a1826;border-radius:12px;padding:1.2rem;margin-bottom:1rem">
         <div style="font-size:.8rem;color:#ffffff55;margin-bottom:.8rem">YOUR WORLD AT A GLANCE</div>
         <div id="summary"></div>
       </div>
-
       <div class="share-box">
         <div class="share-box-title">🔗 SHARE YOUR CALENDAR</div>
         <div class="share-url-row">
@@ -285,9 +251,8 @@
           <button class="btn-copy" onclick="copyLink()">Copy link</button>
         </div>
         <div class="copy-confirm" id="copy-confirm">✓ Copied! Share this link anywhere.</div>
-        <div class="hint" style="margin-top:.8rem">Anyone with this link will see your exact calendar — all months, moons, and events included.</div>
+        <div class="hint" style="margin-top:.8rem">Anyone with this link sees your exact calendar — months, moons, and events included.</div>
       </div>
-
       <div class="btn-row">
         <button class="btn-secondary" onclick="goStep(4)">← Edit holidays</button>
         <button class="btn-primary" onclick="startFresh()" style="background:#6ee7b7;color:#0f0e17">Start a new world</button>
@@ -296,10 +261,14 @@
 
   </div>
 
-  <!-- ═══ PREVIEW PANEL ═══ -->
+  <!-- PREVIEW PANEL -->
   <div class="preview-panel">
     <div class="preview-label">Live preview</div>
-    <div class="cal-card" id="cal-preview">
+    <div class="preview-actions">
+      <button class="btn-download" onclick="downloadCalendar()">📥 Download as image</button>
+      <a class="btn-view" id="view-link" href="#" target="_blank">🔗 Open full view</a>
+    </div>
+    <div id="cal-preview">
       <div class="empty-preview">
         <div class="icon">🌙</div>
         <p>Your calendar will appear here<br/>as you fill in the form</p>
@@ -310,38 +279,27 @@
 </div>
 
 <script>
-// ══════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════
-const state = {
-  worldName:'', eraName:'',
-  numMonths:10, daysWeek:7, daysMonth:30,
-  months:[], moons:[], events:[]
-};
+const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8','#c084fc'];
 
-// ══════════════════════════════════════
-//  STEP NAVIGATION
-// ══════════════════════════════════════
+const state={worldName:'',eraName:'',numMonths:10,daysWeek:7,daysMonth:30,months:[],moons:[],events:[]};
+
 function goStep(n){
   document.querySelectorAll('.step-block').forEach(el=>el.classList.remove('active'));
   document.getElementById('step-'+n).classList.add('active');
-  document.getElementById('current-step-num').textContent = n;
+  document.getElementById('current-step-num').textContent=n;
   for(let i=1;i<=5;i++){
     const p=document.getElementById('prog-'+i);
     p.classList.remove('active','done');
-    if(i<n) p.classList.add('done');
-    if(i===n) p.classList.add('active');
+    if(i<n)p.classList.add('done');
+    if(i===n)p.classList.add('active');
   }
-  if(n===2) buildMonthFields();
-  if(n===3) renderMoonList();
-  if(n===4) renderEventList();
-  if(n===5){ buildSummary(); buildShareUrl(); }
+  if(n===2)buildMonthFields();
+  if(n===3)renderMoonList();
+  if(n===4)renderEventList();
+  if(n===5){buildSummary();buildShareUrl();}
   updatePreview();
 }
 
-// ══════════════════════════════════════
-//  STEP 2 — MONTHS
-// ══════════════════════════════════════
 function buildMonthFields(){
   const num=parseInt(document.getElementById('num-months').value);
   const defaultDays=document.getElementById('days-month').value;
@@ -369,20 +327,15 @@ function buildMonthFields(){
     container.appendChild(w);
   }
 }
-function updateMonth(i,field,value){ state.months[i][field]=value; updatePreview(); }
+function updateMonth(i,field,value){state.months[i][field]=value;updatePreview();}
 
-// ══════════════════════════════════════
-//  STEP 3 — MOONS
-// ══════════════════════════════════════
 function addMoon(){
-  if(state.moons.length>=3) return;
+  if(state.moons.length>=3)return;
   state.moons.push({name:'',cycle:28});
-  renderMoonList();
-  updatePreview();
+  renderMoonList();updatePreview();
 }
-function removeMoon(i){ state.moons.splice(i,1); renderMoonList(); updatePreview(); }
-function updateMoon(i,field,value){ state.moons[i][field]=value; updatePreview(); }
-
+function removeMoon(i){state.moons.splice(i,1);renderMoonList();updatePreview();}
+function updateMoon(i,field,value){state.moons[i][field]=value;updatePreview();}
 function renderMoonList(){
   const container=document.getElementById('moon-list');
   container.innerHTML='';
@@ -412,25 +365,17 @@ function renderMoonList(){
       </div>`;
     container.appendChild(div);
   });
-  const btn=document.getElementById('add-moon-btn');
-  btn.style.display=state.moons.length>=3?'none':'block';
+  document.getElementById('add-moon-btn').style.display=state.moons.length>=3?'none':'block';
 }
 
-// ══════════════════════════════════════
-//  STEP 4 — EVENTS
-// ══════════════════════════════════════
 const EVENT_EMOJIS=['🎉','🔥','❄','🌸','⚔','🌕','🌊','🍂','✨','🐉'];
-
 function addEvent(){
-  if(state.events.length>=5) return;
-  const numMonths=parseInt(document.getElementById('num-months').value)||state.numMonths;
+  if(state.events.length>=5)return;
   state.events.push({name:'',month:1,emoji:'🎉'});
-  renderEventList();
-  updatePreview();
+  renderEventList();updatePreview();
 }
-function removeEvent(i){ state.events.splice(i,1); renderEventList(); updatePreview(); }
-function updateEvent(i,field,value){ state.events[i][field]=value; updatePreview(); }
-
+function removeEvent(i){state.events.splice(i,1);renderEventList();updatePreview();}
+function updateEvent(i,field,value){state.events[i][field]=value;updatePreview();}
 function renderEventList(){
   const numMonths=parseInt(document.getElementById('num-months').value)||state.numMonths;
   const container=document.getElementById('event-list');
@@ -438,7 +383,7 @@ function renderEventList(){
   state.events.forEach((ev,i)=>{
     const monthOptions=Array.from({length:numMonths},(_,k)=>{
       const mname=state.months[k]&&state.months[k].name?state.months[k].name:`Month ${k+1}`;
-      return `<option value="${k+1}" ${k+1===ev.month?'selected':''}>${mname}</option>`;
+      return`<option value="${k+1}" ${k+1===ev.month?'selected':''}>${mname}</option>`;
     }).join('');
     const emojiOptions=EVENT_EMOJIS.map(e=>`<option value="${e}" ${e===ev.emoji?'selected':''}>${e}</option>`).join('');
     const div=document.createElement('div');
@@ -461,83 +406,40 @@ function renderEventList(){
           style="background:#0f0e17;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .7rem;color:#fff;font-size:.85rem;outline:none;font-family:inherit">
           ${emojiOptions}
         </select>
-        <div></div>
       </div>`;
     container.appendChild(div);
   });
-  const btn=document.getElementById('add-event-btn');
-  btn.style.display=state.events.length>=5?'none':'block';
+  document.getElementById('add-event-btn').style.display=state.events.length>=5?'none':'block';
 }
 
-// ══════════════════════════════════════
-//  STEP 5 — SUMMARY + SHARE
-// ══════════════════════════════════════
 function buildSummary(){
   const totalDays=state.months.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0);
   const moonNames=state.moons.filter(m=>m.name).map(m=>m.name).join(', ')||'None';
   const eventNames=state.events.filter(e=>e.name).map(e=>e.emoji+' '+e.name).join(', ')||'None';
-  const rows=[
-    ['World',state.worldName||'—'],
-    ['Era',state.eraName||'—'],
-    ['Months',state.numMonths],
-    ['Days per week',state.daysWeek],
-    ['Days per year',totalDays],
-    ['Moons',moonNames],
-    ['Holidays',eventNames],
-  ];
-  document.getElementById('summary').innerHTML=rows.map(([k,v])=>`
-    <div class="summary-row">
-      <span class="summary-key">${k}</span>
-      <span class="summary-val">${v}</span>
-    </div>`).join('');
+  const rows=[['World',state.worldName||'—'],['Era',state.eraName||'—'],['Months',state.numMonths],['Days per week',state.daysWeek],['Days per year',totalDays],['Moons',moonNames],['Holidays',eventNames]];
+  document.getElementById('summary').innerHTML=rows.map(([k,v])=>`<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`).join('');
 }
 
 function buildShareUrl(){
-  const data={
-    w:state.worldName, e:state.eraName,
-    n:state.numMonths, dw:state.daysWeek, dm:state.daysMonth,
-    m:state.months.map(m=>m.name+'|'+m.days),
-    mo:state.moons.map(m=>m.name+'|'+m.cycle),
-    ev:state.events.map(e=>e.name+'|'+e.month+'|'+e.emoji)
-  };
-  const encoded=btoa(encodeURIComponent(JSON.stringify(data)));
-  const url=window.location.origin+'/builder.html?c='+encoded;
+  const encoded=encodeState();
+  const url=window.location.origin+'/view.html?c='+encoded;
   document.getElementById('share-url').value=url;
+  document.getElementById('view-link').href=url;
+}
+
+function encodeState(){
+  const data={w:state.worldName,e:state.eraName,n:state.numMonths,dw:state.daysWeek,dm:state.daysMonth,m:state.months.map(m=>m.name+'|'+m.days),mo:state.moons.map(m=>m.name+'|'+m.cycle),ev:state.events.map(e=>e.name+'|'+e.month+'|'+e.emoji)};
+  return btoa(encodeURIComponent(JSON.stringify(data)));
 }
 
 function copyLink(){
   const input=document.getElementById('share-url');
-  input.select(); input.setSelectionRange(0,99999);
+  input.select();input.setSelectionRange(0,99999);
   navigator.clipboard.writeText(input.value).catch(()=>document.execCommand('copy'));
-  const confirm=document.getElementById('copy-confirm');
-  confirm.style.display='block';
-  setTimeout(()=>confirm.style.display='none',3000);
+  const c=document.getElementById('copy-confirm');
+  c.style.display='block';setTimeout(()=>c.style.display='none',3000);
 }
 
-// ══════════════════════════════════════
-//  LOAD FROM URL (shared link)
-// ══════════════════════════════════════
-function loadFromUrl(){
-  const params=new URLSearchParams(window.location.search);
-  const c=params.get('c');
-  if(!c) return;
-  try{
-    const data=JSON.parse(decodeURIComponent(atob(c)));
-    document.getElementById('world-name').value=data.w||'';
-    document.getElementById('era-name').value=data.e||'';
-    document.getElementById('num-months').value=data.n||10;
-    document.getElementById('days-week').value=data.dw||7;
-    document.getElementById('days-month').value=data.dm||30;
-    state.months=(data.m||[]).map(s=>{const[name,days]=s.split('|');return{name,days};});
-    state.moons=(data.mo||[]).map(s=>{const[name,cycle]=s.split('|');return{name,cycle:parseInt(cycle)};});
-    state.events=(data.ev||[]).map(s=>{const[name,month,emoji]=s.split('|');return{name,month:parseInt(month),emoji};});
-    goStep(5);
-  }catch(e){ console.log('Invalid share URL'); }
-}
-
-// ══════════════════════════════════════
-//  LIVE PREVIEW RENDER
-// ══════════════════════════════════════
 function updatePreview(){
   state.worldName=document.getElementById('world-name').value;
   state.eraName=document.getElementById('era-name').value;
@@ -549,47 +451,58 @@ function updatePreview(){
 
 function renderPreview(){
   const preview=document.getElementById('cal-preview');
-  if(!state.worldName && state.months.every(m=>!m.name)){
+  if(!state.worldName&&state.months.every(m=>!m.name)){
     preview.innerHTML=`<div class="empty-preview"><div class="icon">🌙</div><p>Your calendar will appear here<br/>as you fill in the form</p></div>`;
     return;
   }
   const worldName=state.worldName||'Your World';
-  const era=state.eraName?state.eraName+' • ':'';
-  const totalDays=state.months.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0)||state.numMonths*state.daysMonth;
-
-  // Moons pills
-  const moonPills=state.moons.filter(m=>m.name).map(m=>
-    `<span class="moon-pill">🌙 ${m.name} · ${m.cycle}d cycle</span>`
-  ).join('');
-
-  // Month cards with events
-  const monthsToShow=state.months.length>0
-    ? state.months
-    : Array.from({length:state.numMonths},(_,i)=>({name:`Month ${i+1}`,days:state.daysMonth}));
-
+  const monthsToShow=state.months.length>0?state.months:Array.from({length:state.numMonths},(_,i)=>({name:`Month ${i+1}`,days:state.daysMonth}));
+  const totalDays=monthsToShow.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0);
+  const moonPills=state.moons.filter(m=>m.name).map(m=>`<span class="moon-pill">🌙 ${m.name} · ${m.cycle}d</span>`).join('');
   const monthCards=monthsToShow.map((m,i)=>{
     const name=m.name||`Month ${i+1}`;
     const days=m.days||state.daysMonth;
+    const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
     const eventsHere=state.events.filter(e=>e.month===i+1&&e.name);
-    const eventTags=eventsHere.map(e=>`<div class="cal-event-tag">${e.emoji} ${e.name}</div>`).join('');
-    return `<div class="cal-month-card">
+    const badges=eventsHere.map(e=>`<div class="cal-event-badge">${e.emoji} ${e.name}</div>`).join('');
+    return`<div class="cal-month-tile">
+      <div class="cal-month-accent" style="background:${color}"></div>
       <div class="cal-month-name">${name}</div>
       <div class="cal-month-days">${days} days</div>
-      ${eventTags}
+      ${badges}
     </div>`;
   }).join('');
 
   preview.innerHTML=`
     <div class="cal-world-name">${worldName}</div>
-    <div class="cal-meta">${era}${state.numMonths} months · ${totalDays} days/year · ${state.daysWeek}-day week</div>
-    ${moonPills?`<div class="cal-moons">${moonPills}</div>`:''}
-    <div class="cal-grid">${monthCards}</div>`;
+    ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
+    <div class="cal-meta-row">
+      <span class="cal-meta-pill">📅 ${state.numMonths} months</span>
+      <span class="cal-meta-pill">☀ ${totalDays} days/year</span>
+      <span class="cal-meta-pill">🗓 ${state.daysWeek}-day week</span>
+    </div>
+    ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
+    <div class="cal-months-grid">${monthCards}</div>
+    <div class="cal-footer">
+      <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
+      <span class="cal-footer-stats">${state.moons.length} moon${state.moons.length!==1?'s':''} · ${state.events.filter(e=>e.name).length} event${state.events.filter(e=>e.name).length!==1?'s':''}</span>
+    </div>`;
+}
+
+function downloadCalendar(){
+  const el=document.getElementById('cal-preview');
+  if(!state.worldName&&state.months.every(m=>!m.name)){alert('Fill in your world name first!');return;}
+  html2canvas(el,{backgroundColor:null,scale:2,useCORS:true}).then(canvas=>{
+    const link=document.createElement('a');
+    link.download=(state.worldName||'my-world').toLowerCase().replace(/\s+/g,'-')+'-calendar.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  });
 }
 
 function startFresh(){
-  state.worldName=''; state.eraName='';
-  state.numMonths=10; state.daysWeek=7; state.daysMonth=30;
-  state.months=[]; state.moons=[]; state.events=[];
+  state.worldName='';state.eraName='';state.numMonths=10;state.daysWeek=7;state.daysMonth=30;
+  state.months=[];state.moons=[];state.events=[];
   document.getElementById('world-name').value='';
   document.getElementById('era-name').value='';
   document.getElementById('num-months').value=10;
@@ -598,10 +511,6 @@ function startFresh(){
   goStep(1);
 }
 
-// ══════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════
-loadFromUrl();
 updatePreview();
 </script>
 </body>
