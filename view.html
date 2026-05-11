@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fantasy Calendar — View</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid #ffffff18;flex-wrap:wrap;gap:.8rem}
+    .logo{font-size:1rem;font-weight:600;color:#a78bfa;text-decoration:none}
+    .nav-actions{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+    .btn-edit{background:transparent;border:1px solid #ffffff22;color:#ffffffaa;padding:.5rem 1rem;border-radius:8px;font-size:.85rem;cursor:pointer;text-decoration:none;transition:border-color .2s}
+    .btn-edit:hover{border-color:#a78bfa;color:#a78bfa}
+    .btn-download{background:#6ee7b7;color:#0a2218;border:none;padding:.5rem 1.1rem;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer}
+    .btn-build{background:#a78bfa;color:#0f0e17;padding:.5rem 1.1rem;border-radius:8px;font-weight:600;font-size:.85rem;text-decoration:none;border:none;cursor:pointer}
+
+    .page{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem}
+
+    .cal-card{
+      background:linear-gradient(135deg,#1a1040 0%,#12102a 60%,#0d1a2a 100%);
+      border:1px solid #a78bfa33;border-radius:20px;padding:2.5rem;
+      position:relative;overflow:hidden;
+    }
+    .cal-card::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,#a78bfa15 0%,transparent 70%);pointer-events:none}
+    .cal-card::after{content:'';position:absolute;bottom:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,#6ee7b708 0%,transparent 70%);pointer-events:none}
+
+    .cal-world-name{font-size:2rem;font-weight:700;margin-bottom:.3rem;letter-spacing:-.02em}
+    .cal-era{font-size:.95rem;color:#a78bfa99;margin-bottom:.8rem;font-style:italic}
+    .cal-meta-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
+    .cal-meta-pill{background:#ffffff0d;border:1px solid #ffffff12;border-radius:99px;padding:.25rem .8rem;font-size:.75rem;color:#ffffff77}
+    .cal-moons-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+    .moon-pill{background:#a78bfa18;border:1px solid #a78bfa44;color:#c4b5fd;padding:.25rem .9rem;border-radius:99px;font-size:.75rem}
+
+    .cal-months-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .cal-month-tile{background:#ffffff08;border:1px solid #ffffff10;border-radius:12px;padding:1rem;position:relative}
+    .cal-month-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+    .cal-month-name{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#c4b5fd;margin-bottom:.25rem;margin-top:.2rem}
+    .cal-month-days{font-size:.72rem;color:#ffffff44;margin-bottom:.3rem}
+    .cal-event-badge{display:inline-flex;align-items:center;gap:3px;margin-top:.3rem;font-size:.65rem;background:#f4b94215;color:#f4b942;padding:2px 7px;border-radius:4px;border:1px solid #f4b94225;margin-right:3px}
+
+    .cal-footer{margin-top:1.8rem;padding-top:1rem;border-top:1px solid #ffffff0d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+    .cal-footer-brand{font-size:.72rem;color:#ffffff33}
+    .cal-footer-stats{font-size:.72rem;color:#ffffff44}
+
+    .cta-strip{margin-top:2rem;background:#1a1826;border:1px solid #ffffff12;border-radius:14px;padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .cta-text h3{font-size:1rem;margin-bottom:.3rem}
+    .cta-text p{font-size:.85rem;color:#ffffff66}
+
+    .error-state{text-align:center;padding:5rem 2rem;color:#ffffff44}
+    .error-state h2{font-size:1.5rem;color:#ffffff88;margin-bottom:1rem}
+
+    @media(max-width:600px){
+      .cal-months-grid{grid-template-columns:repeat(2,1fr)}
+      .cal-world-name{font-size:1.5rem}
+      .cal-card{padding:1.5rem}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
+  <div class="nav-actions">
+    <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
+    <button class="btn-download" onclick="downloadCalendar()">📥 Download PNG</button>
+    <a href="builder.html" class="btn-build">Build your own →</a>
+  </div>
+</nav>
+
+<div class="page">
+  <div id="cal-card-wrap">
+    <div class="error-state">
+      <h2>No calendar found</h2>
+      <p>This link may be invalid. <a href="builder.html" style="color:#a78bfa">Build your own calendar →</a></p>
+    </div>
+  </div>
+
+  <div class="cta-strip">
+    <div class="cta-text">
+      <h3>Build your own world's calendar</h3>
+      <p>Free. No account needed. Ready in 10 minutes.</p>
+    </div>
+    <a href="builder.html" class="btn-build" style="white-space:nowrap">Start building — it's free →</a>
+  </div>
+</div>
+
+<script>
+const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8','#c084fc'];
+
+function loadCalendar(){
+  const params=new URLSearchParams(window.location.search);
+  const c=params.get('c');
+  if(!c)return;
+  try{
+    const data=JSON.parse(decodeURIComponent(atob(c)));
+    const months=(data.m||[]).map(s=>{const[name,days]=s.split('|');return{name,days};});
+    const moons=(data.mo||[]).map(s=>{const[name,cycle]=s.split('|');return{name,cycle:parseInt(cycle)};});
+    const events=(data.ev||[]).map(s=>{const[name,month,emoji]=s.split('|');return{name,month:parseInt(month),emoji};});
+    const numMonths=data.n||10;
+    const daysMonth=data.dm||30;
+    const daysWeek=data.dw||7;
+    const worldName=data.w||'Unnamed World';
+    const eraName=data.e||'';
+    const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0)||numMonths*daysMonth;
+
+    // Set edit link
+    document.getElementById('edit-link').href='builder.html?c='+c;
+    document.title=worldName+' — Fantasy Calendar Builder';
+
+    const moonPills=moons.filter(m=>m.name).map(m=>`<span class="moon-pill">🌙 ${m.name} · ${m.cycle}d cycle</span>`).join('');
+    const monthsToRender=months.length>0?months:Array.from({length:numMonths},(_,i)=>({name:`Month ${i+1}`,days:daysMonth}));
+    const monthCards=monthsToRender.map((m,i)=>{
+      const name=m.name||`Month ${i+1}`;
+      const days=m.days||daysMonth;
+      const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
+      const eventsHere=events.filter(e=>e.month===i+1&&e.name);
+      const badges=eventsHere.map(e=>`<div class="cal-event-badge">${e.emoji} ${e.name}</div>`).join('');
+      return`<div class="cal-month-tile">
+        <div class="cal-month-accent" style="background:${color}"></div>
+        <div class="cal-month-name">${name}</div>
+        <div class="cal-month-days">${days} days</div>
+        ${badges}
+      </div>`;
+    }).join('');
+
+    document.getElementById('cal-card-wrap').innerHTML=`
+      <div class="cal-card" id="cal-card">
+        <div class="cal-world-name">${worldName}</div>
+        ${eraName?`<div class="cal-era">${eraName}</div>`:''}
+        <div class="cal-meta-row">
+          <span class="cal-meta-pill">📅 ${numMonths} months</span>
+          <span class="cal-meta-pill">☀ ${totalDays} days/year</span>
+          <span class="cal-meta-pill">🗓 ${daysWeek}-day week</span>
+        </div>
+        ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
+        <div class="cal-months-grid">${monthCards}</div>
+        <div class="cal-footer">
+          <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
+          <span class="cal-footer-stats">${moons.length} moon${moons.length!==1?'s':''} · ${events.filter(e=>e.name).length} event${events.filter(e=>e.name).length!==1?'s':''}</span>
+        </div>
+      </div>`;
+  }catch(e){console.log('Invalid calendar data');}
+}
+
+function downloadCalendar(){
+  const el=document.getElementById('cal-card');
+  if(!el){alert('No calendar to download.');return;}
+  html2canvas(el,{backgroundColor:null,scale:2,useCORS:true}).then(canvas=>{
+    const link=document.createElement('a');
+    link.download='my-world-calendar.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+loadCalendar();
+</script>
+</body>
+</html>
