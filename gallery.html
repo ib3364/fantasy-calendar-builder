@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — Fantasy Calendar Builder</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2rem;border-bottom:1px solid #ffffff18;position:sticky;top:0;background:#0f0e17;z-index:100}
+    .logo{font-size:1.1rem;font-weight:600;color:#a78bfa;text-decoration:none}
+    .nav-links{display:flex;align-items:center;gap:1.5rem}
+    .nav-links a{color:#ffffffaa;text-decoration:none;font-size:.9rem;transition:color .2s}
+    .nav-links a:hover{color:#fff}
+    .nav-cta{background:#a78bfa;color:#0f0e17 !important;padding:.45rem 1.1rem;border-radius:7px;font-weight:600 !important}
+
+    .page-header{text-align:center;padding:4rem 1.5rem 2.5rem}
+    .page-header h1{font-size:2.2rem;font-weight:700;margin-bottom:.6rem}
+    .page-header p{color:#ffffffaa;font-size:1rem;margin-bottom:2rem}
+    .btn-primary{background:#a78bfa;color:#0f0e17;padding:.85rem 2rem;border-radius:9px;font-weight:700;font-size:.95rem;text-decoration:none;display:inline-block;transition:opacity .2s}
+    .btn-primary:hover{opacity:.88}
+
+    .gallery{max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+
+    .cal-card{background:linear-gradient(135deg,#1a1040 0%,#12102a 60%,#0d1a2a 100%);border:1px solid #a78bfa22;border-radius:18px;padding:1.5rem;position:relative;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
+    .cal-card:hover{border-color:#a78bfa66;transform:translateY(-2px)}
+    .cal-card::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:radial-gradient(circle,#a78bfa12 0%,transparent 70%);pointer-events:none}
+
+    .cal-world-name{font-size:1.1rem;font-weight:700;margin-bottom:.2rem}
+    .cal-era{font-size:.78rem;color:#a78bfa88;font-style:italic;margin-bottom:.6rem}
+    .cal-meta-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.7rem}
+    .cal-meta-pill{background:#ffffff0d;border:1px solid #ffffff10;border-radius:99px;padding:.18rem .6rem;font-size:.66rem;color:#ffffff66}
+    .cal-moons-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+    .moon-pill{background:#a78bfa18;border:1px solid #a78bfa44;color:#c4b5fd;padding:.18rem .7rem;border-radius:99px;font-size:.68rem}
+
+    .cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .cal-month{background:#ffffff07;border:1px solid #ffffff0d;border-radius:8px;padding:.6rem;position:relative}
+    .month-accent{position:absolute;top:0;left:0;right:0;height:2px;border-radius:8px 8px 0 0}
+    .month-name{font-size:.65rem;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.15rem;margin-top:.1rem}
+    .month-days{font-size:.62rem;color:#ffffff33}
+    .month-event{display:inline-block;margin-top:.3rem;font-size:.58rem;background:#f4b94215;color:#f4b942;padding:1px 5px;border-radius:3px}
+
+    .card-footer{margin-top:1rem;padding-top:.7rem;border-top:1px solid #ffffff0d;display:flex;justify-content:space-between;align-items:center}
+    .card-footer-label{font-size:.65rem;color:#ffffff33}
+    .btn-view{background:#a78bfa22;border:1px solid #a78bfa44;color:#c4b5fd;padding:.35rem .9rem;border-radius:6px;font-size:.72rem;text-decoration:none;transition:background .2s}
+    .btn-view:hover{background:#a78bfa33}
+
+    .cta-strip{max-width:1100px;margin:0 auto 4rem;padding:0 1.5rem}
+    .cta-inner{background:#1a1826;border:1px solid #ffffff0d;border-radius:16px;padding:2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .cta-text h3{font-size:1.1rem;margin-bottom:.3rem}
+    .cta-text p{font-size:.88rem;color:#ffffff66}
+
+    @media(max-width:600px){
+      .cal-grid{grid-template-columns:repeat(2,1fr)}
+      nav .nav-links a:not(.nav-cta){display:none}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
+  <div class="nav-links">
+    <a href="gallery.html" style="color:#a78bfa">Gallery</a>
+    <a href="builder.html" class="nav-cta">Build free →</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>World calendars made by the community</h1>
+  <p>Click any calendar to view it in full, or build your own world below.</p>
+  <a href="builder.html" class="btn-primary">Build your own calendar — it's free</a>
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<div class="cta-strip">
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h3>Ready to build your world's calendar?</h3>
+      <p>Free. No account needed. Takes about 10 minutes.</p>
+    </div>
+    <a href="builder.html" class="btn-primary">Start building →</a>
+  </div>
+</div>
+
+<script>
+const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8'];
+
+// Pre-built example calendars — each is a real encoded shareable link
+const EXAMPLES=[
+  {
+    world:'The World of Aethermoor', era:'Year of the Silver Age',
+    months:[{name:'Frostmere',days:32},{name:'Ashveil',days:28},{name:'Bloomtide',days:30},{name:'Goldenmark',days:31},{name:'Emberholt',days:30},{name:'Duskfall',days:29},{name:'Silvane',days:33},{name:'Harrowend',days:31}],
+    moons:[{name:'Lumis',cycle:28},{name:'Vael',cycle:14}],
+    events:[{name:'Winter Rite',month:1,emoji:'❄'},{name:'Petal Festival',month:3,emoji:'🌸'},{name:"Sun's Peak",month:5,emoji:'🔥'},{name:'Twin Moons',month:7,emoji:'🌕'}],
+    daysWeek:6
+  },
+  {
+    world:'The Iron Dominion', era:'Third Epoch of Steel',
+    months:[{name:'Ashmonth',days:30},{name:'Ironmark',days:30},{name:'Coalfall',days:28},{name:'Forgetime',days:32},{name:'Smokeveil',days:30},{name:'Cinderend',days:30}],
+    moons:[{name:'Greyface',cycle:20}],
+    events:[{name:"Forgemaster's Day",month:4,emoji:'⚔'},{name:'The Long Dark',month:1,emoji:'🔥'}],
+    daysWeek:5
+  },
+  {
+    world:"Yss'thara the Drowned World", era:'Age of Tides',
+    months:[{name:'Deepcurrent',days:36},{name:'Saltmere',days:36},{name:'Stormwatch',days:36},{name:'Wavecrest',days:36},{name:'Tidewane',days:36},{name:'Stillwater',days:36},{name:'Abyssmark',days:36},{name:'Shallowing',days:36}],
+    moons:[{name:'Pearl',cycle:36},{name:'Coral',cycle:18},{name:'Abyss',cycle:9}],
+    events:[{name:'Great Flood',month:3,emoji:'🌊'},{name:'Still Night',month:6,emoji:'✨'}],
+    daysWeek:9
+  },
+  {
+    world:'The Ember Wastes', era:'After the Sundering',
+    months:[{name:'Scorchmark',days:40},{name:'Ashdrift',days:40},{name:'Glassfall',days:40},{name:'Emberrise',days:40}],
+    moons:[{name:'Cinder',cycle:10}],
+    events:[{name:'Day of Ash',month:2,emoji:'🍂'},{name:'The Burning',month:4,emoji:'🔥'}],
+    daysWeek:8
+  },
+  {
+    world:'Sylvara the Living Forest', era:'Green Millennium',
+    months:[{name:'Rootwake',days:28},{name:'Budding',days:28},{name:'Canopytide',days:28},{name:'Bloomhigh',days:28},{name:'Rustlefall',days:28},{name:'Barkmere',days:28},{name:'Deeproot',days:28},{name:'Frostbark',days:28},{name:'Seedrest',days:28},{name:'Thawsong',days:28},{name:'Sproutrise',days:28},{name:'Fernmark',days:28}],
+    moons:[{name:'Greenface',cycle:28}],
+    events:[{name:'Great Bloom',month:4,emoji:'🌸'},{name:'Falling',month:8,emoji:'🍂'},{name:'Seed Festival',month:9,emoji:'✨'}],
+    daysWeek:7
+  },
+];
+
+function encodeCalendar(ex){
+  const data={
+    w:ex.world, e:ex.era,
+    n:ex.months.length,
+    dw:ex.daysWeek||7,
+    dm:ex.months[0]?.days||30,
+    m:ex.months.map(m=>m.name+'|'+m.days),
+    mo:ex.moons.map(m=>m.name+'|'+m.cycle),
+    ev:ex.events.map(e=>e.name+'|'+e.month+'|'+e.emoji)
+  };
+  return btoa(encodeURIComponent(JSON.stringify(data)));
+}
+
+function renderGallery(){
+  const gallery=document.getElementById('gallery');
+  EXAMPLES.forEach(ex=>{
+    const encoded=encodeCalendar(ex);
+    const viewUrl='view.html?c='+encoded;
+    const totalDays=ex.months.reduce((s,m)=>s+m.days,0);
+    const moonPills=ex.moons.map(m=>`<span class="moon-pill">🌙 ${m.name} · ${m.cycle}d</span>`).join('');
+    const monthCards=ex.months.map((m,i)=>{
+      const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
+      const ev=ex.events.find(e=>e.month===i+1);
+      return`<div class="cal-month">
+        <div class="month-accent" style="background:${color}"></div>
+        <div class="month-name">${m.name}</div>
+        <div class="month-days">${m.days}d</div>
+        ${ev?`<div class="month-event">${ev.emoji} ${ev.name}</div>`:''}
+      </div>`;
+    }).join('');
+
+    const card=document.createElement('div');
+    card.className='cal-card';
+    card.innerHTML=`
+      <div class="cal-world-name">${ex.world}</div>
+      ${ex.era?`<div class="cal-era">${ex.era}</div>`:''}
+      <div class="cal-meta-row">
+        <span class="cal-meta-pill">📅 ${ex.months.length} months</span>
+        <span class="cal-meta-pill">☀ ${totalDays} days/yr</span>
+        <span class="cal-meta-pill">🗓 ${ex.daysWeek||7}-day week</span>
+      </div>
+      ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
+      <div class="cal-grid">${monthCards}</div>
+      <div class="card-footer">
+        <span class="card-footer-label">${ex.moons.length} moon${ex.moons.length!==1?'s':''} · ${ex.events.length} event${ex.events.length!==1?'s':''}</span>
+        <a href="${viewUrl}" class="btn-view">View full →</a>
+      </div>`;
+    gallery.appendChild(card);
+  });
+}
+
+renderGallery();
+</script>
+</body>
+</html>
