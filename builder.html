@@ -39,7 +39,9 @@
     .btn-add-moon:hover{border-color:#a78bfa;color:#a78bfa}
     .event-list{display:flex;flex-direction:column;gap:.8rem;margin-bottom:1rem}
     .event-item{background:#1a1826;border:1px solid #ffffff15;border-radius:10px;padding:1rem}
-    .event-row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:.6rem;align-items:center}
+    .event-row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.event-row input{flex:2;min-width:120px}
+.event-row select{flex:1;min-width:80px}
     .btn-row{display:flex;gap:.8rem;margin-top:2rem}
     .btn-primary{flex:1;background:#a78bfa;color:#0f0e17;border:none;padding:.8rem 1.5rem;border-radius:8px;font-weight:600;font-size:.95rem;cursor:pointer;transition:opacity .2s}
     .btn-primary:hover{opacity:.88}
