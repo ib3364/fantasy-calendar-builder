@@ -22,8 +22,8 @@
     .step-subtitle{font-size:.85rem;color:#ffffff66;margin-bottom:1.8rem;line-height:1.5}
     .field{margin-bottom:1.2rem}
     .field label{display:block;font-size:.8rem;color:#ffffffaa;margin-bottom:.4rem;font-weight:500}
-    .field input,.field select{width:100%;background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.7rem 1rem;color:#fff;font-size:.95rem;outline:none;transition:border-color .2s;font-family:inherit}
-    .field input:focus,.field select:focus{border-color:#a78bfa}
+    .field input{width:100%;background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.7rem 1rem;color:#fff;font-size:.95rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .field input:focus{border-color:#a78bfa}
     .field input::placeholder{color:#ffffff33}
     .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
     .month-fields{display:flex;flex-direction:column;gap:.8rem}
@@ -82,6 +82,9 @@
     .summary-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #ffffff0d;font-size:.85rem}
     .summary-key{color:#ffffff55}
     .summary-val{color:#fffffe;text-align:right;max-width:60%}
+    .num-input{width:100%;background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.7rem 1rem;color:#fff;font-size:.95rem;outline:none;transition:border-color .2s;font-family:inherit}
+    .num-input:focus{border-color:#a78bfa}
+    .num-input::placeholder{color:#ffffff33}
     @media(max-width:768px){
       .builder-layout{grid-template-columns:1fr}
       .preview-panel{border-top:1px solid #ffffff12;padding:1.2rem}
@@ -106,6 +109,7 @@
 <div class="builder-layout">
   <div class="form-panel">
 
+    <!-- STEP 1 -->
     <div class="step-block active" id="step-1">
       <div class="step-title">Tell me about your world ✦</div>
       <div class="step-subtitle">Start with the basics. You can always change these later.</div>
@@ -120,35 +124,16 @@
       <div class="field-row">
         <div class="field">
           <label>Number of months</label>
-          <select id="num-months" onchange="updatePreview()">
-            <option value="4">4 months</option>
-            <option value="6">6 months</option>
-            <option value="8">8 months</option>
-            <option value="10" selected>10 months</option>
-            <option value="12">12 months</option>
-            <option value="13">13 months</option>
-          </select>
+          <input type="number" id="num-months" class="num-input" value="10" min="1" max="100" placeholder="e.g. 12" oninput="updatePreview()"/>
         </div>
         <div class="field">
           <label>Days per week</label>
-          <select id="days-week" onchange="updatePreview()">
-            <option value="5">5 days</option>
-            <option value="6">6 days</option>
-            <option value="7" selected>7 days</option>
-            <option value="8">8 days</option>
-            <option value="10">10 days</option>
-          </select>
+          <input type="number" id="days-week" class="num-input" value="7" min="1" max="100" placeholder="e.g. 7" oninput="updatePreview()"/>
         </div>
       </div>
       <div class="field">
         <label>Default days per month</label>
-        <select id="days-month" onchange="updatePreview()">
-          <option value="28">28 days</option>
-          <option value="30" selected>30 days</option>
-          <option value="32">32 days</option>
-          <option value="36">36 days</option>
-          <option value="40">40 days</option>
-        </select>
+        <input type="number" id="days-month" class="num-input" value="30" min="1" max="9999" placeholder="e.g. 30" oninput="updatePreview()"/>
         <div class="hint">You can customise each month individually in the next step.</div>
       </div>
       <div class="btn-row">
@@ -156,9 +141,10 @@
       </div>
     </div>
 
+    <!-- STEP 2 -->
     <div class="step-block" id="step-2">
       <div class="step-title">Name your months ✦</div>
-      <div class="step-subtitle">Give each month a name that fits your world. Adjust day counts if needed.</div>
+      <div class="step-subtitle">Give each month a name that fits your world. Type any number of days you want.</div>
       <div class="month-fields" id="month-fields"></div>
       <div class="btn-row">
         <button class="btn-secondary" onclick="goStep(1)">← Back</button>
@@ -166,9 +152,10 @@
       </div>
     </div>
 
+    <!-- STEP 3 -->
     <div class="step-block" id="step-3">
       <div class="step-title">Add moons 🌙</div>
-      <div class="step-subtitle">Does your world have moons? Add up to 3. Each gets its own name and cycle length.</div>
+      <div class="step-subtitle">Does your world have moons? Add up to 3. Type any cycle length you want.</div>
       <div class="moon-list" id="moon-list"></div>
       <button class="btn-add-moon" id="add-moon-btn" onclick="addMoon()">+ Add a moon</button>
       <div class="btn-row">
@@ -177,6 +164,7 @@
       </div>
     </div>
 
+    <!-- STEP 4 -->
     <div class="step-block" id="step-4">
       <div class="step-title">Holidays & events 🎉</div>
       <div class="step-subtitle">Pin up to 5 special events to your calendar.</div>
@@ -188,6 +176,7 @@
       </div>
     </div>
 
+    <!-- STEP 5 -->
     <div class="step-block" id="step-5">
       <div class="step-title">Your world is complete! 🎉</div>
       <div class="step-subtitle">Share your calendar with your players, readers, or the worldbuilding community.</div>
@@ -212,6 +201,7 @@
 
   </div>
 
+  <!-- PREVIEW PANEL -->
   <div class="preview-panel">
     <div class="preview-label">Live preview</div>
     <div class="preview-actions">
@@ -249,11 +239,12 @@ function goStep(n){
 }
 
 function buildMonthFields(){
-  const num=parseInt(document.getElementById('num-months').value);
-  const defaultDays=document.getElementById('days-month').value;
+  const num=parseInt(document.getElementById('num-months').value)||10;
+  const defaultDays=parseInt(document.getElementById('days-month').value)||30;
   const container=document.getElementById('month-fields');
   const existing=state.months;
-  container.innerHTML='';state.months=[];
+  container.innerHTML='';
+  state.months=[];
   for(let i=0;i<num;i++){
     const name=existing[i]?existing[i].name:'';
     const days=existing[i]?existing[i].days:defaultDays;
@@ -264,17 +255,20 @@ function buildMonthFields(){
       <div class="month-row">
         <input type="text" placeholder="Month name e.g. Frostmere" value="${name}"
           oninput="updateMonth(${i},'name',this.value)"
-          style="background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .9rem;color:#fff;font-size:.88rem;outline:none;font-family:inherit;transition:border-color .2s"
+          style="background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .9rem;color:#fff;font-size:.88rem;outline:none;font-family:inherit;transition:border-color .2s;width:100%"
           onfocus="this.style.borderColor='#a78bfa'" onblur="this.style.borderColor='#ffffff22'"/>
-        <select onchange="updateMonth(${i},'days',this.value)"
-          style="background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .7rem;color:#fff;font-size:.85rem;outline:none;font-family:inherit">
-          ${[24,26,28,29,30,31,32,33,36,40].map(d=>`<option value="${d}" ${d==days?'selected':''}>${d} days</option>`).join('')}
-        </select>
+        <input type="number" value="${days}" min="1" max="9999" placeholder="days"
+          oninput="updateMonth(${i},'days',this.value)"
+          style="background:#1a1826;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .7rem;color:#fff;font-size:.85rem;outline:none;font-family:inherit;width:100%"
+          onfocus="this.style.borderColor='#a78bfa'" onblur="this.style.borderColor='#ffffff22'"/>
       </div>`;
     container.appendChild(w);
   }
 }
-function updateMonth(i,field,value){state.months[i][field]=value;updatePreview();}
+function updateMonth(i,field,value){
+  if(state.months[i]) state.months[i][field]=value;
+  updatePreview();
+}
 
 function addMoon(){
   if(state.moons.length>=3)return;
@@ -282,7 +276,10 @@ function addMoon(){
   renderMoonList();updatePreview();
 }
 function removeMoon(i){state.moons.splice(i,1);renderMoonList();updatePreview();}
-function updateMoon(i,field,value){state.moons[i][field]=value;updatePreview();}
+function updateMoon(i,field,value){
+  if(state.moons[i]) state.moons[i][field]=field==='cycle'?parseInt(value)||1:value;
+  updatePreview();
+}
 function renderMoonList(){
   const container=document.getElementById('moon-list');
   container.innerHTML='';
@@ -304,10 +301,10 @@ function renderMoonList(){
         </div>
         <div class="field" style="margin:0">
           <label>Cycle (days)</label>
-          <select onchange="updateMoon(${i},'cycle',parseInt(this.value))"
-            style="background:#0f0e17;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .7rem;color:#fff;font-size:.85rem;outline:none;font-family:inherit;width:100%">
-            ${[7,10,14,20,28,30,45,60].map(d=>`<option value="${d}" ${d===moon.cycle?'selected':''}>${d} days</option>`).join('')}
-          </select>
+          <input type="number" value="${moon.cycle}" min="1" max="9999" placeholder="e.g. 28"
+            oninput="updateMoon(${i},'cycle',this.value)"
+            style="background:#0f0e17;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .9rem;color:#fff;font-size:.88rem;outline:none;font-family:inherit;width:100%"
+            onfocus="this.style.borderColor='#a78bfa'" onblur="this.style.borderColor='#ffffff22'"/>
         </div>
       </div>`;
     container.appendChild(div);
@@ -322,7 +319,10 @@ function addEvent(){
   renderEventList();updatePreview();
 }
 function removeEvent(i){state.events.splice(i,1);renderEventList();updatePreview();}
-function updateEvent(i,field,value){state.events[i][field]=value;updatePreview();}
+function updateEvent(i,field,value){
+  if(state.events[i]) state.events[i][field]=field==='month'?parseInt(value):value;
+  updatePreview();
+}
 function renderEventList(){
   const numMonths=parseInt(document.getElementById('num-months').value)||state.numMonths;
   const container=document.getElementById('event-list');
@@ -345,7 +345,7 @@ function renderEventList(){
           oninput="updateEvent(${i},'name',this.value)"
           style="background:#0f0e17;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .9rem;color:#fff;font-size:.85rem;outline:none;font-family:inherit"
           onfocus="this.style.borderColor='#a78bfa'" onblur="this.style.borderColor='#ffffff22'"/>
-        <select onchange="updateEvent(${i},'month',parseInt(this.value))"
+        <select onchange="updateEvent(${i},'month',this.value)"
           style="background:#0f0e17;border:1px solid #ffffff22;border-radius:8px;padding:.6rem .7rem;color:#fff;font-size:.82rem;outline:none;font-family:inherit">
           ${monthOptions}
         </select>
@@ -390,9 +390,9 @@ function copyLink(){
 function updatePreview(){
   state.worldName=document.getElementById('world-name').value;
   state.eraName=document.getElementById('era-name').value;
-  state.numMonths=parseInt(document.getElementById('num-months').value);
-  state.daysWeek=parseInt(document.getElementById('days-week').value);
-  state.daysMonth=parseInt(document.getElementById('days-month').value);
+  state.numMonths=parseInt(document.getElementById('num-months').value)||10;
+  state.daysWeek=parseInt(document.getElementById('days-week').value)||7;
+  state.daysMonth=parseInt(document.getElementById('days-month').value)||30;
   renderPreview();
 }
 
