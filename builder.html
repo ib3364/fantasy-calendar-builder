@@ -184,6 +184,25 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="waypoint"] .theme-opt.active::before{content:'◈ '}
 [data-theme="verdant"] .theme-opt.active::before{content:'✦ '}
 
+/* ── LORE ── */
+.lore-toggle{background:none;border:none;cursor:pointer;font-size:.75rem;color:var(--text-dim);font-family:var(--font-body);padding:.3rem 0;display:flex;align-items:center;gap:.35rem;margin-top:.5rem;letter-spacing:.03em}
+.lore-toggle:hover{color:var(--accent)}
+.lore-toggle .lt-icon{font-size:.7rem;transition:transform .2s}
+.lore-toggle.open .lt-icon{transform:rotate(90deg)}
+.lore-area{display:none;margin-top:.5rem}
+.lore-area.open{display:block}
+.lore-textarea{width:100%;background:var(--input-bg2);border:1px solid var(--border2);padding:.6rem .8rem;color:var(--text-muted);font-size:.82rem;outline:none;font-family:var(--font-body);resize:vertical;min-height:70px;line-height:1.55;border-radius:var(--radius-input)}
+.lore-textarea:focus{border-color:var(--accent);color:var(--text)}
+.lore-textarea::placeholder{color:var(--text-dimmest);font-style:italic}
+[data-theme="iron"] .lore-textarea{font-style:italic}
+[data-theme="expanse"] .lore-textarea{font-family:'Share Tech Mono','Courier New',monospace;font-size:.78rem}
+.lore-char-count{font-size:.68rem;color:var(--text-dimmest);text-align:right;margin-top:.2rem;font-family:var(--font-body)}
+.world-lore-field{margin-top:1rem}
+.world-lore-field label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500;font-family:var(--font-body)}
+[data-theme="expanse"] .world-lore-field label::before{content:'_ ';color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:.85em}
+[data-theme="waypoint"] .world-lore-field label{letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
+[data-theme="iron"] .world-lore-field label{font-style:italic}
+
 @keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 [data-theme="expanse"] .scan-line{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,229,200,0.12),transparent);animation:scan 8s linear infinite;pointer-events:none;z-index:2}
 .scan-line{display:none}
@@ -216,6 +235,11 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
         <div class="field"><label>Days per week</label><input type="number" id="days-week" class="num-input" value="7" min="1" max="100" placeholder="e.g. 7" oninput="updatePreview()"/></div>
       </div>
       <div class="field"><label>Default days per month</label><input type="number" id="days-month" class="num-input" value="30" min="1" max="9999" placeholder="e.g. 30" oninput="updatePreview()"/><div class="hint">You can customise each month individually in the next step.</div></div>
+      <div class="world-lore-field">
+        <label>World lore <span style="color:var(--text-dimmer)">(optional)</span></label>
+        <textarea class="lore-textarea" id="world-lore" placeholder="Describe your world's history, cosmology, or calendar origin... e.g. 'The calendar was decreed by the First Mages after the Great Sundering, aligning each month with a star constellation.'" oninput="onLoreInput(this,'world-lore-count')" rows="3"></textarea>
+        <div class="lore-char-count" id="world-lore-count">0 / 600</div>
+      </div>
       <div class="btn-row"><button class="btn-primary" onclick="goStep(2)">Next: Name your months →</button></div>
     </div>
     <div class="step-block" id="step-2">
@@ -309,18 +333,24 @@ function buildMonthFields(){
   const existing=state.months;container.innerHTML='';state.months=[];
   for(let i=0;i<num;i++){
     const name=existing[i]?existing[i].name:'';const days=existing[i]?existing[i].days:defaultDays;
-    state.months.push({name,days});
+    const lore=existing[i]?existing[i].lore||'':'';
+    state.months.push({name,days,lore});
     const w=document.createElement('div');
     w.innerHTML=`<div class="month-num">Month ${i+1}</div><div class="month-row">
       <input type="text" placeholder="Month name" value="${name}" oninput="updateMonth(${i},'name',this.value)" style="${inputStyle()}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/>
       <input type="number" value="${days}" min="1" max="9999" placeholder="days" oninput="updateMonth(${i},'days',this.value)" style="${inputStyle()}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/>
+    </div>
+    <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
+    <div class="lore-area">
+      <textarea class="lore-textarea" placeholder="What happens in this month? Why does it exist? Any seasonal traditions, historical events, or cultural significance..." oninput="updateMonth(${i},'lore',this.value);onLoreInput(this,'mlc-${i}')" rows="2">${lore}</textarea>
+      <div class="lore-char-count" id="mlc-${i}">${lore.length} / 400</div>
     </div>`;
     container.appendChild(w);
   }
 }
 function updateMonth(i,field,value){if(state.months[i])state.months[i][field]=value;updatePreview();}
 
-function addMoon(){if(state.moons.length>=3)return;state.moons.push({name:'',cycle:28});renderMoonList();updatePreview();}
+function addMoon(){if(state.moons.length>=3)return;state.moons.push({name:'',cycle:28,lore:''});renderMoonList();updatePreview();}
 function removeMoon(i){state.moons.splice(i,1);renderMoonList();updatePreview();}
 function updateMoon(i,field,value){if(state.moons[i])state.moons[i][field]=field==='cycle'?parseInt(value)||1:value;updatePreview();}
 function renderMoonList(){
@@ -331,6 +361,11 @@ function renderMoonList(){
       <div class="field-row">
         <div class="field" style="margin:0"><label>Moon name</label><input type="text" placeholder="e.g. Lumis" value="${moon.name}" oninput="updateMoon(${i},'name',this.value)" style="${inputStyle(getInputBg2())}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/></div>
         <div class="field" style="margin:0"><label>Cycle (days)</label><input type="number" value="${moon.cycle}" min="1" max="9999" placeholder="e.g. 28" oninput="updateMoon(${i},'cycle',this.value)" style="${inputStyle(getInputBg2())}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/></div>
+      </div>
+      <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
+      <div class="lore-area">
+        <textarea class="lore-textarea" placeholder="What myth surrounds this moon? Who worships it? Does its cycle affect tides, magic, or harvests?" oninput="updateMoon(${i},'lore',this.value);onLoreInput(this,'molc-${i}')" rows="2">${moon.lore||''}</textarea>
+        <div class="lore-char-count" id="molc-${i}">${(moon.lore||'').length} / 400</div>
       </div>`;
     container.appendChild(div);
   });
@@ -338,7 +373,7 @@ function renderMoonList(){
 }
 
 const EVENT_EMOJIS=['🎉','🔥','❄','🌸','⚔','🌕','🌊','🍂','✨','🐉'];
-function addEvent(){if(state.events.length>=5)return;state.events.push({name:'',month:1,emoji:'🎉'});renderEventList();updatePreview();}
+function addEvent(){if(state.events.length>=5)return;state.events.push({name:'',month:1,emoji:'🎉',lore:''});renderEventList();updatePreview();}
 function removeEvent(i){state.events.splice(i,1);renderEventList();updatePreview();}
 function updateEvent(i,field,value){if(state.events[i])state.events[i][field]=field==='month'?parseInt(value):value;updatePreview();}
 function renderEventList(){
@@ -354,6 +389,11 @@ function renderEventList(){
         <input type="text" placeholder="Event name" value="${ev.name}" oninput="updateEvent(${i},'name',this.value)" style="${inputStyle(getInputBg2())}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/>
         <select onchange="updateEvent(${i},'month',this.value)" style="${selStyle}">${monthOptions}</select>
         <select onchange="updateEvent(${i},'emoji',this.value)" style="${selStyle}">${emojiOptions}</select>
+      </div>
+      <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
+      <div class="lore-area">
+        <textarea class="lore-textarea" placeholder="Why does this holiday exist? What happened on this date? How do people celebrate it?" oninput="updateEvent(${i},'lore',this.value);onLoreInput(this,'elc-${i}')" rows="2">${ev.lore||''}</textarea>
+        <div class="lore-char-count" id="elc-${i}">${(ev.lore||'').length} / 400</div>
       </div>`;
     container.appendChild(div);
   });
@@ -364,13 +404,37 @@ function buildSummary(){
   const totalDays=state.months.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0);
   const moonNames=state.moons.filter(m=>m.name).map(m=>m.name).join(', ')||'None';
   const eventNames=state.events.filter(e=>e.name).map(e=>e.emoji+' '+e.name).join(', ')||'None';
-  const rows=[['World',state.worldName||'—'],['Era',state.eraName||'—'],['Months',state.numMonths],['Days per week',state.daysWeek],['Days per year',totalDays],['Moons',moonNames],['Holidays',eventNames]];
+  const worldLore=document.getElementById('world-lore').value;
+  const loreCount=[worldLore,...state.months.map(m=>m.lore||''),...state.moons.map(m=>m.lore||''),...state.events.map(e=>e.lore||'')].filter(l=>l.trim()).length;
+  const rows=[['World',state.worldName||'—'],['Era',state.eraName||'—'],['Months',state.numMonths],['Days per week',state.daysWeek],['Days per year',totalDays],['Moons',moonNames],['Holidays',eventNames],['Lore entries',loreCount||'None']];
   document.getElementById('summary').innerHTML=rows.map(([k,v])=>`<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`).join('');
 }
 
 function encodeState(){
-  const data={w:state.worldName,e:state.eraName,n:state.numMonths,dw:state.daysWeek,dm:state.daysMonth,m:state.months.map(m=>m.name+'|'+m.days),mo:state.moons.map(m=>m.name+'|'+m.cycle),ev:state.events.map(e=>e.name+'|'+e.month+'|'+e.emoji)};
+  const worldLore=document.getElementById('world-lore').value||'';
+  const data={
+    w:state.worldName,e:state.eraName,n:state.numMonths,dw:state.daysWeek,dm:state.daysMonth,
+    wl:worldLore,
+    m:state.months.map(m=>m.name+'|'+m.days+'|'+(m.lore||'').replace(/\|/g,'‖')),
+    mo:state.moons.map(m=>m.name+'|'+m.cycle+'|'+(m.lore||'').replace(/\|/g,'‖')),
+    ev:state.events.map(e=>e.name+'|'+e.month+'|'+e.emoji+'|'+(e.lore||'').replace(/\|/g,'‖'))
+  };
   return btoa(encodeURIComponent(JSON.stringify(data)));
+}
+
+function toggleLore(btn){
+  btn.classList.toggle('open');
+  const area=btn.nextElementSibling;
+  area.classList.toggle('open');
+  if(area.classList.contains('open'))area.querySelector('textarea').focus();
+}
+
+function onLoreInput(el,countId){
+  const max=el.id==='world-lore'?600:400;
+  const len=el.value.length;
+  if(len>max)el.value=el.value.slice(0,max);
+  const c=document.getElementById(countId);
+  if(c)c.textContent=Math.min(len,max)+' / '+max;
 }
 
 function buildShareUrl(){
@@ -395,6 +459,26 @@ function updatePreview(){
   state.daysMonth=parseInt(document.getElementById('days-month').value)||30;
   renderPreview();
 }
+
+// Load from ?c= param if present (Edit flow)
+(function loadFromUrl(){
+  const params=new URLSearchParams(window.location.search);
+  const c=params.get('c');if(!c)return;
+  try{
+    const data=JSON.parse(decodeURIComponent(atob(c)));
+    document.getElementById('world-name').value=data.w||'';
+    document.getElementById('era-name').value=data.e||'';
+    document.getElementById('num-months').value=data.n||10;
+    document.getElementById('days-week').value=data.dw||7;
+    document.getElementById('days-month').value=data.dm||30;
+    if(data.wl)document.getElementById('world-lore').value=data.wl;
+    state.worldName=data.w||'';state.eraName=data.e||'';
+    state.numMonths=data.n||10;state.daysWeek=data.dw||7;state.daysMonth=data.dm||30;
+    state.months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0]||'',days:p[1]||30,lore:(p[2]||'').replace(/‖/g,'|')};});
+    state.moons=(data.mo||[]).map(s=>{const p=s.split('|');return{name:p[0]||'',cycle:parseInt(p[1])||28,lore:(p[2]||'').replace(/‖/g,'|')};});
+    state.events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0]||'',month:parseInt(p[1])||1,emoji:p[2]||'🎉',lore:(p[3]||'').replace(/‖/g,'|')};});
+  }catch(e){}
+})();
 
 function renderPreview(){
   const preview=document.getElementById('cal-preview');
