@@ -96,6 +96,41 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 @keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 [data-theme="expanse"] .scan-line{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,229,200,0.12),transparent);animation:scan 8s linear infinite;pointer-events:none;z-index:2}
 .scan-line{display:none}
+
+/* ── LORE in view ── */
+.world-lore-block{margin:1.2rem 0;padding:1rem 1.2rem;background:rgba(var(--accent-rgb),.04);border-left:3px solid var(--accent);border-radius:0 var(--radius-card) var(--radius-card) 0;font-family:var(--font-body)}
+[data-theme="iron"] .world-lore-block{border-left-color:var(--accent);background:rgba(212,160,64,0.06)}
+[data-theme="waypoint"] .world-lore-block{border-left:none;border:1px solid var(--border);clip-path:var(--card-clip)}
+[data-theme="expanse"] .world-lore-block{border-left-color:var(--accent)}
+.world-lore-label{font-size:.68rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;font-family:var(--font-body)}
+[data-theme="iron"] .world-lore-label{text-transform:none;font-style:italic;font-size:.75rem;letter-spacing:.02em}
+[data-theme="expanse"] .world-lore-label::before{content:'// ';font-family:'Share Tech Mono',monospace}
+[data-theme="waypoint"] .world-lore-label::before{content:'◈ '}
+.world-lore-text{font-size:.88rem;color:var(--text-muted);line-height:1.7;font-family:var(--font-body);font-style:italic}
+[data-theme="expanse"] .world-lore-text{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:.8rem}
+[data-theme="waypoint"] .world-lore-text{font-style:normal}
+
+.lore-pill{display:inline-block;margin-top:.4rem;font-size:.62rem;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.2);color:var(--accent);padding:2px 7px;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-pill)}
+.lore-pill:hover{background:rgba(var(--accent-rgb),.14)}
+[data-theme="expanse"] .lore-pill{clip-path:polygon(5px 0%,100% 0%,100% calc(100% - 5px),calc(100% - 5px) 100%,0% 100%,0% 5px)}
+[data-theme="waypoint"] .lore-pill{clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px)}
+[data-theme="iron"] .lore-pill::before{content:'❧ ';font-size:.7em}
+[data-theme="expanse"] .lore-pill::before{content:'// ';font-family:'Share Tech Mono',monospace;font-size:.8em}
+[data-theme="waypoint"] .lore-pill::before{content:'◈ ';font-size:.8em}
+[data-theme="verdant"] .lore-pill::before{content:'✦ ';font-size:.7em}
+
+.lore-drawer{display:none;margin-top:.5rem;padding:.7rem .9rem;background:rgba(var(--accent-rgb),.04);border:1px solid rgba(var(--accent-rgb),.15);font-size:.84rem;color:var(--text-muted);line-height:1.7;font-style:italic;font-family:var(--font-body);border-radius:var(--radius-card)}
+.lore-drawer.open{display:block}
+[data-theme="expanse"] .lore-drawer{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:.78rem;border-left:2px solid var(--accent)}
+[data-theme="waypoint"] .lore-drawer{font-style:normal;border-left:2px solid var(--accent)}
+[data-theme="iron"] .lore-drawer{border-color:var(--border)}
+
+.lore-section-header{margin:1.6rem 0 .8rem;font-size:.68rem;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase;font-family:var(--font-body);border-bottom:1px solid var(--border2);padding-bottom:.4rem}
+[data-theme="iron"] .lore-section-header{text-transform:none;font-style:italic;font-size:.75rem;letter-spacing:.04em}
+[data-theme="iron"] .lore-section-header::before{content:'⸻ ';color:var(--accent);opacity:.5}
+[data-theme="expanse"] .lore-section-header::before{content:'// ';color:var(--accent);font-family:'Share Tech Mono',monospace}
+[data-theme="waypoint"] .lore-section-header::before{content:'◈ ';color:var(--accent)}
+
 @media(max-width:600px){.cal-months-grid{grid-template-columns:repeat(2,1fr)}.cal-world-name{font-size:1.5rem}.cal-card{padding:1.5rem}}
 </style>
 </head>
@@ -141,33 +176,50 @@ function loadCalendar(){
   const params=new URLSearchParams(window.location.search);const c=params.get('c');if(!c)return;
   try{
     const data=JSON.parse(decodeURIComponent(atob(c)));calData=data;
-    const months=(data.m||[]).map(s=>{const[name,days]=s.split('|');return{name,days};});
-    const moons=(data.mo||[]).map(s=>{const[name,cycle]=s.split('|');return{name,cycle:parseInt(cycle)};});
-    const events=(data.ev||[]).map(s=>{const[name,month,emoji]=s.split('|');return{name,month:parseInt(month),emoji};});
+    const months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/‖/g,'|')};});
+    const moons=(data.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/‖/g,'|')};});
+    const events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2],lore:(p[3]||'').replace(/‖/g,'|')};});
     const numMonths=data.n||10,daysMonth=data.dm||30,daysWeek=data.dw||7;
-    const worldName=data.w||'Unnamed World',eraName=data.e||'';
+    const worldName=data.w||'Unnamed World',eraName=data.e||'',worldLore=data.wl||'';
     const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0)||numMonths*daysMonth;
     document.getElementById('edit-link').href='builder.html?c='+c;
     document.title=worldName+' — Fantasy Calendar Builder';
+
     const moonPills=moons.filter(m=>m.name).map(m=>`<span class="moon-pill">${m.name} · ${m.cycle}d cycle</span>`).join('');
-    const monthsToRender=months.length>0?months:Array.from({length:numMonths},(_,i)=>({name:`Month ${i+1}`,days:daysMonth}));
+    const monthsToRender=months.length>0?months:Array.from({length:numMonths},(_,i)=>({name:`Month ${i+1}`,days:daysMonth,lore:''}));
+
     const monthCards=monthsToRender.map((m,i)=>{
       const name=m.name||`Month ${i+1}`,days=m.days||daysMonth;
       const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
       const eventsHere=events.filter(e=>e.month===i+1&&e.name);
-      const badges=eventsHere.map(e=>`<div class="cal-event-badge">${e.emoji} ${e.name}</div>`).join('');
-      return`<div class="cal-month-tile"><div class="cal-month-accent" style="background:${color}"></div><div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}</div>`;
+      const badges=eventsHere.map(e=>{
+        const evLore=e.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${e.lore}</div>`:'';
+        return`<div class="cal-event-badge">${e.emoji} ${e.name}</div>${evLore}`;
+      }).join('');
+      const monthLore=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
+      return`<div class="cal-month-tile"><div class="cal-month-accent" style="background:${color}"></div><div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}${monthLore}</div>`;
     }).join('');
+
+    // Moons with lore
+    const moonItems=moons.filter(m=>m.name).map(m=>{
+      const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
+      return`<span class="moon-pill">${m.name} · ${m.cycle}d cycle</span>${lorePart}`;
+    }).join(' ');
+
+    const loreCount=[worldLore,...months.map(m=>m.lore||''),...moons.map(m=>m.lore||''),...events.map(e=>e.lore||'')].filter(l=>l.trim()).length;
+
     document.getElementById('cal-card-wrap').innerHTML=`
       <div class="cal-card" id="cal-card">
         <div class="cal-world-name">${worldName}</div>
         ${eraName?`<div class="cal-era">${eraName}</div>`:''}
+        ${worldLore?`<div class="world-lore-block"><div class="world-lore-label">World Lore</div><div class="world-lore-text">${worldLore}</div></div>`:''}
         <div class="cal-meta-row">
           <span class="cal-meta-pill">📅 ${numMonths} months</span>
           <span class="cal-meta-pill">☀ ${totalDays} days/year</span>
           <span class="cal-meta-pill">🗓 ${daysWeek}-day week</span>
+          ${loreCount?`<span class="cal-meta-pill">📖 ${loreCount} lore entr${loreCount===1?'y':'ies'}</span>`:''}
         </div>
-        ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
+        ${moonItems?`<div class="cal-moons-row" style="flex-wrap:wrap;gap:.5rem">${moonItems}</div>`:''}
         <div class="cal-months-grid">${monthCards}</div>
         <div class="cal-footer">
           <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
@@ -175,6 +227,12 @@ function loadCalendar(){
         </div>
       </div>`;
   }catch(e){console.log('Invalid calendar data');}
+}
+
+function toggleDrawer(pill){
+  const drawer=pill.nextElementSibling;
+  const open=drawer.classList.toggle('open');
+  pill.textContent=open?'lore ▴':'lore ▾';
 }
 function downloadCalendar(){
   if(!calData){alert('No calendar to download.');return;}
