@@ -772,11 +772,11 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
 
   /* ── 2. Theme font & shape config ── */
   const THEMES={
-    '':{       bodyFont:'Georgia,serif',      titleFont:'bold 26px "Palatino Linotype",Georgia,serif', monoFont:'Georgia,serif',     radius:4,  pill:3,  accent1:'#7c5c2e',accent2:'#b8860b', pillPrefix:'',  moonPrefix:'☽ ', evPrefix:'⸸ ', dark:false},
-    expanse:{  bodyFont:'"Share Tech Mono",monospace', titleFont:'bold 24px "Share Tech Mono",monospace', monoFont:'"Share Tech Mono",monospace', radius:0, pill:0, accent1:'#00e5c8',accent2:'#0088ff', pillPrefix:'[SOL] ',moonPrefix:'◉ ', evPrefix:'> ', dark:true},
-    iron:{     bodyFont:'"IM Fell English",Georgia,serif', titleFont:'bold 26px "IM Fell English",Georgia,serif', monoFont:'"IM Fell English",Georgia,serif', radius:2, pill:1, accent1:'#d4a040',accent2:'#8b2020', pillPrefix:'☀ ', moonPrefix:'☽ ', evPrefix:'⸸ ', dark:true},
-    waypoint:{ bodyFont:'"Rajdhani",Arial,sans-serif',  titleFont:'bold 28px "Rajdhani",Arial,sans-serif', monoFont:'"Rajdhani",Arial,sans-serif',  radius:0, pill:0, accent1:'#2ab4e8',accent2:'#48d8ff', pillPrefix:'◈ ', moonPrefix:'⬟ ', evPrefix:'▸ ', dark:true},
-    verdant:{  bodyFont:'"Libre Baskerville",Georgia,serif', titleFont:'bold 24px "Libre Baskerville",Georgia,serif', monoFont:'"Libre Baskerville",Georgia,serif', radius:12, pill:99, accent1:'#50c878',accent2:'#90e060', pillPrefix:'✦ ', moonPrefix:'◎ ', evPrefix:'✦ ', dark:true},
+    '':{       bodyFont:'Georgia,serif',           titleFont:'bold 26px "Palatino Linotype",Georgia,serif', radius:4,  pill:3,  pillPrefix:'+ ', moonPrefix:'~ ', evPrefix:'* ', cols:4},
+    expanse:{  bodyFont:'"Share Tech Mono",monospace',  titleFont:'bold 22px "Share Tech Mono",monospace',       radius:0,  pill:0,  pillPrefix:'[+] ',moonPrefix:'[o] ',evPrefix:'>> ',cols:4},
+    iron:{     bodyFont:'"IM Fell English",Georgia,serif',titleFont:'bold 26px "IM Fell English",Georgia,serif',  radius:2,  pill:1,  pillPrefix:'+ ', moonPrefix:'~ ', evPrefix:'~ ', cols:4},
+    waypoint:{ bodyFont:'"Rajdhani",Arial,sans-serif',   titleFont:'bold 28px "Rajdhani",Arial,sans-serif',       radius:0,  pill:0,  pillPrefix:'>> ',moonPrefix:'>> ',evPrefix:'> ', cols:4},
+    verdant:{  bodyFont:'"Libre Baskerville",Georgia,serif',titleFont:'bold 24px "Libre Baskerville",Georgia,serif',radius:12,pill:99, pillPrefix:'* ', moonPrefix:'o ', evPrefix:'* ', cols:4},
   };
   const T=THEMES[theme]||THEMES[''];
 
@@ -788,7 +788,7 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   const eventImgs  = await Promise.all((icons.events||[]).map(s=>loadImg(s)));
 
   /* ── 4. Layout constants ── */
-  const COLS=3,CARD_W=210,CARD_H=96,GAP=10,PAD=40;
+  const COLS=T.cols||4,CARD_W=170,CARD_H=100,GAP=10,PAD=36;
   const namedMoons=moons.filter(m=>m.name);
   const WORLD_ICON_W=worldImg?44:0;
   const HEADER_H=(eraName?170:148)+(namedMoons.length?36:0);
@@ -890,7 +890,6 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
     T.pillPrefix+`${daysWeek}-day week`
   ];
   ctx.font=`11px ${T.bodyFont}`;let px=PAD;
-  pills.forEach(pill=>{
     const pw=ctx.measureText(pill).width+18;
     // pill bg
     ctx.fillStyle=hexAlpha(C.accent,0.08);
@@ -912,13 +911,13 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
     for(let mi=0;mi<namedMoons.length;mi++){
       const moon=namedMoons[mi];
       const mImg=moonImgs[mi]||null;
-      const label=T.moonPrefix+moon.name+' · '+moon.cycle+'d';
+      const label=T.moonPrefix+moon.name+' · '+moon.cycle+'d cycle';
       const lw=ctx.measureText(label).width+(mImg?32:0)+18;
       ctx.fillStyle=hexAlpha(C.accent,0.1);
       if(T.pill===0){ctx.fillRect(mx,y,lw,20);}else{fillRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));}
       ctx.strokeStyle=hexAlpha(C.accent,0.28);ctx.lineWidth=0.5;
       if(T.pill===0){ctx.strokeRect(mx+0.25,y+0.25,lw-0.5,19.5);}else{strokeRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));}
-      if(mImg){drawImg(ctx,mImg,mx+6,y+2,16,16);ctx.fillStyle=C.moonTxt;ctx.fillText(moon.name+' · '+moon.cycle+'d',mx+26,y+14);}
+      if(mImg){drawImg(ctx,mImg,mx+6,y+2,16,16);ctx.fillStyle=C.moonTxt;ctx.fillText(moon.name+' · '+moon.cycle+'d cycle',mx+26,y+14);}
       else{ctx.fillStyle=C.moonTxt;ctx.fillText(label,mx+9,y+14);}
       mx+=lw+7;
     }
@@ -981,8 +980,8 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
     if(eventsHere.length>0){
       const ev=eventsHere[0];
       const eImg=eventImgs[events.indexOf(ev)]||null;
-      const prefix=eImg?'':T.evPrefix+(ev.emoji||'')+' ';
-      const evLabel=(prefix+ev.name).slice(0,24);
+      const prefix=eImg?'':T.evPrefix;
+      const evLabel=(prefix+ev.name).slice(0,26);
       const ew=Math.min(ctx.measureText(evLabel).width+(eImg?20:0)+14,CARD_W-18);
       const eyBase=nameY+26;
       ctx.fillStyle=hexAlpha(C.accent,0.08);
