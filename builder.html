@@ -218,6 +218,40 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .lore-textarea{width:100%;background:var(--input-bg2);border:1px solid var(--border2);padding:.6rem .8rem;color:var(--text-muted);font-size:.82rem;outline:none;font-family:var(--font-body);resize:vertical;min-height:70px;line-height:1.55;border-radius:var(--radius-input)}
 .lore-textarea:focus{border-color:var(--accent);color:var(--text)}
 .lore-textarea::placeholder{color:var(--text-dimmest);font-style:italic}
+
+/* ── ICON UPLOAD ── */
+.icon-upload-row{display:flex;align-items:center;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
+.btn-icon-upload{background:transparent;border:1px dashed var(--border);color:var(--text-dim);padding:.32rem .75rem;font-size:.72rem;cursor:pointer;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn);display:inline-flex;align-items:center;gap:.3rem;transition:border-color .2s,color .2s}
+.btn-icon-upload:hover{border-color:var(--accent);color:var(--accent)}
+/* theme prefixes on upload button */
+:root .btn-icon-upload::before{content:'🖼 '}
+[data-theme="expanse"] .btn-icon-upload{border-style:solid}
+[data-theme="expanse"] .btn-icon-upload::before{content:'[IMG] ';font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--accent)}
+[data-theme="iron"] .btn-icon-upload::before{content:'⊕ ';color:var(--accent)}
+[data-theme="waypoint"] .btn-icon-upload::before{content:'◈ ';color:var(--accent)}
+[data-theme="verdant"] .btn-icon-upload::before{content:'🌿 '}
+.icon-size-hint{font-size:.68rem;color:var(--text-dimmest);font-family:var(--font-body);line-height:1.4}
+:root .icon-size-hint{font-style:italic}
+[data-theme="expanse"] .icon-size-hint{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--text-dimmer)}
+[data-theme="expanse"] .icon-size-hint::before{content:'// ';color:var(--accent);opacity:.5}
+[data-theme="iron"] .icon-size-hint{font-style:italic;color:var(--text-dim)}
+[data-theme="iron"] .icon-size-hint::before{content:'† ';color:var(--accent);opacity:.5}
+[data-theme="waypoint"] .icon-size-hint{letter-spacing:.04em;text-transform:uppercase;font-size:.6rem}
+[data-theme="waypoint"] .icon-size-hint::before{content:'▸ ';color:var(--accent);opacity:.6}
+[data-theme="verdant"] .icon-size-hint{font-style:italic}
+.icon-preview-wrap{display:flex;align-items:center;gap:.5rem}
+.icon-preview-thumb{width:28px;height:28px;object-fit:contain;border:1px solid var(--border);border-radius:var(--radius-card);background:var(--surface2)}
+.btn-icon-clear{background:none;border:none;cursor:pointer;color:var(--text-dimmer);font-size:.7rem;font-family:var(--font-body);padding:0 .2rem;line-height:1}
+.btn-icon-clear:hover{color:#e55}
+/* world icon wrapper in preview */
+.cal-world-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.25rem}
+.cal-world-icon{width:36px;height:36px;object-fit:contain;border-radius:var(--radius-card);flex-shrink:0}
+/* month icon replaces accent bar when set */
+.cal-month-icon{width:20px;height:20px;object-fit:contain;display:block;margin:2px 0 3px}
+/* moon icon in pill */
+.moon-pill-icon{width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:2px}
+/* event icon next to badge text */
+.event-badge-icon{width:14px;height:14px;object-fit:contain;vertical-align:middle}
 [data-theme="iron"] .lore-textarea{font-style:italic}
 [data-theme="expanse"] .lore-textarea{font-family:'Share Tech Mono','Courier New',monospace;font-size:.78rem}
 .lore-char-count{font-size:.68rem;color:var(--text-dimmest);text-align:right;margin-top:.2rem;font-family:var(--font-body)}
@@ -263,6 +297,18 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
         <label>World lore <span style="color:var(--text-dimmer)">(optional)</span></label>
         <textarea class="lore-textarea" id="world-lore" placeholder="Describe your world's history, cosmology, or calendar origin... e.g. 'The calendar was decreed by the First Mages after the Great Sundering, aligning each month with a star constellation.'" oninput="onLoreInput(this,'world-lore-count')" rows="3"></textarea>
         <div class="lore-char-count" id="world-lore-count">0 / 600</div>
+      </div>
+      <div class="world-lore-field">
+        <label>World icon <span style="color:var(--text-dimmer)">(optional)</span></label>
+        <div class="icon-upload-row">
+          <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('world-icon-input')">Upload icon</button>
+          <span class="icon-size-hint">Recommended: 64×64 px · PNG or SVG · max 80KB</span>
+        </div>
+        <input type="file" id="world-icon-input" accept="image/*" style="display:none" onchange="handleIconUpload(this,'world','world-icon-preview')"/>
+        <div class="icon-preview-wrap" id="world-icon-preview" style="display:none;margin-top:.5rem">
+          <img class="icon-preview-thumb" id="world-icon-thumb" src="" alt="world icon"/>
+          <button type="button" class="btn-icon-clear" onclick="clearIcon('world','world-icon-preview')">✕ Remove</button>
+        </div>
       </div>
       <div class="btn-row"><button class="btn-primary" onclick="goStep(2)">Next: Name your months →</button></div>
     </div>
@@ -331,7 +377,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 
 <script>
 const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8','#c084fc'];
-const state={worldName:'',eraName:'',numMonths:10,daysWeek:7,daysMonth:30,months:[],moons:[],events:[]};
+const state={worldName:'',eraName:'',numMonths:10,daysWeek:7,daysMonth:30,months:[],moons:[],events:[],icons:{world:'',months:[],moons:[],events:[]}};
 
 function goStep(n){
   document.querySelectorAll('.step-block').forEach(el=>el.classList.remove('active'));
@@ -355,14 +401,25 @@ function buildMonthFields(){
   const defaultDays=parseInt(document.getElementById('days-month').value)||30;
   const container=document.getElementById('month-fields');
   const existing=state.months;container.innerHTML='';state.months=[];
+  if(!state.icons.months||state.icons.months.length<num){const old=state.icons.months||[];state.icons.months=Array.from({length:num},(_,i)=>old[i]||'');}
   for(let i=0;i<num;i++){
     const name=existing[i]?existing[i].name:'';const days=existing[i]?existing[i].days:defaultDays;
     const lore=existing[i]?existing[i].lore||'':'';
+    const iconData=state.icons.months[i]||'';
     state.months.push({name,days,lore});
     const w=document.createElement('div');
     w.innerHTML=`<div class="month-num">Month ${i+1}</div><div class="month-row">
       <input type="text" placeholder="Month name" value="${name}" oninput="updateMonth(${i},'name',this.value)" style="${inputStyle()}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/>
       <input type="number" value="${days}" min="1" max="9999" placeholder="days" oninput="updateMonth(${i},'days',this.value)" style="${inputStyle()}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/>
+    </div>
+    <div class="icon-upload-row">
+      <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('month-icon-input-${i}')">Upload icon</button>
+      <span class="icon-size-hint">32×32 px · PNG/SVG · max 40KB</span>
+    </div>
+    <input type="file" id="month-icon-input-${i}" accept="image/*" style="display:none" onchange="handleIconUpload(this,'month-${i}','month-icon-preview-${i}')"/>
+    <div class="icon-preview-wrap" id="month-icon-preview-${i}" style="${iconData?'display:flex':'display:none'};margin-top:.4rem">
+      <img class="icon-preview-thumb" id="month-icon-thumb-${i}" src="${iconData}" alt="month icon"/>
+      <button type="button" class="btn-icon-clear" onclick="clearIcon('month-${i}','month-icon-preview-${i}')">✕ Remove</button>
     </div>
     <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
     <div class="lore-area">
@@ -374,17 +431,28 @@ function buildMonthFields(){
 }
 function updateMonth(i,field,value){if(state.months[i])state.months[i][field]=value;updatePreview();}
 
-function addMoon(){if(state.moons.length>=3)return;state.moons.push({name:'',cycle:28,lore:''});renderMoonList();updatePreview();}
-function removeMoon(i){state.moons.splice(i,1);renderMoonList();updatePreview();}
+function addMoon(){if(state.moons.length>=3)return;state.moons.push({name:'',cycle:28,lore:''});if(!state.icons.moons)state.icons.moons=[];state.icons.moons.push('');renderMoonList();updatePreview();}
+function removeMoon(i){state.moons.splice(i,1);if(state.icons.moons)state.icons.moons.splice(i,1);renderMoonList();updatePreview();}
 function updateMoon(i,field,value){if(state.moons[i])state.moons[i][field]=field==='cycle'?parseInt(value)||1:value;updatePreview();}
 function renderMoonList(){
   const container=document.getElementById('moon-list');container.innerHTML='';
+  if(!state.icons.moons)state.icons.moons=[];
   state.moons.forEach((moon,i)=>{
+    const iconData=state.icons.moons[i]||'';
     const div=document.createElement('div');div.className='moon-item';
     div.innerHTML=`<div class="moon-item-header"><span class="moon-label">Moon ${i+1}</span><button class="btn-remove" onclick="removeMoon(${i})">✕ Remove</button></div>
       <div class="field-row">
         <div class="field" style="margin:0"><label>Moon name</label><input type="text" placeholder="e.g. Lumis" value="${moon.name}" oninput="updateMoon(${i},'name',this.value)" style="${inputStyle(getInputBg2())}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/></div>
         <div class="field" style="margin:0"><label>Cycle (days)</label><input type="number" value="${moon.cycle}" min="1" max="9999" placeholder="e.g. 28" oninput="updateMoon(${i},'cycle',this.value)" style="${inputStyle(getInputBg2())}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/></div>
+      </div>
+      <div class="icon-upload-row">
+        <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('moon-icon-input-${i}')">Upload icon</button>
+        <span class="icon-size-hint">32×32 px · PNG/SVG · max 40KB</span>
+      </div>
+      <input type="file" id="moon-icon-input-${i}" accept="image/*" style="display:none" onchange="handleIconUpload(this,'moon-${i}','moon-icon-preview-${i}')"/>
+      <div class="icon-preview-wrap" id="moon-icon-preview-${i}" style="${iconData?'display:flex':'display:none'};margin-top:.4rem">
+        <img class="icon-preview-thumb" id="moon-icon-thumb-${i}" src="${iconData}" alt="moon icon"/>
+        <button type="button" class="btn-icon-clear" onclick="clearIcon('moon-${i}','moon-icon-preview-${i}')">✕ Remove</button>
       </div>
       <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
       <div class="lore-area">
@@ -397,14 +465,16 @@ function renderMoonList(){
 }
 
 const EVENT_EMOJIS=['🎉','🔥','❄','🌸','⚔','🌕','🌊','🍂','✨','🐉'];
-function addEvent(){if(state.events.length>=5)return;state.events.push({name:'',month:1,emoji:'🎉',lore:''});renderEventList();updatePreview();}
-function removeEvent(i){state.events.splice(i,1);renderEventList();updatePreview();}
+function addEvent(){if(state.events.length>=5)return;state.events.push({name:'',month:1,emoji:'🎉',lore:''});if(!state.icons.events)state.icons.events=[];state.icons.events.push('');renderEventList();updatePreview();}
+function removeEvent(i){state.events.splice(i,1);if(state.icons.events)state.icons.events.splice(i,1);renderEventList();updatePreview();}
 function updateEvent(i,field,value){if(state.events[i])state.events[i][field]=field==='month'?parseInt(value):value;updatePreview();}
 function renderEventList(){
   const numMonths=parseInt(document.getElementById('num-months').value)||state.numMonths;
   const container=document.getElementById('event-list');container.innerHTML='';
+  if(!state.icons.events)state.icons.events=[];
   const selStyle=`background:${getInputBg2()};border:1px solid ${getBorder()};padding:.6rem .7rem;color:${getTextColor()};font-size:.82rem;outline:none;font-family:var(--font-body)`;
   state.events.forEach((ev,i)=>{
+    const iconData=state.icons.events[i]||'';
     const monthOptions=Array.from({length:numMonths},(_,k)=>{const mname=state.months[k]&&state.months[k].name?state.months[k].name:`Month ${k+1}`;return`<option value="${k+1}" ${k+1===ev.month?'selected':''}>${mname}</option>`;}).join('');
     const emojiOptions=EVENT_EMOJIS.map(e=>`<option value="${e}" ${e===ev.emoji?'selected':''}>${e}</option>`).join('');
     const div=document.createElement('div');div.className='event-item';
@@ -412,7 +482,16 @@ function renderEventList(){
       <div class="event-row">
         <input type="text" placeholder="Event name" value="${ev.name}" oninput="updateEvent(${i},'name',this.value)" style="${inputStyle(getInputBg2())}" onfocus="this.style.borderColor=getAccent()" onblur="this.style.borderColor=getBorder()"/>
         <select onchange="updateEvent(${i},'month',this.value)" style="${selStyle}">${monthOptions}</select>
-        <select onchange="updateEvent(${i},'emoji',this.value)" style="${selStyle}">${emojiOptions}</select>
+        <select id="ev-emoji-sel-${i}" onchange="updateEvent(${i},'emoji',this.value)" style="${selStyle}">${emojiOptions}</select>
+      </div>
+      <div class="icon-upload-row">
+        <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('event-icon-input-${i}')">Upload icon</button>
+        <span class="icon-size-hint">28×28 px · PNG/SVG · max 30KB — replaces emoji if set</span>
+      </div>
+      <input type="file" id="event-icon-input-${i}" accept="image/*" style="display:none" onchange="handleIconUpload(this,'event-${i}','event-icon-preview-${i}')"/>
+      <div class="icon-preview-wrap" id="event-icon-preview-${i}" style="${iconData?'display:flex':'display:none'};margin-top:.4rem">
+        <img class="icon-preview-thumb" id="event-icon-thumb-${i}" src="${iconData}" alt="event icon"/>
+        <button type="button" class="btn-icon-clear" onclick="clearIcon('event-${i}','event-icon-preview-${i}')">✕ Remove</button>
       </div>
       <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
       <div class="lore-area">
@@ -424,13 +503,74 @@ function renderEventList(){
   document.getElementById('add-event-btn').style.display=state.events.length>=5?'none':'block';
 }
 
+/* ── ICON UPLOAD HELPERS ── */
+function triggerIconUpload(inputId){document.getElementById(inputId).click();}
+
+function handleIconUpload(input,key,previewId){
+  const file=input.files[0];if(!file)return;
+  const MAX_BYTES={'world':80*1024,'month':40*1024,'moon':40*1024,'event':30*1024};
+  const type=key.split('-')[0];
+  const max=MAX_BYTES[type]||50*1024;
+  if(file.size>max){alert(`Icon too large. Max size for ${type} icons is ${Math.round(max/1024)}KB. Please resize and try again.`);input.value='';return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const dataUrl=e.target.result;
+    // Compress to thumbnail via canvas
+    const img=new Image();
+    img.onload=()=>{
+      const sizes={world:64,month:32,moon:32,event:28};
+      const sz=sizes[type]||32;
+      const canvas=document.createElement('canvas');canvas.width=sz;canvas.height=sz;
+      const ctx=canvas.getContext('2d');
+      // draw with letterboxing
+      const scale=Math.min(sz/img.width,sz/img.height);
+      const w=img.width*scale,h=img.height*scale;
+      ctx.clearRect(0,0,sz,sz);
+      ctx.drawImage(img,(sz-w)/2,(sz-h)/2,w,h);
+      const compressed=canvas.toDataURL('image/png',0.85);
+      storeIcon(key,compressed);
+      // show preview
+      const wrap=document.getElementById(previewId);
+      const thumb=document.getElementById(key.replace('-','_').replace(/(\w+)-(\d+)/,'$1-icon-thumb-$2')||previewId.replace('preview','thumb'));
+      // simpler: find the img inside wrap
+      const thumbEl=wrap?wrap.querySelector('img'):null;
+      if(thumbEl)thumbEl.src=compressed;
+      if(wrap)wrap.style.display='flex';
+      updatePreview();
+    };
+    img.src=dataUrl;
+  };
+  reader.readAsDataURL(file);
+}
+
+function storeIcon(key,dataUrl){
+  // key format: 'world' | 'month-0' | 'moon-1' | 'event-2'
+  const parts=key.split('-');
+  if(parts[0]==='world'){state.icons.world=dataUrl;}
+  else if(parts[0]==='month'){if(!state.icons.months)state.icons.months=[];state.icons.months[parseInt(parts[1])]=dataUrl;}
+  else if(parts[0]==='moon'){if(!state.icons.moons)state.icons.moons=[];state.icons.moons[parseInt(parts[1])]=dataUrl;}
+  else if(parts[0]==='event'){if(!state.icons.events)state.icons.events=[];state.icons.events[parseInt(parts[1])]=dataUrl;}
+}
+
+function clearIcon(key,previewId){
+  storeIcon(key,'');
+  const wrap=document.getElementById(previewId);
+  if(wrap){wrap.style.display='none';const img=wrap.querySelector('img');if(img)img.src='';}
+  // reset file input
+  const parts=key.split('-');
+  const inputId=parts[0]+'-icon-input'+(parts[1]!==undefined?'-'+parts[1]:'');
+  const inp=document.getElementById(inputId);if(inp)inp.value='';
+  updatePreview();
+}
+
 function buildSummary(){
   const totalDays=state.months.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0);
   const moonNames=state.moons.filter(m=>m.name).map(m=>m.name).join(', ')||'None';
   const eventNames=state.events.filter(e=>e.name).map(e=>e.emoji+' '+e.name).join(', ')||'None';
   const worldLore=document.getElementById('world-lore').value;
   const loreCount=[worldLore,...state.months.map(m=>m.lore||''),...state.moons.map(m=>m.lore||''),...state.events.map(e=>e.lore||'')].filter(l=>l.trim()).length;
-  const rows=[['World',state.worldName||'—'],['Era',state.eraName||'—'],['Months',state.numMonths],['Days per week',state.daysWeek],['Days per year',totalDays],['Moons',moonNames],['Holidays',eventNames],['Lore entries',loreCount||'None']];
+  const iconCount=[state.icons.world,...(state.icons.months||[]),...(state.icons.moons||[]),...(state.icons.events||[])].filter(Boolean).length;
+  const rows=[['World',state.worldName||'—'],['Era',state.eraName||'—'],['Months',state.numMonths],['Days per week',state.daysWeek],['Days per year',totalDays],['Moons',moonNames],['Holidays',eventNames],['Lore entries',loreCount||'None'],['Custom icons',iconCount||'None']];
   document.getElementById('summary').innerHTML=rows.map(([k,v])=>`<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`).join('');
 }
 
@@ -439,9 +579,10 @@ function encodeState(){
   const data={
     w:state.worldName,e:state.eraName,n:state.numMonths,dw:state.daysWeek,dm:state.daysMonth,
     wl:worldLore,
-    m:state.months.map(m=>m.name+'|'+m.days+'|'+(m.lore||'').replace(/\|/g,'‖')),
-    mo:state.moons.map(m=>m.name+'|'+m.cycle+'|'+(m.lore||'').replace(/\|/g,'‖')),
-    ev:state.events.map(e=>e.name+'|'+e.month+'|'+e.emoji+'|'+(e.lore||'').replace(/\|/g,'‖'))
+    wi:state.icons.world||'',
+    m:state.months.map((m,i)=>m.name+'|'+m.days+'|'+(m.lore||'').replace(/\|/g,'‖')+'|'+(state.icons.months&&state.icons.months[i]||'')),
+    mo:state.moons.map((m,i)=>m.name+'|'+m.cycle+'|'+(m.lore||'').replace(/\|/g,'‖')+'|'+(state.icons.moons&&state.icons.moons[i]||'')),
+    ev:state.events.map((e,i)=>e.name+'|'+e.month+'|'+e.emoji+'|'+(e.lore||'').replace(/\|/g,'‖')+'|'+(state.icons.events&&state.icons.events[i]||''))
   };
   return btoa(encodeURIComponent(JSON.stringify(data)));
 }
@@ -505,6 +646,17 @@ function updatePreview(){
     state.months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0]||'',days:p[1]||30,lore:(p[2]||'').replace(/‖/g,'|')};});
     state.moons=(data.mo||[]).map(s=>{const p=s.split('|');return{name:p[0]||'',cycle:parseInt(p[1])||28,lore:(p[2]||'').replace(/‖/g,'|')};});
     state.events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0]||'',month:parseInt(p[1])||1,emoji:p[2]||'🎉',lore:(p[3]||'').replace(/‖/g,'|')};});
+    // restore icons
+    state.icons.world=data.wi||'';
+    state.icons.months=(data.m||[]).map(s=>{const p=s.split('|');return p[3]||'';});
+    state.icons.moons=(data.mo||[]).map(s=>{const p=s.split('|');return p[3]||'';});
+    state.icons.events=(data.ev||[]).map(s=>{const p=s.split('|');return p[4]||'';});
+    // restore world icon preview
+    if(state.icons.world){
+      const wrap=document.getElementById('world-icon-preview');
+      const thumb=document.getElementById('world-icon-thumb');
+      if(wrap)wrap.style.display='flex';if(thumb)thumb.src=state.icons.world;
+    }
   }catch(e){}
 })();
 
@@ -514,16 +666,42 @@ function renderPreview(){
     preview.innerHTML=`<div class="empty-preview"><div class="icon">🌙</div><p>Your calendar will appear here<br/>as you fill in the form</p></div>`;return;
   }
   const worldName=state.worldName||'Your World';
-  const monthsToShow=state.months.length>0?state.months:Array.from({length:state.numMonths},(_,i)=>({name:`Month ${i+1}`,days:state.daysMonth}));
+  const worldIcon=state.icons.world?`<img class="cal-world-icon" src="${state.icons.world}" alt="world icon"/>`:'';
+  const monthsToShow=state.months.length>0?state.months:Array.from({length:state.numMonths},(_,i)=>({name:`Month ${i+1}`,days:state.daysMonth,lore:''}));
   const totalDays=monthsToShow.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0);
-  const moonPills=state.moons.filter(m=>m.name).map(m=>`<span class="moon-pill">${m.name} · ${m.cycle}d</span>`).join('');
+  const moonPills=state.moons.filter(m=>m.name).map((m,i)=>{
+    const mIcon=state.icons.moons&&state.icons.moons[i]?`<img class="moon-pill-icon" src="${state.icons.moons[i]}" alt=""/>`:'';
+    return`<span class="moon-pill">${mIcon}${m.name} · ${m.cycle}d</span>`;
+  }).join('');
   const monthCards=monthsToShow.map((m,i)=>{
     const name=m.name||`Month ${i+1}`;const days=m.days||state.daysMonth;
     const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
+    const mIcon=state.icons.months&&state.icons.months[i];
+    const accentOrIcon=mIcon
+      ?`<img class="cal-month-icon" src="${mIcon}" alt="${name}"/>`
+      :`<div class="cal-month-accent" style="background:${color}"></div>`;
     const eventsHere=state.events.filter(e=>e.month===i+1&&e.name);
-    const badges=eventsHere.map(e=>`<div class="cal-event-badge">${e.emoji} ${e.name}</div>`).join('');
-    return`<div class="cal-month-tile"><div class="cal-month-accent" style="background:${color}"></div><div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}</div>`;
+    const badges=eventsHere.map((e,ei)=>{
+      const eIcon=state.icons.events&&state.icons.events[ei]?`<img class="event-badge-icon" src="${state.icons.events[ei]}" alt=""/>`:'';
+      const dispEmoji=eIcon?'':e.emoji+' ';
+      return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}</div>`;
+    }).join('');
+    return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}</div>`;
   }).join('');
+  preview.innerHTML=`
+    <div class="cal-world-header">${worldIcon}<div class="cal-world-name">${worldName}</div></div>
+    ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
+    <div class="cal-meta-row">
+      ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿')}
+      ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦')}
+      ${metaPill('🗓',`${state.daysWeek}-day week`,'[CYC]','☽','▣','◎')}
+    </div>
+    ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
+    <div class="cal-months-grid">${monthCards}</div>
+    <div class="cal-footer">
+      <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
+      <span class="cal-footer-stats">${state.moons.length} moon${state.moons.length!==1?'s':''} · ${state.events.filter(e=>e.name).length} event${state.events.filter(e=>e.name).length!==1?'s':''}</span>
+    </div>`;
   preview.innerHTML=`
     <div class="cal-world-name">${worldName}</div>
     ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
