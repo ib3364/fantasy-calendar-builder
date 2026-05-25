@@ -43,9 +43,53 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .cal-world-name{font-size:2rem;font-weight:700;margin-bottom:.3rem;font-family:var(--font-display);letter-spacing:-.02em}
 .cal-era{font-size:.95rem;color:var(--text-dim);margin-bottom:.8rem;font-style:italic;font-family:var(--font-body)}
 .cal-meta-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
-.cal-meta-pill{background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.2);padding:.25rem .8rem;font-size:.75rem;color:var(--text-dim);font-family:var(--font-body);border-radius:var(--radius-pill)}
-[data-theme="expanse"] .cal-meta-pill{clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
-[data-theme="waypoint"] .cal-meta-pill{clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px)}
+/* ── META PILLS — base ── */
+.cal-meta-pill{background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.2);padding:.25rem .8rem;font-size:.75rem;color:var(--text-dim);font-family:var(--font-body);border-radius:var(--radius-pill);display:inline-flex;align-items:center;gap:.3rem}
+
+/* default/cartographer: warm parchment ink style, keep emoji */
+:root .cal-meta-pill{border-style:solid;border-color:rgba(124,92,46,.25);background:rgba(124,92,46,.07);color:#6b5840;font-style:italic}
+
+/* expanse: sharp hex clip, monospace data-tag, NO emoji */
+[data-theme="expanse"] .cal-meta-pill{clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px);font-family:'Share Tech Mono',monospace;font-size:.68rem;letter-spacing:.06em;border-color:rgba(0,229,200,.25);background:rgba(0,229,200,.05);color:#00e5c8;padding:.22rem .7rem}
+[data-theme="expanse"] .cal-meta-pill .pill-icon{display:none}
+[data-theme="expanse"] .cal-meta-pill::before{content:attr(data-code);color:rgba(0,229,200,.5);margin-right:.2rem;font-size:.6rem}
+
+/* iron: no border-radius, heraldic symbol prefix, gold tint */
+[data-theme="iron"] .cal-meta-pill{border-radius:0;border-color:rgba(212,160,64,.3);background:rgba(212,160,64,.07);color:#c8a860;font-family:'IM Fell English',Georgia,serif;font-style:italic;border-width:1px 0;padding:.25rem .6rem}
+[data-theme="iron"] .cal-meta-pill .pill-icon{display:none}
+[data-theme="iron"] .cal-meta-pill::before{content:attr(data-heraldic);color:rgba(212,160,64,.6);margin-right:.25rem}
+
+/* waypoint: chamfered, military stencil, uppercase */
+[data-theme="waypoint"] .cal-meta-pill{clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px);font-family:'Rajdhani',sans-serif;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border-color:rgba(42,180,232,.25);background:rgba(42,180,232,.06);color:#6aa8c8;padding:.22rem .65rem}
+[data-theme="waypoint"] .cal-meta-pill .pill-icon{display:none}
+[data-theme="waypoint"] .cal-meta-pill::before{content:attr(data-waypoint);color:rgba(42,180,232,.6);margin-right:.2rem}
+
+/* verdant: fully rounded, leaf symbol, soft green */
+[data-theme="verdant"] .cal-meta-pill{border-radius:99px;border-color:rgba(80,200,120,.25);background:rgba(80,200,120,.07);color:#80b870;font-family:'Libre Baskerville',Georgia,serif;font-size:.72rem;padding:.22rem .85rem}
+[data-theme="verdant"] .cal-meta-pill .pill-icon{display:none}
+[data-theme="verdant"] .cal-meta-pill::before{content:attr(data-verdant);color:rgba(80,200,120,.6);margin-right:.25rem}
+
+/* ── EVENT BADGES — per theme ── */
+.cal-event-badge{display:inline-flex;align-items:center;gap:3px;margin-top:.3rem;font-size:.65rem;background:var(--event-bg);color:var(--event-color);padding:2px 7px;border:1px solid var(--event-border);margin-right:3px;font-family:var(--font-body);border-radius:var(--radius-pill)}
+
+/* default: warm amber scroll-tag */
+:root .cal-event-badge{border-radius:3px;border-color:rgba(184,134,11,.3);background:rgba(184,134,11,.08);font-style:italic;color:#7c5c2e}
+
+/* expanse: terminal readout, square clip, monospace */
+[data-theme="expanse"] .cal-event-badge{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.04em;clip-path:polygon(5px 0%,100% 0%,100% calc(100% - 5px),calc(100% - 5px) 100%,0% 100%,0% 5px);border-color:rgba(0,229,200,.25);background:rgba(0,229,200,.07);color:#00e5c8;padding:2px 8px}
+[data-theme="expanse"] .cal-event-badge::before{content:'> ';opacity:.5;font-size:.55rem}
+
+/* iron: wax-seal style, bordered, italic serif */
+[data-theme="iron"] .cal-event-badge{border-radius:1px;border-color:rgba(139,32,32,.5);background:rgba(139,32,32,.12);color:#d4a040;font-family:'IM Fell English',Georgia,serif;font-style:italic;padding:2px 8px;border-width:1px;box-shadow:inset 0 0 0 1px rgba(212,160,64,.08)}
+[data-theme="iron"] .cal-event-badge::before{content:'⸸ ';font-size:.65em;color:rgba(212,160,64,.5);font-style:normal}
+
+/* waypoint: military status tag, chamfered, uppercase */
+[data-theme="waypoint"] .cal-event-badge{clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px);font-family:'Rajdhani',sans-serif;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;border-color:rgba(42,180,232,.25);background:rgba(42,180,232,.07);color:#48d8ff;padding:2px 8px}
+[data-theme="waypoint"] .cal-event-badge::before{content:'▸ ';font-size:.65em;color:rgba(42,180,232,.6)}
+
+/* verdant: rounded nature tag */
+[data-theme="verdant"] .cal-event-badge{border-radius:99px;border-color:rgba(80,200,120,.3);background:rgba(80,200,120,.08);color:#90e060;font-family:'Libre Baskerville',Georgia,serif;font-size:.63rem;padding:2px 9px}
+[data-theme="verdant"] .cal-event-badge::before{content:'✦ ';font-size:.55em;color:rgba(144,224,96,.6)}
 .cal-moons-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
 .moon-pill{background:var(--moon-pill-bg);border:1px solid var(--moon-pill-border);color:var(--moon-pill-text);padding:.25rem .9rem;font-size:.75rem;font-family:var(--font-body);border-radius:var(--radius-pill)}
 [data-theme="expanse"] .moon-pill{clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
@@ -172,6 +216,17 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 <script>
 const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8','#c084fc'];
 let calData=null;
+
+/* Returns a meta pill with all theme data-attributes pre-set */
+function metaPill(emoji, text, code, heraldic, waypoint, verdant){
+  return `<span class="cal-meta-pill"
+    data-code="${code}"
+    data-heraldic="${heraldic}"
+    data-waypoint="${waypoint}"
+    data-verdant="${verdant}"
+  ><span class="pill-icon">${emoji}</span> ${text}</span>`;
+}
+
 function loadCalendar(){
   const params=new URLSearchParams(window.location.search);const c=params.get('c');if(!c)return;
   try{
@@ -185,7 +240,6 @@ function loadCalendar(){
     document.getElementById('edit-link').href='builder.html?c='+c;
     document.title=worldName+' — Fantasy Calendar Builder';
 
-    const moonPills=moons.filter(m=>m.name).map(m=>`<span class="moon-pill">${m.name} · ${m.cycle}d cycle</span>`).join('');
     const monthsToRender=months.length>0?months:Array.from({length:numMonths},(_,i)=>({name:`Month ${i+1}`,days:daysMonth,lore:''}));
 
     const monthCards=monthsToRender.map((m,i)=>{
@@ -200,7 +254,6 @@ function loadCalendar(){
       return`<div class="cal-month-tile"><div class="cal-month-accent" style="background:${color}"></div><div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}${monthLore}</div>`;
     }).join('');
 
-    // Moons with lore
     const moonItems=moons.filter(m=>m.name).map(m=>{
       const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
       return`<span class="moon-pill">${m.name} · ${m.cycle}d cycle</span>${lorePart}`;
@@ -214,10 +267,10 @@ function loadCalendar(){
         ${eraName?`<div class="cal-era">${eraName}</div>`:''}
         ${worldLore?`<div class="world-lore-block"><div class="world-lore-label">World Lore</div><div class="world-lore-text">${worldLore}</div></div>`:''}
         <div class="cal-meta-row">
-          <span class="cal-meta-pill">📅 ${numMonths} months</span>
-          <span class="cal-meta-pill">☀ ${totalDays} days/year</span>
-          <span class="cal-meta-pill">🗓 ${daysWeek}-day week</span>
-          ${loreCount?`<span class="cal-meta-pill">📖 ${loreCount} lore entr${loreCount===1?'y':'ies'}</span>`:''}
+          ${metaPill('📅', `${numMonths} months`,   '[CAL]', '⊕', '◈', '🌿')}
+          ${metaPill('☀',  `${totalDays} days/year`, '[SOL]', '☀', '◉', '✦')}
+          ${metaPill('🗓', `${daysWeek}-day week`,   '[CYC]', '☽', '▣', '◎')}
+          ${loreCount?metaPill('📖',`${loreCount} lore entr${loreCount===1?'y':'ies'}`,'[LOG]','✦','⬟','❧'):''}
         </div>
         ${moonItems?`<div class="cal-moons-row" style="flex-wrap:wrap;gap:.5rem">${moonItems}</div>`:''}
         <div class="cal-months-grid">${monthCards}</div>
