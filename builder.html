@@ -771,12 +771,14 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   };
 
   /* ── 2. Theme font & shape config ── */
+  const EMOJI_FONT='20px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
+  const EMOJI_FONT_SM='12px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
   const THEMES={
-    '':{       bodyFont:'Georgia,serif',           titleFont:'bold 26px "Palatino Linotype",Georgia,serif', radius:4,  pill:3,  pillPrefix:'+ ', moonPrefix:'~ ', evPrefix:'* ', cols:4},
-    expanse:{  bodyFont:'"Share Tech Mono",monospace',  titleFont:'bold 22px "Share Tech Mono",monospace',       radius:0,  pill:0,  pillPrefix:'[+] ',moonPrefix:'[o] ',evPrefix:'>> ',cols:4},
-    iron:{     bodyFont:'"IM Fell English",Georgia,serif',titleFont:'bold 26px "IM Fell English",Georgia,serif',  radius:2,  pill:1,  pillPrefix:'+ ', moonPrefix:'~ ', evPrefix:'~ ', cols:4},
-    waypoint:{ bodyFont:'"Rajdhani",Arial,sans-serif',   titleFont:'bold 28px "Rajdhani",Arial,sans-serif',       radius:0,  pill:0,  pillPrefix:'>> ',moonPrefix:'>> ',evPrefix:'> ', cols:4},
-    verdant:{  bodyFont:'"Libre Baskerville",Georgia,serif',titleFont:'bold 24px "Libre Baskerville",Georgia,serif',radius:12,pill:99, pillPrefix:'* ', moonPrefix:'o ', evPrefix:'* ', cols:4},
+    '':{       bodyFont:'Georgia,serif',              titleFont:'bold 26px "Palatino Linotype",Georgia,serif', radius:4,  pill:3,  pillIcons:['📅','☀','🗓'], moonPrefix:'☽ ', evPrefix:'', cols:4},
+    expanse:{  bodyFont:'"Share Tech Mono",monospace', titleFont:'bold 22px "Share Tech Mono",monospace',       radius:0,  pill:0,  pillIcons:['[CAL]','[SOL]','[CYC]'], moonPrefix:'[o] ', evPrefix:'>> ', cols:4},
+    iron:{     bodyFont:'"IM Fell English",Georgia,serif',titleFont:'bold 26px "IM Fell English",Georgia,serif', radius:2,  pill:1,  pillIcons:['⊕','☀','☽'], moonPrefix:'☽ ', evPrefix:'', cols:4},
+    waypoint:{ bodyFont:'"Rajdhani",Arial,sans-serif',  titleFont:'bold 28px "Rajdhani",Arial,sans-serif',       radius:0,  pill:0,  pillIcons:['[M]','[D]','[W]'],  moonPrefix:'[>] ', evPrefix:'> ', cols:4},
+    verdant:{  bodyFont:'"Libre Baskerville",Georgia,serif',titleFont:'bold 24px "Libre Baskerville",Georgia,serif',radius:12,pill:99, pillIcons:['*','*','*'], moonPrefix:'o ', evPrefix:'', cols:4},
   };
   const T=THEMES[theme]||THEMES[''];
 
@@ -884,23 +886,29 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
 
   /* ── 7. Meta pills ── */
   const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0);
-  const pills=[
-    T.pillPrefix+`${numMonths} months`,
-    T.pillPrefix+`${totalDays} days/year`,
-    T.pillPrefix+`${daysWeek}-day week`
-  ];
-  ctx.font=`11px ${T.bodyFont}`;let px=PAD;
-    const pw=ctx.measureText(pill).width+18;
+  const pillTexts=[`${numMonths} months`,`${totalDays} days/year`,`${daysWeek}-day week`];
+  let px=PAD;
+  pillTexts.forEach((text,pi)=>{
+    const icon=T.pillIcons[pi]||'';
+    // measure icon + text separately
+    ctx.font=EMOJI_FONT_SM;
+    const iconW=icon?ctx.measureText(icon).width+4:0;
+    ctx.font=`11px ${T.bodyFont}`;
+    const textW=ctx.measureText(text).width;
+    const pw=iconW+textW+18;
     // pill bg
     ctx.fillStyle=hexAlpha(C.accent,0.08);
-    if(T.pill===0){ctx.fillRect(px,y,pw,20);}
-    else if(T.pill===99){fillRoundRect(ctx,px,y,pw,20,10);}
-    else{fillRoundRect(ctx,px,y,pw,20,T.pill);}
+    if(T.pill===0)ctx.fillRect(px,y,pw,20);
+    else if(T.pill===99)fillRoundRect(ctx,px,y,pw,20,10);
+    else fillRoundRect(ctx,px,y,pw,20,T.pill);
     // pill border
     ctx.strokeStyle=hexAlpha(C.accent,0.25);ctx.lineWidth=0.5;
-    if(T.pill===0){ctx.strokeRect(px+0.25,y+0.25,pw-0.5,19.5);}
-    else{strokeRoundRect(ctx,px,y,pw,20,Math.min(T.pill,10));}
-    ctx.fillStyle=C.textDim;ctx.fillText(pill,px+9,y+14);
+    if(T.pill===0)ctx.strokeRect(px+0.25,y+0.25,pw-0.5,19.5);
+    else strokeRoundRect(ctx,px,y,pw,20,Math.min(T.pill,10));
+    // draw icon with emoji font
+    if(icon){ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.textDim;ctx.fillText(icon,px+7,y+14);}
+    // draw text with body font
+    ctx.font=`11px ${T.bodyFont}`;ctx.fillStyle=C.textDim;ctx.fillText(text,px+7+iconW,y+14);
     px+=pw+7;
   });
   y+=30;
@@ -911,14 +919,25 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
     for(let mi=0;mi<namedMoons.length;mi++){
       const moon=namedMoons[mi];
       const mImg=moonImgs[mi]||null;
-      const label=T.moonPrefix+moon.name+' · '+moon.cycle+'d cycle';
-      const lw=ctx.measureText(label).width+(mImg?32:0)+18;
+      const moonText=moon.name+' · '+moon.cycle+'d cycle';
+      // measure prefix + text
+      ctx.font=EMOJI_FONT_SM;
+      const pfxW=mImg?0:(T.moonPrefix?ctx.measureText(T.moonPrefix).width+2:0);
+      ctx.font=`11px ${T.bodyFont}`;
+      const txtW=ctx.measureText(moonText).width;
+      const lw=(mImg?26:0)+pfxW+txtW+18;
       ctx.fillStyle=hexAlpha(C.accent,0.1);
-      if(T.pill===0){ctx.fillRect(mx,y,lw,20);}else{fillRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));}
+      if(T.pill===0)ctx.fillRect(mx,y,lw,20);else fillRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));
       ctx.strokeStyle=hexAlpha(C.accent,0.28);ctx.lineWidth=0.5;
-      if(T.pill===0){ctx.strokeRect(mx+0.25,y+0.25,lw-0.5,19.5);}else{strokeRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));}
-      if(mImg){drawImg(ctx,mImg,mx+6,y+2,16,16);ctx.fillStyle=C.moonTxt;ctx.fillText(moon.name+' · '+moon.cycle+'d cycle',mx+26,y+14);}
-      else{ctx.fillStyle=C.moonTxt;ctx.fillText(label,mx+9,y+14);}
+      if(T.pill===0)ctx.strokeRect(mx+0.25,y+0.25,lw-0.5,19.5);else strokeRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));
+      if(mImg){
+        drawImg(ctx,mImg,mx+6,y+2,16,16);
+        ctx.font=`11px ${T.bodyFont}`;ctx.fillStyle=C.moonTxt;ctx.fillText(moonText,mx+26,y+14);
+      } else {
+        let drawX=mx+8;
+        if(T.moonPrefix){ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.moonTxt;ctx.fillText(T.moonPrefix,drawX,y+14);drawX+=pfxW;}
+        ctx.font=`11px ${T.bodyFont}`;ctx.fillStyle=C.moonTxt;ctx.fillText(moonText,drawX,y+14);
+      }
       mx+=lw+7;
     }
     y+=30;
@@ -935,61 +954,53 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
     const days=m.days||daysMonth;
     const mImg=monthImgs[i]||null;
     const eventsHere=events.filter(e=>e.month===i+1&&e.name);
-
     // card bg
     ctx.fillStyle=hexAlpha(C.accent,0.05);
-    if(cardR===0){ctx.fillRect(cx,cy,CARD_W,CARD_H);}else{fillRoundRect(ctx,cx,cy,CARD_W,CARD_H,cardR);}
+    if(cardR===0)ctx.fillRect(cx,cy,CARD_W,CARD_H);else fillRoundRect(ctx,cx,cy,CARD_W,CARD_H,cardR);
     // card border
     ctx.strokeStyle=hexAlpha(C.accent,0.15);ctx.lineWidth=0.5;
-    if(cardR===0){ctx.strokeRect(cx+0.25,cy+0.25,CARD_W-0.5,CARD_H-0.5);}else{strokeRoundRect(ctx,cx,cy,CARD_W,CARD_H,cardR);}
-
-    // waypoint: extra inner corner marks
-    if(theme==='waypoint'){
-      ctx.strokeStyle=hexAlpha(C.accent,0.3);ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(cx+8,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+8);ctx.stroke();
-      ctx.beginPath();ctx.moveTo(cx+CARD_W-8,cy+CARD_H);ctx.lineTo(cx+CARD_W,cy+CARD_H);ctx.lineTo(cx+CARD_W,cy+CARD_H-8);ctx.stroke();
-    }
-    // iron: inner inset border
-    if(theme==='iron'){
-      ctx.strokeStyle=hexAlpha(C.accent,0.06);ctx.lineWidth=0.5;
-      ctx.strokeRect(cx+4,cy+4,CARD_W-8,CARD_H-8);
-    }
-
-    // accent bar OR custom icon
-    if(mImg){
-      drawImg(ctx,mImg,cx+8,cy+4,20,20);
-    } else {
-      ctx.fillStyle=accentColor;
-      if(cardR===0){ctx.fillRect(cx,cy,CARD_W,3);}
-      else{fillRoundRect(ctx,cx,cy,CARD_W,3,{tl:cardR,tr:cardR,br:0,bl:0});}
-    }
-
+    if(cardR===0)ctx.strokeRect(cx+0.25,cy+0.25,CARD_W-0.5,CARD_H-0.5);else strokeRoundRect(ctx,cx,cy,CARD_W,CARD_H,cardR);
+    // waypoint corner marks
+    if(theme==='waypoint'){ctx.strokeStyle=hexAlpha(C.accent,0.3);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+8,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+8);ctx.stroke();ctx.beginPath();ctx.moveTo(cx+CARD_W-8,cy+CARD_H);ctx.lineTo(cx+CARD_W,cy+CARD_H);ctx.lineTo(cx+CARD_W,cy+CARD_H-8);ctx.stroke();}
+    // iron inner border
+    if(theme==='iron'){ctx.strokeStyle=hexAlpha(C.accent,0.06);ctx.lineWidth=0.5;ctx.strokeRect(cx+4,cy+4,CARD_W-8,CARD_H-8);}
+    // accent bar OR custom month icon
+    if(mImg){drawImg(ctx,mImg,cx+8,cy+4,20,20);}
+    else{ctx.fillStyle=accentColor;if(cardR===0)ctx.fillRect(cx,cy,CARD_W,3);else fillRoundRect(ctx,cx,cy,CARD_W,3,{tl:cardR,tr:cardR,br:0,bl:0});}
     const textX=cx+8;
     const nameY=mImg?cy+32:cy+22;
-    ctx.fillStyle=C.monthName;
-    ctx.font=`bold 10px ${T.bodyFont}`;
-    const displayName=theme==='iron'?name:name.toUpperCase();
-    ctx.fillText(displayName,textX,nameY);
-
-    ctx.fillStyle=C.textDimr;
-    ctx.font=`9px ${T.bodyFont}`;
-    const daysSuffix=theme==='expanse'?days+' SOL':theme==='waypoint'?days+' D':days+' days';
-    ctx.fillText(daysSuffix,textX,nameY+14);
-
+    ctx.fillStyle=C.monthName;ctx.font=`bold 10px ${T.bodyFont}`;
+    ctx.fillText(theme==='iron'?name:name.toUpperCase(),textX,nameY);
+    ctx.fillStyle=C.textDimr;ctx.font=`9px ${T.bodyFont}`;
+    ctx.fillText(theme==='expanse'?days+' SOL':theme==='waypoint'?days+' D':days+' days',textX,nameY+14);
     // event badge
     if(eventsHere.length>0){
       const ev=eventsHere[0];
       const eImg=eventImgs[events.indexOf(ev)]||null;
-      const prefix=eImg?'':T.evPrefix;
-      const evLabel=(prefix+ev.name).slice(0,26);
-      const ew=Math.min(ctx.measureText(evLabel).width+(eImg?20:0)+14,CARD_W-18);
-      const eyBase=nameY+26;
+      // measure badge width: icon/emoji + space + name
+      const emojiStr=eImg?'':((ev.emoji||'')+' ');
+      ctx.font=EMOJI_FONT_SM;
+      const emojiW=eImg?0:ctx.measureText(emojiStr).width;
+      ctx.font=`8px ${T.bodyFont}`;
+      const evNameStr=(T.evPrefix+ev.name).slice(0,22);
+      const nameW=eImg?ctx.measureText(ev.name.slice(0,22)).width:ctx.measureText(evNameStr).width;
+      const ew=Math.min((eImg?16:emojiW)+nameW+14,CARD_W-16);
+      const eyBase=nameY+20;
       ctx.fillStyle=hexAlpha(C.accent,0.08);
-      if(T.pill===0){ctx.fillRect(textX,eyBase,ew,16);}else{fillRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));}
+      if(T.pill===0)ctx.fillRect(textX,eyBase,ew,16);else fillRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));
       ctx.strokeStyle=hexAlpha(C.accent,0.2);ctx.lineWidth=0.4;
-      if(T.pill===0){ctx.strokeRect(textX+0.2,eyBase+0.2,ew-0.4,15.6);}else{strokeRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));}
-      if(eImg){drawImg(ctx,eImg,textX+3,eyBase+1,14,14);ctx.fillStyle=C.evColor;ctx.font=`8px ${T.bodyFont}`;ctx.fillText(ev.name.slice(0,20),textX+20,eyBase+11);}
-      else{ctx.fillStyle=C.evColor;ctx.font=`8px ${T.bodyFont}`;ctx.fillText(evLabel,textX+7,eyBase+11);}
+      if(T.pill===0)ctx.strokeRect(textX+0.2,eyBase+0.2,ew-0.4,15.6);else strokeRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));
+      if(eImg){
+        drawImg(ctx,eImg,textX+3,eyBase+1,14,14);
+        ctx.fillStyle=C.evColor;ctx.font=`8px ${T.bodyFont}`;ctx.fillText(ev.name.slice(0,22),textX+20,eyBase+11);
+      } else {
+        // draw emoji with emoji font
+        ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.evColor;ctx.fillText(emojiStr,textX+5,eyBase+12);
+        // draw event name with body font after emoji
+        ctx.font=`8px ${T.bodyFont}`;ctx.fillStyle=C.evColor;
+        const nameLabel=(T.evPrefix+ev.name).slice(0,22);
+        ctx.fillText(nameLabel,textX+5+emojiW,eyBase+11);
+      }
     }
   }
 
