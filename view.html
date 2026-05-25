@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Fantasy Calendar â View</title>
+<title>Fantasy Calendar — View</title>
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Share+Tech+Mono&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{--bg:#f5f0e8;--surface:#ede7d9;--surface2:#e2d9c8;--border:#c9b99a;--border2:#d4c4a8;--accent:#7c5c2e;--accent2:#b8860b;--text:#2a1f0e;--text-muted:#6b5840;--text-dim:#9a8068;--text-dimmer:#b8a080;--text-dimmest:#cdb898;--input-bg:#ede7d9;--input-bg2:#e2d9c8;--nav-bg:#ede7d9;--card-border:#c9b99a;--month-name:#7c5c2e;--moon-pill-bg:rgba(124,92,46,0.12);--moon-pill-border:rgba(124,92,46,0.3);--moon-pill-text:#7c5c2e;--accent-rgb:124,92,46;--accent2-dark:#f5f0e8;--radius-card:4px;--radius-pill:3px;--radius-btn:4px;--font-display:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;--font-body:Georgia,'Times New Roman',serif;--btn-clip:none;--card-clip:none;--card-bg:#ede7d9;--shadow:2px 2px 8px rgba(42,31,14,0.2);--event-bg:rgba(184,134,11,0.1);--event-color:#7c5c2e;--event-border:rgba(184,134,11,0.3)}
@@ -25,7 +25,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="expanse"] .logo::before{content:'// ';color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:.85em}
 [data-theme="waypoint"] .logo::before{content:'[ ';color:var(--accent)}
 [data-theme="waypoint"] .logo::after{content:' ]';color:var(--accent)}
-[data-theme="iron"] nav::after{content:'â¦ â¦ â¦';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--accent);letter-spacing:.5em;background:var(--nav-bg);padding:0 .5rem}
+[data-theme="iron"] nav::after{content:'✦ ✦ ✦';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--accent);letter-spacing:.5em;background:var(--nav-bg);padding:0 .5rem}
 .nav-actions{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
 .btn-edit{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.5rem 1rem;font-size:.85rem;cursor:pointer;text-decoration:none;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn)}
 .btn-edit:hover{border-color:var(--accent);color:var(--accent)}
@@ -37,13 +37,13 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="expanse"] .cal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
 [data-theme="expanse"] .cal-card::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,229,200,0.01) 0px,rgba(0,229,200,0.01) 1px,transparent 1px,transparent 4px);pointer-events:none}
 [data-theme="iron"] .cal-card::before{content:'';position:absolute;inset:8px;border:1px solid rgba(212,160,64,0.08);pointer-events:none}
-[data-theme="iron"] .cal-card::after{content:'â§';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--card-bg);padding:0 .5rem;color:var(--accent);font-size:1rem;line-height:1}
+[data-theme="iron"] .cal-card::after{content:'❧';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--card-bg);padding:0 .5rem;color:var(--accent);font-size:1rem;line-height:1}
 [data-theme="waypoint"] .cal-card::before{content:'';position:absolute;top:0;left:0;width:24px;height:24px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);pointer-events:none}
 [data-theme="waypoint"] .cal-card::after{content:'';position:absolute;bottom:0;right:0;width:24px;height:24px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);pointer-events:none}
 .cal-world-name{font-size:2rem;font-weight:700;margin-bottom:.3rem;font-family:var(--font-display);letter-spacing:-.02em}
 .cal-era{font-size:.95rem;color:var(--text-dim);margin-bottom:.8rem;font-style:italic;font-family:var(--font-body)}
 .cal-meta-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
-/* ââ META PILLS â base ââ */
+/* ── META PILLS — base ── */
 .cal-meta-pill{background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.2);padding:.25rem .8rem;font-size:.75rem;color:var(--text-dim);font-family:var(--font-body);border-radius:var(--radius-pill);display:inline-flex;align-items:center;gap:.3rem}
 
 /* default/cartographer: warm parchment ink style, keep emoji */
@@ -69,7 +69,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="verdant"] .cal-meta-pill .pill-icon{display:none}
 [data-theme="verdant"] .cal-meta-pill::before{content:attr(data-verdant);color:rgba(80,200,120,.6);margin-right:.25rem}
 
-/* ââ EVENT BADGES â per theme ââ */
+/* ── EVENT BADGES — per theme ── */
 .cal-event-badge{display:inline-flex;align-items:center;gap:3px;margin-top:.3rem;font-size:.65rem;background:var(--event-bg);color:var(--event-color);padding:2px 7px;border:1px solid var(--event-border);margin-right:3px;font-family:var(--font-body);border-radius:var(--radius-pill)}
 
 /* default: warm amber scroll-tag */
@@ -81,22 +81,22 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 
 /* iron: wax-seal style, bordered, italic serif */
 [data-theme="iron"] .cal-event-badge{border-radius:1px;border-color:rgba(139,32,32,.5);background:rgba(139,32,32,.12);color:#d4a040;font-family:'IM Fell English',Georgia,serif;font-style:italic;padding:2px 8px;border-width:1px;box-shadow:inset 0 0 0 1px rgba(212,160,64,.08)}
-[data-theme="iron"] .cal-event-badge::before{content:'â¸¸ ';font-size:.65em;color:rgba(212,160,64,.5);font-style:normal}
+[data-theme="iron"] .cal-event-badge::before{content:'⸸ ';font-size:.65em;color:rgba(212,160,64,.5);font-style:normal}
 
 /* waypoint: military status tag, chamfered, uppercase */
 [data-theme="waypoint"] .cal-event-badge{clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px);font-family:'Rajdhani',sans-serif;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600;border-color:rgba(42,180,232,.25);background:rgba(42,180,232,.07);color:#48d8ff;padding:2px 8px}
-[data-theme="waypoint"] .cal-event-badge::before{content:'â¸ ';font-size:.65em;color:rgba(42,180,232,.6)}
+[data-theme="waypoint"] .cal-event-badge::before{content:'▸ ';font-size:.65em;color:rgba(42,180,232,.6)}
 
 /* verdant: rounded nature tag */
 [data-theme="verdant"] .cal-event-badge{border-radius:99px;border-color:rgba(80,200,120,.3);background:rgba(80,200,120,.08);color:#90e060;font-family:'Libre Baskerville',Georgia,serif;font-size:.63rem;padding:2px 9px}
-[data-theme="verdant"] .cal-event-badge::before{content:'â¦ ';font-size:.55em;color:rgba(144,224,96,.6)}
+[data-theme="verdant"] .cal-event-badge::before{content:'✦ ';font-size:.55em;color:rgba(144,224,96,.6)}
 .cal-moons-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
 .moon-pill{background:var(--moon-pill-bg);border:1px solid var(--moon-pill-border);color:var(--moon-pill-text);padding:.25rem .9rem;font-size:.75rem;font-family:var(--font-body);border-radius:var(--radius-pill)}
 [data-theme="expanse"] .moon-pill{clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
-[data-theme="expanse"] .moon-pill::before{content:'â ';font-size:.65rem}
-[data-theme="waypoint"] .moon-pill::before{content:'â¬ ';font-size:.65rem}
-[data-theme="iron"] .moon-pill::before{content:'â½ '}
-[data-theme="verdant"] .moon-pill::before{content:'â '}
+[data-theme="expanse"] .moon-pill::before{content:'◉ ';font-size:.65rem}
+[data-theme="waypoint"] .moon-pill::before{content:'⬟ ';font-size:.65rem}
+[data-theme="iron"] .moon-pill::before{content:'☽ '}
+[data-theme="verdant"] .moon-pill::before{content:'◎ '}
 .cal-months-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .cal-month-tile{background:rgba(var(--accent-rgb),.04);border:1px solid rgba(var(--accent-rgb),.1);padding:1rem;position:relative;clip-path:var(--card-clip);border-radius:var(--radius-card)}
 [data-theme="iron"] .cal-month-tile{clip-path:none;position:relative}
@@ -109,8 +109,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="waypoint"] .cal-month-days::after{content:' D';font-size:.5rem;opacity:.4}
 .cal-event-badge{display:inline-flex;align-items:center;gap:3px;margin-top:.3rem;font-size:.65rem;background:var(--event-bg);color:var(--event-color);padding:2px 7px;border:1px solid var(--event-border);margin-right:3px;font-family:var(--font-body);border-radius:var(--radius-pill)}
 .cal-footer{margin-top:1.8rem;padding-top:1rem;border-top:1px solid rgba(var(--accent-rgb),.1);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-[data-theme="iron"] .cal-footer::before{content:'â ';color:var(--accent);opacity:.4}
-[data-theme="iron"] .cal-footer::after{content:' â';color:var(--accent);opacity:.4}
+[data-theme="iron"] .cal-footer::before{content:'— ';color:var(--accent);opacity:.4}
+[data-theme="iron"] .cal-footer::after{content:' —';color:var(--accent);opacity:.4}
 .cal-footer-brand{font-size:.72rem;color:var(--text-dimmest);font-family:var(--font-body)}
 .cal-footer-stats{font-size:.72rem;color:var(--text-dimmer);font-family:var(--font-body)}
 .cta-strip{margin-top:2rem;background:var(--surface);border:1px solid var(--border2);padding:1.5rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;clip-path:var(--card-clip);border-radius:var(--radius-card)}
@@ -132,16 +132,16 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .theme-opt{display:block;width:100%;text-align:left;padding:9px 12px;background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-muted);font-family:var(--font-body)}
 .theme-opt:hover{background:var(--surface2);color:var(--text)}
 .theme-opt.active{color:var(--accent);font-weight:700}
-[data-theme="iron"] .theme-opt.active::before{content:'â '}
+[data-theme="iron"] .theme-opt.active::before{content:'⚜ '}
 [data-theme="expanse"] .theme-opt.active::before{content:'> ';font-family:'Share Tech Mono',monospace}
-[data-theme="waypoint"] .theme-opt.active::before{content:'â '}
-[data-theme="verdant"] .theme-opt.active::before{content:'â¦ '}
+[data-theme="waypoint"] .theme-opt.active::before{content:'◈ '}
+[data-theme="verdant"] .theme-opt.active::before{content:'✦ '}
 
 @keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 [data-theme="expanse"] .scan-line{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,229,200,0.12),transparent);animation:scan 8s linear infinite;pointer-events:none;z-index:2}
 .scan-line{display:none}
 
-/* ââ LORE in view ââ */
+/* ── LORE in view ── */
 .world-lore-block{margin:1.2rem 0;padding:1rem 1.2rem;background:rgba(var(--accent-rgb),.04);border-left:3px solid var(--accent);border-radius:0 var(--radius-card) var(--radius-card) 0;font-family:var(--font-body)}
 [data-theme="iron"] .world-lore-block{border-left-color:var(--accent);background:rgba(212,160,64,0.06)}
 [data-theme="waypoint"] .world-lore-block{border-left:none;border:1px solid var(--border);clip-path:var(--card-clip)}
@@ -149,7 +149,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .world-lore-label{font-size:.68rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;font-family:var(--font-body)}
 [data-theme="iron"] .world-lore-label{text-transform:none;font-style:italic;font-size:.75rem;letter-spacing:.02em}
 [data-theme="expanse"] .world-lore-label::before{content:'// ';font-family:'Share Tech Mono',monospace}
-[data-theme="waypoint"] .world-lore-label::before{content:'â '}
+[data-theme="waypoint"] .world-lore-label::before{content:'◈ '}
 .world-lore-text{font-size:.88rem;color:var(--text-muted);line-height:1.7;font-family:var(--font-body);font-style:italic}
 [data-theme="expanse"] .world-lore-text{font-style:normal;font-family:'Share Tech Mono',monospace;font-size:.8rem}
 [data-theme="waypoint"] .world-lore-text{font-style:normal}
@@ -158,10 +158,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .lore-pill:hover{background:rgba(var(--accent-rgb),.14)}
 [data-theme="expanse"] .lore-pill{clip-path:polygon(5px 0%,100% 0%,100% calc(100% - 5px),calc(100% - 5px) 100%,0% 100%,0% 5px)}
 [data-theme="waypoint"] .lore-pill{clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px)}
-[data-theme="iron"] .lore-pill::before{content:'â§ ';font-size:.7em}
+[data-theme="iron"] .lore-pill::before{content:'❧ ';font-size:.7em}
 [data-theme="expanse"] .lore-pill::before{content:'// ';font-family:'Share Tech Mono',monospace;font-size:.8em}
-[data-theme="waypoint"] .lore-pill::before{content:'â ';font-size:.8em}
-[data-theme="verdant"] .lore-pill::before{content:'â¦ ';font-size:.7em}
+[data-theme="waypoint"] .lore-pill::before{content:'◈ ';font-size:.8em}
+[data-theme="verdant"] .lore-pill::before{content:'✦ ';font-size:.7em}
 
 .lore-drawer{display:none;margin-top:.5rem;padding:.7rem .9rem;background:rgba(var(--accent-rgb),.04);border:1px solid rgba(var(--accent-rgb),.15);font-size:.84rem;color:var(--text-muted);line-height:1.7;font-style:italic;font-family:var(--font-body);border-radius:var(--radius-card)}
 .lore-drawer.open{display:block}
@@ -171,9 +171,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 
 .lore-section-header{margin:1.6rem 0 .8rem;font-size:.68rem;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase;font-family:var(--font-body);border-bottom:1px solid var(--border2);padding-bottom:.4rem}
 [data-theme="iron"] .lore-section-header{text-transform:none;font-style:italic;font-size:.75rem;letter-spacing:.04em}
-[data-theme="iron"] .lore-section-header::before{content:'â¸» ';color:var(--accent);opacity:.5}
+[data-theme="iron"] .lore-section-header::before{content:'⸻ ';color:var(--accent);opacity:.5}
 [data-theme="expanse"] .lore-section-header::before{content:'// ';color:var(--accent);font-family:'Share Tech Mono',monospace}
-[data-theme="waypoint"] .lore-section-header::before{content:'â ';color:var(--accent)}
+[data-theme="waypoint"] .lore-section-header::before{content:'◈ ';color:var(--accent)}
 
 @media(max-width:600px){.cal-months-grid{grid-template-columns:repeat(2,1fr)}.cal-world-name{font-size:1.5rem}.cal-card{padding:1.5rem}}
 </style>
@@ -181,35 +181,35 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 <body>
 <div class="scan-line"></div>
 <nav>
-  <a href="index.html" class="logo">ð Fantasy Calendar Builder</a>
+  <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-actions">
-    <a href="#" id="edit-link" class="btn-edit">âï¸ Edit this calendar</a>
-    <button class="btn-download" onclick="downloadCalendar()">ð¥ Download PNG</button>
-    <a href="builder.html" class="btn-build">Build your own â</a>
+    <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
+    <button class="btn-download" onclick="downloadCalendar()">📥 Download PNG</button>
+    <a href="builder.html" class="btn-build">Build your own →</a>
   </div>
 </nav>
 <div class="page">
   <div id="cal-card-wrap">
     <div class="error-state">
       <h2>No calendar found</h2>
-      <p>This link may be invalid. <a href="builder.html" style="color:var(--accent)">Build your own calendar â</a></p>
+      <p>This link may be invalid. <a href="builder.html" style="color:var(--accent)">Build your own calendar →</a></p>
     </div>
   </div>
   <div class="cta-strip">
     <div class="cta-text"><h3>Build your own world's calendar</h3><p>Free. No account needed. Ready in 10 minutes.</p></div>
-    <a href="builder.html" class="btn-build" style="white-space:nowrap">Start building â it's free â</a>
+    <a href="builder.html" class="btn-build" style="white-space:nowrap">Start building — it's free →</a>
   </div>
 </div>
 
 <div id="theme-switcher">
-  <button id="theme-toggle-btn" title="Change theme">ð¨</button>
+  <button id="theme-toggle-btn" title="Change theme">🎨</button>
   <div id="theme-menu">
     <div class="theme-label-hdr">CHOOSE THEME</div>
-    <button class="theme-opt" data-theme="">ðº Cartographer's Ink</button>
-    <button class="theme-opt" data-theme="expanse">ð The Outer Expanse</button>
-    <button class="theme-opt" data-theme="iron">âï¸ Iron &amp; Vellum</button>
-    <button class="theme-opt" data-theme="waypoint">ð· Waypoint Protocol</button>
-    <button class="theme-opt" data-theme="verdant">ð¿ Verdant Archive</button>
+    <button class="theme-opt" data-theme="">🗺 Cartographer's Ink</button>
+    <button class="theme-opt" data-theme="expanse">🌌 The Outer Expanse</button>
+    <button class="theme-opt" data-theme="iron">⚔️ Iron &amp; Vellum</button>
+    <button class="theme-opt" data-theme="waypoint">🔷 Waypoint Protocol</button>
+    <button class="theme-opt" data-theme="verdant">🌿 Verdant Archive</button>
   </div>
 </div>
 
@@ -231,14 +231,14 @@ function loadCalendar(){
   const params=new URLSearchParams(window.location.search);const c=params.get('c');if(!c)return;
   try{
     const data=JSON.parse(decodeURIComponent(atob(c)));calData=data;
-    const months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/â/g,'|'),icon:p[3]||''};});
-    const moons=(data.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/â/g,'|'),icon:p[3]||''};});
-    const events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2],lore:(p[3]||'').replace(/â/g,'|'),icon:p[4]||''};});
+    const months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
+    const moons=(data.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
+    const events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2],lore:(p[3]||'').replace(/‖/g,'|'),icon:p[4]||''};});
     const numMonths=data.n||10,daysMonth=data.dm||30,daysWeek=data.dw||7;
     const worldName=data.w||'Unnamed World',eraName=data.e||'',worldLore=data.wl||'',worldIcon=data.wi||'';
     const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0)||numMonths*daysMonth;
     document.getElementById('edit-link').href='builder.html?c='+c;
-    document.title=worldName+' â Fantasy Calendar Builder';
+    document.title=worldName+' — Fantasy Calendar Builder';
 
     const monthsToRender=months.length>0?months:Array.from({length:numMonths},(_,i)=>({name:`Month ${i+1}`,days:daysMonth,lore:'',icon:''}));
 
@@ -252,17 +252,17 @@ function loadCalendar(){
       const badges=eventsHere.map(e=>{
         const eIcon=e.icon?`<img src="${e.icon}" alt="" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:2px"/>`:'';
         const dispEmoji=e.icon?'':e.emoji+' ';
-        const evLore=e.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore â¾</span><div class="lore-drawer">${e.lore}</div>`:'';
+        const evLore=e.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${e.lore}</div>`:'';
         return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}</div>${evLore}`;
       }).join('');
-      const monthLore=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore â¾</span><div class="lore-drawer">${m.lore}</div>`:'';
+      const monthLore=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
       return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}${monthLore}</div>`;
     }).join('');
 
     const moonItems=moons.filter(m=>m.name).map(m=>{
       const mIcon=m.icon?`<img src="${m.icon}" alt="" style="width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:3px"/>`:'';
-      const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore â¾</span><div class="lore-drawer">${m.lore}</div>`:'';
-      return`<span class="moon-pill">${mIcon}${m.name} Â· ${m.cycle}d cycle</span>${lorePart}`;
+      const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
+      return`<span class="moon-pill">${mIcon}${m.name}  ·  ${m.cycle}d cycle</span>${lorePart}`;
     }).join(' ');
 
     const worldIconEl=worldIcon?`<img src="${worldIcon}" alt="world icon" style="width:40px;height:40px;object-fit:contain;border-radius:4px;flex-shrink:0"/>`:'';
@@ -276,16 +276,16 @@ function loadCalendar(){
         ${eraName?`<div class="cal-era">${eraName}</div>`:''}
         ${worldLore?`<div class="world-lore-block"><div class="world-lore-label">World Lore</div><div class="world-lore-text">${worldLore}</div></div>`:''}
         <div class="cal-meta-row">
-          ${metaPill('ð', `${numMonths} months`,   '[CAL]', 'â', 'â', 'ð¿')}
-          ${metaPill('â',  `${totalDays} days/year`, '[SOL]', 'â', 'â', 'â¦')}
-          ${metaPill('ð', `${daysWeek}-day week`,   '[CYC]', 'â½', 'â£', 'â')}
-          ${loreCount?metaPill('ð',`${loreCount} lore entr${loreCount===1?'y':'ies'}`,'[LOG]','â¦','â¬','â§'):''}
+          ${metaPill('📅', `${numMonths} months`,   '[CAL]', '⊕', '◈', '🌿')}
+          ${metaPill('☀',  `${totalDays} days/year`, '[SOL]', '☀', '◉', '✦')}
+          ${metaPill('🗓', `${daysWeek}-day week`,   '[CYC]', '☽', '▣', '◎')}
+          ${loreCount?metaPill('📖',`${loreCount} lore entr${loreCount===1?'y':'ies'}`,'[LOG]','✦','⬟','❧'):''}
         </div>
         ${moonItems?`<div class="cal-moons-row" style="flex-wrap:wrap;gap:.5rem">${moonItems}</div>`:''}
         <div class="cal-months-grid">${monthCards}</div>
         <div class="cal-footer">
           <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
-          <span class="cal-footer-stats">${moons.filter(m=>m.name).length} moons Â· ${events.filter(e=>e.name).length} events</span>
+          <span class="cal-footer-stats">${moons.filter(m=>m.name).length} moons  ·  ${events.filter(e=>e.name).length} events</span>
         </div>
       </div>`;
   }catch(e){console.log('Invalid calendar data');}
@@ -294,13 +294,13 @@ function loadCalendar(){
 function toggleDrawer(pill){
   const drawer=pill.nextElementSibling;
   const open=drawer.classList.toggle('open');
-  pill.textContent=open?'lore â´':'lore â¾';
+  pill.textContent=open?'lore ▴':'lore ▾';
 }
 function downloadCalendar(){
   if(!calData){alert('No calendar to download.');return;}
-  const months=(calData.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/â/g,'|'),icon:p[3]||''};});
-  const moons=(calData.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/â/g,'|'),icon:p[3]||''};});
-  const events=(calData.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2],lore:(p[3]||'').replace(/â/g,'|'),icon:p[4]||''};});
+  const months=(calData.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
+  const moons=(calData.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
+  const events=(calData.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2],lore:(p[3]||'').replace(/‖/g,'|'),icon:p[4]||''};});
   const monthsToUse=months.length>0?months:Array.from({length:calData.n||10},(_,i)=>({name:`Month ${i+1}`,days:calData.dm||30,lore:'',icon:''}));
   // build icons object to match builder.html's state.icons shape
   const icons={
@@ -326,7 +326,7 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   const C={bg:cs.getPropertyValue('--bg').trim(),surface:cs.getPropertyValue('--surface').trim(),accent:cs.getPropertyValue('--accent').trim(),text:cs.getPropertyValue('--text').trim(),textMut:cs.getPropertyValue('--text-muted').trim(),textDim:cs.getPropertyValue('--text-dim').trim(),textDimr:cs.getPropertyValue('--text-dimmer').trim(),monthName:cs.getPropertyValue('--month-name').trim(),moonTxt:cs.getPropertyValue('--moon-pill-text').trim(),evColor:cs.getPropertyValue('--event-color').trim()};
   const EMOJI_FONT='20px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
   const EMOJI_FONT_SM='12px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif';
-  const THEMES={'':{ bodyFont:'Georgia,serif',titleFont:'bold 26px "Palatino Linotype",Georgia,serif',radius:4,pill:3,pillIcons:['ð','â','ð'],moonPrefix:'â½ ',evPrefix:'',cols:4},expanse:{bodyFont:'"Share Tech Mono",monospace',titleFont:'bold 22px "Share Tech Mono",monospace',radius:0,pill:0,pillIcons:['[CAL]','[SOL]','[CYC]'],moonPrefix:'[o] ',evPrefix:'>> ',cols:4},iron:{bodyFont:'"IM Fell English",Georgia,serif',titleFont:'bold 26px "IM Fell English",Georgia,serif',radius:2,pill:1,pillIcons:['â','â','â½'],moonPrefix:'â½ ',evPrefix:'',cols:4},waypoint:{bodyFont:'"Rajdhani",Arial,sans-serif',titleFont:'bold 28px "Rajdhani",Arial,sans-serif',radius:0,pill:0,pillIcons:['[M]','[D]','[W]'],moonPrefix:'[>] ',evPrefix:'> ',cols:4},verdant:{bodyFont:'"Libre Baskerville",Georgia,serif',titleFont:'bold 24px "Libre Baskerville",Georgia,serif',radius:12,pill:99,pillIcons:['*','*','*'],moonPrefix:'o ',evPrefix:'',cols:4}};
+  const THEMES={'':{ bodyFont:'Georgia,serif',titleFont:'bold 26px "Palatino Linotype",Georgia,serif',radius:4,pill:3,pillIcons:['?','?','?'],moonPrefix:'? ',evPrefix:'',cols:4},expanse:{bodyFont:'"Share Tech Mono",monospace',titleFont:'bold 22px "Share Tech Mono",monospace',radius:0,pill:0,pillIcons:['[CAL]','[SOL]','[CYC]'],moonPrefix:'[o] ',evPrefix:'>> ',cols:4},iron:{bodyFont:'"IM Fell English",Georgia,serif',titleFont:'bold 26px "IM Fell English",Georgia,serif',radius:2,pill:1,pillIcons:['?','?','?'],moonPrefix:'? ',evPrefix:'',cols:4},waypoint:{bodyFont:'"Rajdhani",Arial,sans-serif',titleFont:'bold 28px "Rajdhani",Arial,sans-serif',radius:0,pill:0,pillIcons:['[M]','[D]','[W]'],moonPrefix:'[>] ',evPrefix:'> ',cols:4},verdant:{bodyFont:'"Libre Baskerville",Georgia,serif',titleFont:'bold 24px "Libre Baskerville",Georgia,serif',radius:12,pill:99,pillIcons:['*','*','*'],moonPrefix:'o ',evPrefix:'',cols:4}};
   const T=THEMES[theme]||THEMES[''];
   const worldImg=await loadImg(icons.world||'');
   const monthImgs=await Promise.all((icons.months||[]).map(s=>loadImg(s)));
@@ -344,7 +344,7 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   // Background per theme
   if(theme===''){const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#f5f0e8');bg.addColorStop(1,'#e8e0d0');ctx.fillStyle=bg;fillRoundRect(ctx,0,0,W,H,6);ctx.strokeStyle='rgba(124,92,46,0.3)';ctx.lineWidth=1.5;strokeRoundRect(ctx,8,8,W-16,H-16,4);ctx.strokeStyle='rgba(124,92,46,0.1)';ctx.lineWidth=0.5;strokeRoundRect(ctx,12,12,W-24,H-24,3);}
   else if(theme==='expanse'){ctx.fillStyle='#05090f';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(0,229,200,0.04)';ctx.lineWidth=0.5;for(let i=0;i<W;i+=30){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();}for(let j=0;j<H;j+=30){ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(W,j);ctx.stroke();}const tl=ctx.createLinearGradient(0,0,W,0);tl.addColorStop(0,'transparent');tl.addColorStop(0.5,'#00e5c8');tl.addColorStop(1,'transparent');ctx.fillStyle=tl;ctx.fillRect(0,0,W,1.5);ctx.strokeStyle='#00e5c8';ctx.lineWidth=1.5;[[0,0,1,1],[1,0,-1,1],[0,1,1,-1],[1,1,-1,-1]].forEach(([cx,cy,sx,sy])=>{const bx=cx*(W-1),by=cy*(H-1);ctx.beginPath();ctx.moveTo(bx+sx*16,by);ctx.lineTo(bx,by);ctx.lineTo(bx,by+sy*16);ctx.stroke();});}
-  else if(theme==='iron'){const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#261a08');bg.addColorStop(1,'#1c1408');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(212,160,64,0.35)';ctx.lineWidth=1;ctx.strokeRect(8,8,W-16,H-16);ctx.strokeStyle='rgba(212,160,64,0.12)';ctx.lineWidth=0.5;ctx.strokeRect(13,13,W-26,H-26);ctx.fillStyle='rgba(212,160,64,0.4)';ctx.font='10px serif';ctx.textAlign='center';['â¦','â¦','â¦','â¦'].forEach((o,oi)=>{const bx=oi%2===0?20:W-20,by=oi<2?20:H-12;ctx.fillText(o,bx,by);});ctx.textAlign='left';}
+  else if(theme==='iron'){const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#261a08');bg.addColorStop(1,'#1c1408');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(212,160,64,0.35)';ctx.lineWidth=1;ctx.strokeRect(8,8,W-16,H-16);ctx.strokeStyle='rgba(212,160,64,0.12)';ctx.lineWidth=0.5;ctx.strokeRect(13,13,W-26,H-26);ctx.fillStyle='rgba(212,160,64,0.4)';ctx.font='10px serif';ctx.textAlign='center';['✦','✦','✦','✦'].forEach((o,oi)=>{const bx=oi%2===0?20:W-20,by=oi<2?20:H-12;ctx.fillText(o,bx,by);});ctx.textAlign='left';}
   else if(theme==='waypoint'){ctx.fillStyle='#080c10';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(42,180,232,0.05)';ctx.lineWidth=0.5;for(let i=0;i<W;i+=28){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();}for(let j=0;j<H;j+=28){ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(W,j);ctx.stroke();}const ch=18;ctx.strokeStyle='rgba(42,180,232,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ch,0);ctx.lineTo(W-ch,0);ctx.lineTo(W,ch);ctx.lineTo(W,H-ch);ctx.lineTo(W-ch,H);ctx.lineTo(ch,H);ctx.lineTo(0,H-ch);ctx.lineTo(0,ch);ctx.closePath();ctx.stroke();ctx.strokeStyle='#2ab4e8';ctx.lineWidth=1.5;[[0,0],[W,0],[0,H],[W,H]].forEach(([cx,cy])=>{const s=cx===0?1:-1,t=cy===0?1:-1;ctx.beginPath();ctx.moveTo(cx+s*10,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+t*10);ctx.stroke();});}
   else{const bg=ctx.createRadialGradient(W/2,0,0,W/2,0,H);bg.addColorStop(0,'#122014');bg.addColorStop(1,'#0a1a0c');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(80,200,120,0.2)';ctx.lineWidth=1;strokeRoundRect(ctx,8,8,W-16,H-16,14);ctx.strokeStyle='rgba(80,200,120,0.07)';ctx.lineWidth=0.5;strokeRoundRect(ctx,13,13,W-26,H-26,10);}
   // World name
@@ -359,11 +359,11 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   const pillTexts=[`${numMonths} months`,`${totalDays} days/year`,`${daysWeek}-day week`];
   pillTexts.forEach((text,pi)=>{const icon=T.pillIcons[pi]||'';ctx.font=EMOJI_FONT_SM;const iconW=icon?ctx.measureText(icon).width+4:0;ctx.font=`11px ${T.bodyFont}`;const textW=ctx.measureText(text).width;const pw=iconW+textW+18;ctx.fillStyle=hexAlpha(C.accent,0.08);if(T.pill===0)ctx.fillRect(px,y,pw,20);else if(T.pill===99)fillRoundRect(ctx,px,y,pw,20,10);else fillRoundRect(ctx,px,y,pw,20,T.pill);ctx.strokeStyle=hexAlpha(C.accent,0.25);ctx.lineWidth=0.5;if(T.pill===0)ctx.strokeRect(px+0.25,y+0.25,pw-0.5,19.5);else strokeRoundRect(ctx,px,y,pw,20,Math.min(T.pill,10));if(icon){ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.textDim;ctx.fillText(icon,px+7,y+14);}ctx.font=`11px ${T.bodyFont}`;ctx.fillStyle=C.textDim;ctx.fillText(text,px+7+iconW,y+14);px+=pw+7;});y+=30;
   // Moons
-  if(namedMoons.length>0){let mx=PAD;for(let mi=0;mi<namedMoons.length;mi++){const moon=namedMoons[mi];const mImg=moonImgs[mi]||null;const moonText=moon.name+' · '+moon.cycle+'d cycle';ctx.font=EMOJI_FONT_SM;const pfxW=mImg?0:(T.moonPrefix?ctx.measureText(T.moonPrefix).width+2:0);ctx.font='11px '+T.bodyFont;const txtW=ctx.measureText(moonText).width;const lw=(mImg?26:0)+pfxW+txtW+18;ctx.fillStyle=hexAlpha(C.accent,0.1);if(T.pill===0)ctx.fillRect(mx,y,lw,20);else fillRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));ctx.strokeStyle=hexAlpha(C.accent,0.28);ctx.lineWidth=0.5;if(T.pill===0)ctx.strokeRect(mx+0.25,y+0.25,lw-0.5,19.5);else strokeRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));if(mImg){drawImg(ctx,mImg,mx+6,y+2,16,16);ctx.font='11px '+T.bodyFont;ctx.fillStyle=C.moonTxt;ctx.fillText(moonText,mx+26,y+14);}else{let drawX=mx+8;if(T.moonPrefix){ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.moonTxt;ctx.fillText(T.moonPrefix,drawX,y+14);drawX+=pfxW;}ctx.font='11px '+T.bodyFont;ctx.fillStyle=C.moonTxt;ctx.fillText(moonText,drawX,y+14);}mx+=lw+7;}y+=30;}
+  if(namedMoons.length>0){let mx=PAD;for(let mi=0;mi<namedMoons.length;mi++){const moon=namedMoons[mi];const mImg=moonImgs[mi]||null;const moonText=moon.name+'  ·  '+moon.cycle+'d cycle';ctx.font=EMOJI_FONT_SM;const pfxW=mImg?0:(T.moonPrefix?ctx.measureText(T.moonPrefix).width+2:0);ctx.font='11px '+T.bodyFont;const txtW=ctx.measureText(moonText).width;const lw=(mImg?26:0)+pfxW+txtW+18;ctx.fillStyle=hexAlpha(C.accent,0.1);if(T.pill===0)ctx.fillRect(mx,y,lw,20);else fillRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));ctx.strokeStyle=hexAlpha(C.accent,0.28);ctx.lineWidth=0.5;if(T.pill===0)ctx.strokeRect(mx+0.25,y+0.25,lw-0.5,19.5);else strokeRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));if(mImg){drawImg(ctx,mImg,mx+6,y+2,16,16);ctx.font='11px '+T.bodyFont;ctx.fillStyle=C.moonTxt;ctx.fillText(moonText,mx+26,y+14);}else{let drawX=mx+8;if(T.moonPrefix){ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.moonTxt;ctx.fillText(T.moonPrefix,drawX,y+14);drawX+=pfxW;}ctx.font='11px '+T.bodyFont;ctx.fillStyle=C.moonTxt;ctx.fillText(moonText,drawX,y+14);}mx+=lw+7;}y+=30;}
   // Month cards
   for(let i=0;i<months.length;i++){const m=months[i];const col=i%COLS,row=Math.floor(i/COLS);const cx=PAD+col*(CARD_W+GAP),cy=y+row*(CARD_H+GAP);const accentColor=ACCENTS[i%ACCENTS.length];const name=(m.name||`Month ${i+1}`).slice(0,20);const days=m.days||daysMonth;const mImg=monthImgs[i]||null;const eventsHere=events.filter(e=>e.month===i+1&&e.name);ctx.fillStyle=hexAlpha(C.accent,0.05);if(T.radius===0)ctx.fillRect(cx,cy,CARD_W,CARD_H);else fillRoundRect(ctx,cx,cy,CARD_W,CARD_H,T.radius);ctx.strokeStyle=hexAlpha(C.accent,0.15);ctx.lineWidth=0.5;if(T.radius===0)ctx.strokeRect(cx+0.25,cy+0.25,CARD_W-0.5,CARD_H-0.5);else strokeRoundRect(ctx,cx,cy,CARD_W,CARD_H,T.radius);if(theme==='waypoint'){ctx.strokeStyle=hexAlpha(C.accent,0.3);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+8,cy);ctx.lineTo(cx,cy);ctx.lineTo(cx,cy+8);ctx.stroke();ctx.beginPath();ctx.moveTo(cx+CARD_W-8,cy+CARD_H);ctx.lineTo(cx+CARD_W,cy+CARD_H);ctx.lineTo(cx+CARD_W,cy+CARD_H-8);ctx.stroke();}if(theme==='iron'){ctx.strokeStyle=hexAlpha(C.accent,0.06);ctx.lineWidth=0.5;ctx.strokeRect(cx+4,cy+4,CARD_W-8,CARD_H-8);}if(mImg){drawImg(ctx,mImg,cx+8,cy+4,20,20);}else{ctx.fillStyle=accentColor;if(T.radius===0)ctx.fillRect(cx,cy,CARD_W,3);else fillRoundRect(ctx,cx,cy,CARD_W,3,{tl:T.radius,tr:T.radius,br:0,bl:0});}const textX=cx+8;const nameY=mImg?cy+32:cy+22;ctx.fillStyle=C.monthName;ctx.font=`bold 10px ${T.bodyFont}`;ctx.fillText(theme==='iron'?name:name.toUpperCase(),textX,nameY);ctx.fillStyle=C.textDimr;ctx.font=`9px ${T.bodyFont}`;ctx.fillText(theme==='expanse'?days+' SOL':theme==='waypoint'?days+' D':days+' days',textX,nameY+14);if(eventsHere.length>0){const ev=eventsHere[0];const eImg=eventImgs[events.indexOf(ev)]||null;const emojiStr=eImg?'':((ev.emoji||'')+' ');ctx.font=EMOJI_FONT_SM;const emojiW=eImg?0:ctx.measureText(emojiStr).width;ctx.font=`8px ${T.bodyFont}`;const nameLabel=(T.evPrefix+ev.name).slice(0,22);const nameW=ctx.measureText(eImg?ev.name.slice(0,22):nameLabel).width;const ew=Math.min((eImg?16:emojiW)+nameW+14,CARD_W-16);const eyBase=nameY+20;ctx.fillStyle=hexAlpha(C.accent,0.08);if(T.pill===0)ctx.fillRect(textX,eyBase,ew,16);else fillRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));ctx.strokeStyle=hexAlpha(C.accent,0.2);ctx.lineWidth=0.4;if(T.pill===0)ctx.strokeRect(textX+0.2,eyBase+0.2,ew-0.4,15.6);else strokeRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));if(eImg){drawImg(ctx,eImg,textX+3,eyBase+1,14,14);ctx.fillStyle=C.evColor;ctx.font=`8px ${T.bodyFont}`;ctx.fillText(ev.name.slice(0,22),textX+20,eyBase+11);}else{ctx.font=EMOJI_FONT_SM;ctx.fillStyle=C.evColor;ctx.fillText(emojiStr,textX+5,eyBase+12);ctx.font=`8px ${T.bodyFont}`;ctx.fillStyle=C.evColor;ctx.fillText(nameLabel,textX+5+emojiW,eyBase+11);}}}
   // Footer
-  y+=ROWS*(CARD_H+GAP)+10;ctx.fillStyle=hexAlpha(C.accent,0.2);ctx.fillRect(PAD,y,W-PAD*2,0.5);y+=12;ctx.fillStyle=C.textDimr;ctx.font=`9px ${T.bodyFont}`;ctx.textAlign='left';ctx.fillText('fantasy-calendar-builder.vercel.app',PAD,y+10);ctx.textAlign='right';ctx.fillText(`${namedMoons.length} moons Â· ${events.filter(e=>e.name).length} events`,W-PAD,y+10);const themeLabels={'':'Cartographer\'s Ink',expanse:'The Outer Expanse',iron:'Iron & Vellum',waypoint:'Waypoint Protocol',verdant:'Verdant Archive'};ctx.fillStyle=hexAlpha(C.accent,0.18);ctx.fillText(themeLabels[theme]||'',W-PAD,y+22);ctx.textAlign='left';
+  y+=ROWS*(CARD_H+GAP)+10;ctx.fillStyle=hexAlpha(C.accent,0.2);ctx.fillRect(PAD,y,W-PAD*2,0.5);y+=12;ctx.fillStyle=C.textDimr;ctx.font=`9px ${T.bodyFont}`;ctx.textAlign='left';ctx.fillText('fantasy-calendar-builder.vercel.app',PAD,y+10);ctx.textAlign='right';ctx.fillText(`${namedMoons.length} moons  ·  ${events.filter(e=>e.name).length} events`,W-PAD,y+10);const themeLabels={'':'Cartographer\'s Ink',expanse:'The Outer Expanse',iron:'Iron & Vellum',waypoint:'Waypoint Protocol',verdant:'Verdant Archive'};ctx.fillStyle=hexAlpha(C.accent,0.18);ctx.fillText(themeLabels[theme]||'',W-PAD,y+22);ctx.textAlign='left';
   const link=document.createElement('a');link.download=(worldName||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-calendar.png';link.href=canvas.toDataURL('image/png');link.click();
 }
 (function(){
