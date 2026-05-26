@@ -325,13 +325,7 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   };
 
   /* ── 2. Theme config ── */
-  const THEMES={
-    '':{       bodyFont:'Georgia,serif',                     titleFont:'bold 26px "Palatino Linotype",Georgia,serif',   radius:4,  pill:3,  pillIcons:['CALENDAR','SUN','WEEK'], moonPfx:'MOON', evPfx:'',   cols:4},
-    expanse:{  bodyFont:'"Share Tech Mono",monospace',        titleFont:'bold 22px "Share Tech Mono",monospace',         radius:0,  pill:0,  pillIcons:['[CAL]','[SOL]','[CYC]'],   moonPfx:'[o]',  evPfx:'>> ', cols:4},
-    iron:{     bodyFont:'"IM Fell English",Georgia,serif',    titleFont:'bold 26px "IM Fell English",Georgia,serif',     radius:2,  pill:1,  pillIcons:['MONTHS','DAYS','WEEK'],     moonPfx:'MOON', evPfx:'',   cols:4},
-    waypoint:{ bodyFont:'"Rajdhani",Arial,sans-serif',        titleFont:'bold 28px "Rajdhani",Arial,sans-serif',         radius:0,  pill:0,  pillIcons:['[M]','[D]','[W]'],         moonPfx:'[>]',  evPfx:'> ', cols:4},
-    verdant:{  bodyFont:'"Libre Baskerville",Georgia,serif',  titleFont:'bold 24px "Libre Baskerville",Georgia,serif',   radius:12, pill:99, pillIcons:['months','days','week'],      moonPfx:'~',    evPfx:'',   cols:4},
-  };
+  const THEMES={'':{ bodyFont:'Georgia,serif',titleFont:'bold 26px "Palatino Linotype",Georgia,serif',radius:4,pill:3,pillIcons:['*','+','~'],moonPfx:'~',evPfx:'',cols:4,label:"Cartographer's Ink"},expanse:{bodyFont:'"Share Tech Mono",monospace',titleFont:'bold 22px "Share Tech Mono",monospace',radius:0,pill:0,pillIcons:['[C]','[S]','[W]'],moonPfx:'[o]',evPfx:'>>',cols:4,label:'The Outer Expanse'},iron:{bodyFont:'"IM Fell English",Georgia,serif',titleFont:'bold 26px "IM Fell English",Georgia,serif',radius:2,pill:1,pillIcons:['*','+','~'],moonPfx:'~',evPfx:'',cols:4,label:'Iron & Vellum'},waypoint:{bodyFont:'"Rajdhani",Arial,sans-serif',titleFont:'bold 28px "Rajdhani",Arial,sans-serif',radius:0,pill:0,pillIcons:['[M]','[D]','[W]'],moonPfx:'>>',evPfx:'>',cols:4,label:'Waypoint Protocol'},verdant:{bodyFont:'"Libre Baskerville",Georgia,serif',titleFont:'bold 24px "Libre Baskerville",Georgia,serif',radius:12,pill:99,pillIcons:['*','+','~'],moonPfx:'~',evPfx:'',cols:4,label:'Verdant Archive'}};
   const T=THEMES[theme]||THEMES[''];
 
   /* ── 3. EMOJI: render to offscreen canvas then stamp as image ── */
@@ -435,26 +429,26 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   y+=40;
   if(eraName){ctx.fillStyle=C.textDim; ctx.font=`italic 13px ${T.bodyFont}`; ctx.fillText(eraName,PAD,y+13); y+=22;}
 
-  /* ── 8. Meta pills ── */
+  /* ── 8. Meta pills — single character symbol prefix, then plain text ── */
   const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0);
   const pillTexts=[`${numMonths} months`,`${totalDays} days/year`,`${daysWeek}-day week`];
   let px=PAD;
   pillTexts.forEach((text,pi)=>{
-    const iconLabel=T.pillIcons[pi]||'';
+    const sym=T.pillIcons[pi]||'';  // single small symbol e.g. '*' '+' 'o'
     ctx.font=`11px ${T.bodyFont}`;
-    const iconW=ctx.measureText(iconLabel+' ').width;
+    const symW=sym?ctx.measureText(sym+' ').width:0;
     const textW=ctx.measureText(text).width;
-    const pw=iconW+textW+14;
+    const pw=symW+textW+14;
+    // pill bg
     ctx.fillStyle=hexAlpha(C.accent,0.08);
     if(T.pill===0)ctx.fillRect(px,y,pw,20); else if(T.pill===99)fillRoundRect(ctx,px,y,pw,20,10); else fillRoundRect(ctx,px,y,pw,20,T.pill);
+    // pill border
     ctx.strokeStyle=hexAlpha(C.accent,0.25); ctx.lineWidth=0.5;
     if(T.pill===0)ctx.strokeRect(px+0.25,y+0.25,pw-0.5,19.5); else strokeRoundRect(ctx,px,y,pw,20,Math.min(T.pill,10));
-    // Draw icon label (plain text — no emoji in pills, theme-appropriate labels)
-    ctx.fillStyle=hexAlpha(C.accent,0.7); ctx.font=`bold 9px ${T.bodyFont}`;
-    ctx.fillText(iconLabel,px+5,y+13);
-    // Draw pill text
-    ctx.fillStyle=C.textDim; ctx.font=`11px ${T.bodyFont}`;
-    ctx.fillText(' '+text,px+4+iconW,y+14);
+    // draw symbol (faint accent color, same font size as text)
+    if(sym){ctx.fillStyle=hexAlpha(C.accent,0.6); ctx.fillText(sym+' ',px+5,y+14);}
+    // draw text (slightly dimmer)
+    ctx.fillStyle=C.textDim; ctx.fillText(text,px+5+symW,y+14);
     px+=pw+7;
   });
   y+=30;
@@ -465,22 +459,22 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
     for(let mi=0;mi<namedMoons.length;mi++){
       const moon=namedMoons[mi];
       const mImg=moonImgs[mi]||null;
-      const moonText=moon.name+' - '+moon.cycle+'d cycle';
+      const moonText=moon.name+' \u00b7 '+moon.cycle+'d cycle'; // · middot
       ctx.font=`11px ${T.bodyFont}`;
-      const pfxLabel=mImg?'':T.moonPfx+' ';
-      const pfxW=ctx.measureText(pfxLabel).width;
+      const sym=mImg?'':T.moonPfx;
+      const symW=sym?ctx.measureText(sym+' ').width:0;
       const txtW=ctx.measureText(moonText).width;
-      const lw=(mImg?24:pfxW)+txtW+14;
+      const lw=(mImg?24:symW)+txtW+14;
       ctx.fillStyle=hexAlpha(C.accent,0.1);
       if(T.pill===0)ctx.fillRect(mx,y,lw,20); else fillRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));
       ctx.strokeStyle=hexAlpha(C.accent,0.28); ctx.lineWidth=0.5;
       if(T.pill===0)ctx.strokeRect(mx+0.25,y+0.25,lw-0.5,19.5); else strokeRoundRect(ctx,mx,y,lw,20,Math.min(T.pill,10));
       if(mImg){
         drawImg(ctx,mImg,mx+4,y+2,16,16);
-        ctx.font=`11px ${T.bodyFont}`; ctx.fillStyle=C.moonTxt; ctx.fillText(moonText,mx+24,y+14);
+        ctx.fillStyle=C.moonTxt; ctx.fillText(moonText,mx+24,y+14);
       } else {
-        ctx.fillStyle=hexAlpha(C.accent,0.7); ctx.font=`bold 9px ${T.bodyFont}`; ctx.fillText(T.moonPfx,mx+5,y+13);
-        ctx.fillStyle=C.moonTxt; ctx.font=`11px ${T.bodyFont}`; ctx.fillText(' '+moonText,mx+4+pfxW,y+14);
+        if(sym){ctx.fillStyle=hexAlpha(C.accent,0.6); ctx.fillText(sym+' ',mx+5,y+14);}
+        ctx.fillStyle=C.moonTxt; ctx.fillText(moonText,mx+5+symW,y+14);
       }
       mx+=lw+7;
     }
@@ -542,32 +536,50 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
         drawImg(ctx,eImg,textX+3,eyBase+1,14,14);
         ctx.fillStyle=C.evColor; ctx.font=`8px ${T.bodyFont}`; ctx.fillText(ev.name.slice(0,22),textX+20,eyBase+11);
       } else {
-        // Use stampEmoji — renders emoji to offscreen canvas then stamps as image
-        // This GUARANTEES emoji renders correctly regardless of browser/OS
+        // Draw emoji via offscreen canvas (guarantees correct rendering cross-platform)
+        const emoji=ev.emoji||'';
         const emojiSz=10;
-        const emojiTmp=document.createElement('canvas');
-        emojiTmp.width=emojiSz*3; emojiTmp.height=emojiSz*2;
-        const etx=emojiTmp.getContext('2d');
-        etx.font=emojiSz+'px sans-serif';
-        etx.textBaseline='middle';
-        etx.fillStyle=C.evColor;
-        etx.fillText(ev.emoji||'*', 0, emojiSz);
-        const emojiW=etx.measureText(ev.emoji||'*').width;
+        let emojiW=0;
+        let drawX=textX+4;
 
+        if(emoji){
+          const emojiTmp=document.createElement('canvas');
+          emojiTmp.width=emojiSz*3; emojiTmp.height=emojiSz*2;
+          const etx=emojiTmp.getContext('2d');
+          etx.font=emojiSz+'px sans-serif';
+          etx.textBaseline='middle';
+          etx.fillStyle=C.evColor;
+          etx.fillText(emoji,0,emojiSz);
+          emojiW=etx.measureText(emoji).width+2;
+          // Stamp emoji onto main canvas
+          ctx.drawImage(emojiTmp,drawX,eyBase+2,emojiTmp.width/2,emojiTmp.height/2);
+          drawX+=emojiW;
+        }
+
+        // Draw prefix (for expanse/waypoint themes) then event name
         ctx.font=`8px ${T.bodyFont}`;
-        const evNameStr=(T.evPfx+ev.name).slice(0,22);
-        const nameW=ctx.measureText(evNameStr).width;
-        const ew=Math.min(emojiW+nameW+12, CARD_W-16);
+        const pfx=T.evPfx?T.evPfx+' ':'';
+        const evName=(pfx+ev.name).slice(0,24);
+        const nameW=ctx.measureText(evName).width;
+        const ew=Math.min(emojiW+nameW+12,CARD_W-16);
 
+        // Draw pill bg/border now we know full width
         ctx.fillStyle=hexAlpha(C.accent,0.08);
         if(T.pill===0)ctx.fillRect(textX,eyBase,ew,16); else fillRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));
         ctx.strokeStyle=hexAlpha(C.accent,0.2); ctx.lineWidth=0.4;
         if(T.pill===0)ctx.strokeRect(textX+0.2,eyBase+0.2,ew-0.4,15.6); else strokeRoundRect(ctx,textX,eyBase,ew,16,Math.min(T.pill,6));
 
-        // Stamp emoji as image (avoids all font fallback issues)
-        ctx.drawImage(emojiTmp, textX+3, eyBase+2, emojiTmp.width/2, emojiTmp.height/2);
+        // Re-stamp emoji (pill bg was drawn after)
+        if(emoji){
+          const emojiTmp2=document.createElement('canvas');
+          emojiTmp2.width=emojiSz*3; emojiTmp2.height=emojiSz*2;
+          const etx2=emojiTmp2.getContext('2d');
+          etx2.font=emojiSz+'px sans-serif'; etx2.textBaseline='middle'; etx2.fillStyle=C.evColor;
+          etx2.fillText(emoji,0,emojiSz);
+          ctx.drawImage(emojiTmp2,textX+4,eyBase+2,emojiTmp2.width/2,emojiTmp2.height/2);
+        }
         ctx.fillStyle=C.evColor; ctx.font=`8px ${T.bodyFont}`;
-        ctx.fillText(evNameStr, textX+3+emojiW, eyBase+11);
+        ctx.fillText(evName,textX+4+emojiW,eyBase+11);
       }
     }
   }
@@ -578,9 +590,8 @@ async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,mo
   ctx.fillStyle=C.textDimr; ctx.font=`9px ${T.bodyFont}`;
   ctx.textAlign='left'; ctx.fillText('fantasy-calendar-builder.vercel.app',PAD,y+10);
   ctx.textAlign='right';
-  ctx.fillText(`${namedMoons.length} moon${namedMoons.length!==1?'s':''} · ${events.filter(e=>e.name).length} events`,W-PAD,y+10);
-  const themeLabels={'':'Cartographer\'s Ink',expanse:'The Outer Expanse',iron:'Iron & Vellum',waypoint:'Waypoint Protocol',verdant:'Verdant Archive'};
-  ctx.fillStyle=hexAlpha(C.accent,0.18); ctx.fillText(themeLabels[theme]||'',W-PAD,y+22);
+  ctx.fillText(`${namedMoons.length} moon${namedMoons.length!==1?'s':''} \u00b7 ${events.filter(e=>e.name).length} events`,W-PAD,y+10);
+  ctx.fillStyle=hexAlpha(C.accent,0.18); ctx.fillText(T.label,W-PAD,y+22);
   ctx.textAlign='left';
 
   /* ── Download ── */
