@@ -296,19 +296,58 @@ function toggleDrawer(pill){
   const open=drawer.classList.toggle('open');
   pill.textContent=open?'lore ▴':'lore ▾';
 }
-function downloadCalendar(){
+
+async function downloadCalendar(){
   if(!calData){alert('No calendar to download.');return;}
-  const months=(calData.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
-  const moons=(calData.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
-  const events=(calData.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2],lore:(p[3]||'').replace(/‖/g,'|'),icon:p[4]||''};});
-  const monthsToUse=months.length>0?months:Array.from({length:calData.n||10},(_,i)=>({name:`Month ${i+1}`,days:calData.dm||30,lore:'',icon:''}));
-  // Build icons object matching builder state.icons shape so drawAndDownload works identically
-  const icons={world:calData.wi||'',months:monthsToUse.map(m=>m.icon||''),moons:moons.map(m=>m.icon||''),events:events.map(e=>e.icon||'')};
-  // Temporarily assign to state.icons so drawAndDownload can read it
-  const savedState=window._dlIcons; window._dlIcons=icons;
-  const origState=window.state; window.state={icons};
-  drawAndDownload(calData.w||'My World',calData.e||'',calData.n||10,calData.dw||7,calData.dm||30,monthsToUse,moons,events)
-    .finally(()=>{window.state=origState;});
+
+  const btn=document.querySelector('.btn-download');
+  const origText=btn?btn.textContent:'';
+  if(btn){btn.textContent='⏳ Preparing...';btn.disabled=true;}
+
+  try{
+    // Load html2canvas from CDN
+    if(!window.html2canvas){
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload=res; s.onerror=rej;
+        document.head.appendChild(s);
+      });
+    }
+
+    // The #cal-card is already rendered perfectly in the DOM by the browser
+    // with real fonts, real emoji, real CSS — just screenshot it
+    const card=document.getElementById('cal-card');
+    if(!card){alert('Calendar not loaded yet.');return;}
+
+    // Hide lore drawers before capture so they don't appear open
+    card.querySelectorAll('.lore-drawer.open').forEach(d=>{d.style.display='none';});
+
+    const canvas=await html2canvas(card,{
+      scale:2,                    // 2x for retina quality
+      useCORS:true,               // allow cross-origin images (uploaded icons)
+      allowTaint:false,
+      backgroundColor:null,       // transparent — card has its own bg
+      logging:false,
+      removeContainer:true,
+    });
+
+    // Restore any hidden drawers
+    card.querySelectorAll('.lore-drawer').forEach(d=>{d.style.display='';});
+
+    // Download
+    const worldName=(calData.w||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    const link=document.createElement('a');
+    link.download=worldName+'-calendar.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+
+  }catch(err){
+    console.error('Download failed:',err);
+    alert('Download failed: '+err.message);
+  }finally{
+    if(btn){btn.textContent=origText;btn.disabled=false;}
+  }
 }
 async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,months,moons,events){
   /* ── 1. Read active theme ── */
