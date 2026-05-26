@@ -718,10 +718,50 @@ function renderPreview(){
     </div>`;
 }
 
-function downloadCalendar(){
+async function downloadCalendar(){
   if(!state.worldName&&state.months.every(m=>!m.name)){alert('Fill in your world name first!');return;}
-  const monthsToShow=state.months.length>0?state.months:Array.from({length:state.numMonths},(_,i)=>({name:`Month ${i+1}`,days:state.daysMonth,lore:''}));
-  drawAndDownload(state.worldName||'Your World',state.eraName,state.numMonths,state.daysWeek,state.daysMonth,monthsToShow,state.moons,state.events);
+
+  const btn=document.querySelector('.btn-download');
+  const origText=btn?btn.textContent:'';
+  if(btn){btn.textContent='⏳ Preparing...';btn.disabled=true;}
+
+  try{
+    // Load html2canvas if not already loaded
+    if(!window.html2canvas){
+      await new Promise((res,rej)=>{
+        const s=document.createElement('script');
+        s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        s.onload=res; s.onerror=rej;
+        document.head.appendChild(s);
+      });
+    }
+
+    // The live preview div is already rendered by the browser with full CSS/fonts/emoji
+    // Screenshot it directly — pixel perfect, no canvas font issues
+    const preview=document.getElementById('cal-preview');
+    if(!preview){alert('Preview not ready.');return;}
+
+    const canvas=await html2canvas(preview,{
+      scale:2,
+      useCORS:true,
+      allowTaint:false,
+      backgroundColor:null,
+      logging:false,
+      removeContainer:true,
+    });
+
+    const worldName=(state.worldName||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    const link=document.createElement('a');
+    link.download=worldName+'-calendar.png';
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+
+  }catch(err){
+    console.error('Download failed:',err);
+    alert('Download failed: '+err.message);
+  }finally{
+    if(btn){btn.textContent=origText;btn.disabled=false;}
+  }
 }
 
 function startFresh(){
