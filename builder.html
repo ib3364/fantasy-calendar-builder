@@ -726,39 +726,65 @@ async function downloadCalendar(){
   if(btn){btn.textContent='⏳ Preparing...';btn.disabled=true;}
 
   try{
-    // Load html2canvas if not already loaded
+    // Load html2canvas — try primary CDN, fallback to secondary
     if(!window.html2canvas){
-      await new Promise((res,rej)=>{
-        const s=document.createElement('script');
-        s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        s.onload=res; s.onerror=rej;
-        document.head.appendChild(s);
-      });
+      const CDNS=[
+        'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+        'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+      ];
+      for(const url of CDNS){
+        try{
+          await new Promise((res,rej)=>{
+            const s=document.createElement('script');
+            s.src=url; s.onload=res; s.onerror=rej;
+            document.head.appendChild(s);
+          });
+          if(window.html2canvas)break;
+        }catch(e){continue;}
+      }
+      if(!window.html2canvas){
+        alert('Could not load screenshot library. Please check your internet connection and try again.');
+        return;
+      }
     }
 
-    // The live preview div is already rendered by the browser with full CSS/fonts/emoji
-    // Screenshot it directly — pixel perfect, no canvas font issues
     const preview=document.getElementById('cal-preview');
     if(!preview){alert('Preview not ready.');return;}
 
     const canvas=await html2canvas(preview,{
       scale:2,
       useCORS:true,
-      allowTaint:false,
-      backgroundColor:null,
+      allowTaint:true,
+      backgroundColor:getComputedStyle(preview).backgroundColor||'#ffffff',
       logging:false,
       removeContainer:true,
+      imageTimeout:15000,
+      onclone:(doc)=>{
+        doc.documentElement.setAttribute('data-theme',
+          document.documentElement.getAttribute('data-theme')||'');
+      }
     });
 
     const worldName=(state.worldName||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-    const link=document.createElement('a');
-    link.download=worldName+'-calendar.png';
-    link.href=canvas.toDataURL('image/png');
-    link.click();
+    const dataUrl=canvas.toDataURL('image/png');
+
+    try{
+      const link=document.createElement('a');
+      link.download=worldName+'-calendar.png';
+      link.href=dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }catch(e){
+      const w=window.open('','_blank');
+      if(w){
+        w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap “Save Image” to download</p></body></html>');
+      }
+    }
 
   }catch(err){
     console.error('Download failed:',err);
-    alert('Download failed: '+err.message);
+    alert('Download failed. Please try again.\n\nOn mobile: try using a desktop browser for best results.');
   }finally{
     if(btn){btn.textContent=origText;btn.disabled=false;}
   }
