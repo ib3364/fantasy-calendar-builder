@@ -288,7 +288,15 @@ function loadCalendar(){
           <span class="cal-footer-stats">${moons.filter(m=>m.name).length} moons  ·  ${events.filter(e=>e.name).length} events</span>
         </div>
       </div>`;
-  }catch(e){console.log('Invalid calendar data');}
+  }catch(e){
+    console.error('loadCalendar failed:',e);
+    // Show user-friendly message with actual error in console
+    document.getElementById('cal-card-wrap').innerHTML=`
+      <div class="error-state">
+        <h2>No calendar found</h2>
+        <p>This link may be invalid or expired. <a href="builder.html" style="color:var(--accent)">Build your own calendar →</a></p>
+      </div>`;
+  }
 }
 
 function toggleDrawer(pill){
@@ -722,12 +730,28 @@ function loadImg(src){if(!src)return Promise.resolve(null);return new Promise(re
 function drawImg(ctx,img,x,y,w,h){if(!img)return;const scale=Math.min(w/img.width,h/img.height);const dw=img.width*scale,dh=img.height*scale;ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);}
 
 (function(){
-  const html=document.documentElement;const btn=document.getElementById('theme-toggle-btn');const menu=document.getElementById('theme-menu');
-  const saved=localStorage.getItem('fcb-theme')||'';html.setAttribute('data-theme',saved);
+  const html=document.documentElement;
+  const btn=document.getElementById('theme-toggle-btn');
+  const menu=document.getElementById('theme-menu');
+  // Set initial state explicitly
+  menu.style.display='none';
+  const saved=localStorage.getItem('fcb-theme')||'';
+  html.setAttribute('data-theme',saved);
   function updateActive(){document.querySelectorAll('.theme-opt').forEach(o=>o.classList.toggle('active',o.dataset.theme===html.getAttribute('data-theme')));}
-  btn.addEventListener('click',e=>{e.stopPropagation();menu.style.display=menu.style.display==='none'?'block':'none';});
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    menu.style.display=menu.style.display==='none'?'block':'none';
+  });
   document.addEventListener('click',()=>{menu.style.display='none';});
-  document.querySelectorAll('.theme-opt').forEach(o=>{o.addEventListener('click',e=>{e.stopPropagation();html.setAttribute('data-theme',o.dataset.theme);localStorage.setItem('fcb-theme',o.dataset.theme);menu.style.display='none';updateActive();});});
+  document.querySelectorAll('.theme-opt').forEach(o=>{
+    o.addEventListener('click',e=>{
+      e.stopPropagation();
+      html.setAttribute('data-theme',o.dataset.theme);
+      localStorage.setItem('fcb-theme',o.dataset.theme);
+      menu.style.display='none';
+      updateActive();
+    });
+  });
   updateActive();
 })();
 loadCalendar();
