@@ -305,49 +305,90 @@ async function downloadCalendar(){
   if(btn){btn.textContent='⏳ Preparing...';btn.disabled=true;}
 
   try{
-    // Load html2canvas from CDN
+    // Load html2canvas — try primary CDN, fallback to secondary
     if(!window.html2canvas){
-      await new Promise((res,rej)=>{
-        const s=document.createElement('script');
-        s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-        s.onload=res; s.onerror=rej;
-        document.head.appendChild(s);
-      });
+      const CDNS=[
+        'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+        'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+      ];
+      let loaded=false;
+      for(const url of CDNS){
+        try{
+          await new Promise((res,rej)=>{
+            const s=document.createElement('script');
+            s.src=url;
+            s.onload=()=>{loaded=true;res();};
+            s.onerror=rej;
+            document.head.appendChild(s);
+          });
+          if(window.html2canvas){break;}
+        }catch(e){continue;}
+      }
+      if(!window.html2canvas){
+        alert('Could not load screenshot library. Please check your internet connection and try again.');
+        return;
+      }
     }
 
-    // The #cal-card is already rendered perfectly in the DOM by the browser
-    // with real fonts, real emoji, real CSS — just screenshot it
     const card=document.getElementById('cal-card');
     if(!card){alert('Calendar not loaded yet.');return;}
 
-    // Hide lore drawers before capture so they don't appear open
-    card.querySelectorAll('.lore-drawer.open').forEach(d=>{d.style.display='none';});
+    // Temporarily close any open lore drawers
+    const openDrawers=card.querySelectorAll('.lore-drawer.open');
+    openDrawers.forEach(d=>d.classList.remove('open'));
 
+    // Screenshot the fully browser-rendered card
     const canvas=await html2canvas(card,{
-      scale:2,                    // 2x for retina quality
-      useCORS:true,               // allow cross-origin images (uploaded icons)
-      allowTaint:false,
-      backgroundColor:null,       // transparent — card has its own bg
+      scale:2,
+      useCORS:true,
+      allowTaint:true,       // allow taint for mobile where CORS is stricter
+      backgroundColor:getComputedStyle(card).backgroundColor||'#ffffff',
       logging:false,
       removeContainer:true,
+      imageTimeout:15000,    // 15s timeout for images on slow mobile
+      onclone:(doc)=>{
+        // Ensure cloned doc has theme attribute so CSS vars resolve correctly
+        doc.documentElement.setAttribute('data-theme',
+          document.documentElement.getAttribute('data-theme')||'');
+      }
     });
 
-    // Restore any hidden drawers
-    card.querySelectorAll('.lore-drawer').forEach(d=>{d.style.display='';});
+    // Restore open drawers
+    openDrawers.forEach(d=>d.classList.add('open'));
 
-    // Download
     const worldName=(calData.w||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-    const link=document.createElement('a');
-    link.download=worldName+'-calendar.png';
-    link.href=canvas.toDataURL('image/png');
-    link.click();
+    const dataUrl=canvas.toDataURL('image/png');
+
+    // Mobile-safe download: try anchor click, fallback to open in new tab
+    try{
+      const link=document.createElement('a');
+      link.download=worldName+'-calendar.png';
+      link.href=dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }catch(e){
+      // On some mobile browsers download attribute doesn't work — open image in new tab
+      const w=window.open('','_blank');
+      if(w){
+        w.document.write(`<html><body style="margin:0;background:#000">
+          <img src="${dataUrl}" style="max-width:100%;display:block"/>
+          <p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">
+            Long-press the image and tap "Save Image" to download
+          </p>
+        </body></html>`);
+      }
+    }
 
   }catch(err){
     console.error('Download failed:',err);
-    alert('Download failed: '+err.message);
+    // Restore drawers in case of error
+    document.querySelectorAll('.lore-drawer.open').forEach(d=>d.classList.remove('open'));
+    alert('Download failed. Please try again.\n\nOn mobile: try rotating your screen or using a desktop browser for best results.');
   }finally{
     if(btn){btn.textContent=origText;btn.disabled=false;}
   }
+}
 }
 async function drawAndDownload(worldName,eraName,numMonths,daysWeek,daysMonth,months,moons,events){
   /* ── 1. Read active theme ── */
