@@ -751,6 +751,14 @@ async function downloadCalendar(){
     const preview=document.getElementById('cal-preview');
     if(!preview){alert('Preview not ready.');return;}
 
+    // Expand all lore drawers so lore is visible in the downloaded image
+    const allDrawers=preview.querySelectorAll('.lore-drawer');
+    const wasOpen=[];
+    allDrawers.forEach(d=>{
+      wasOpen.push(d.classList.contains('open'));
+      d.classList.add('open');
+    });
+
     const canvas=await html2canvas(preview,{
       scale:2,
       useCORS:true,
@@ -762,8 +770,13 @@ async function downloadCalendar(){
       onclone:(doc)=>{
         doc.documentElement.setAttribute('data-theme',
           document.documentElement.getAttribute('data-theme')||'');
+        // Also expand all drawers in the clone
+        doc.querySelectorAll('.lore-drawer').forEach(d=>d.classList.add('open'));
       }
     });
+
+    // Restore drawer states
+    allDrawers.forEach((d,i)=>{if(!wasOpen[i])d.classList.remove('open');});
 
     const worldName=(state.worldName||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     const dataUrl=canvas.toDataURL('image/png');
