@@ -309,8 +309,8 @@ function loadCalendar(){
         ${moonItems?`<div class="cal-moons-row" style="flex-wrap:wrap;gap:.5rem">${moonItems}</div>`:''}
         <div class="cal-months-grid">${monthCards}</div>
         <div class="cal-footer">
-          <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
-          <span class="cal-footer-stats">${moons.filter(m=>m.name).length} moons · ${events.filter(e=>e.name).length} events</span>
+          <span class="cal-footer-brand">${monthsToRender.length} months · ${totalDays} days/year · ${daysWeek}-day week</span>
+          <span class="cal-footer-stats">${moons.filter(m=>m.name).length} moon${moons.filter(m=>m.name).length!==1?'s':''} · ${events.filter(e=>e.name).length} event${events.filter(e=>e.name).length!==1?'s':''}</span>
         </div>
       </div>`;
   }catch(e){
