@@ -699,7 +699,7 @@ function renderPreview(){
     ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
     <div class="cal-months-grid">${monthCards}</div>
     <div class="cal-footer">
-      <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
+      <span class="cal-footer-brand">${state.numMonths} months · ${totalDays} days/year · ${state.daysWeek}-day week</span>
       <span class="cal-footer-stats">${state.moons.length} moon${state.moons.length!==1?'s':''} · ${state.events.filter(e=>e.name).length} event${state.events.filter(e=>e.name).length!==1?'s':''}</span>
     </div>`;
   preview.innerHTML=`
@@ -713,7 +713,7 @@ function renderPreview(){
     ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
     <div class="cal-months-grid">${monthCards}</div>
     <div class="cal-footer">
-      <span class="cal-footer-brand">fantasy-calendar-builder.vercel.app</span>
+      <span class="cal-footer-brand">${state.numMonths} months · ${totalDays} days/year · ${state.daysWeek}-day week</span>
       <span class="cal-footer-stats">${state.moons.length} moon${state.moons.length!==1?'s':''} · ${state.events.filter(e=>e.name).length} event${state.events.filter(e=>e.name).length!==1?'s':''}</span>
     </div>`;
 }
