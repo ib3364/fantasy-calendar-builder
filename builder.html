@@ -324,25 +324,27 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 
 .cal-layout-banner{width:1400px!important;max-width:1400px!important}
 .cal-layout-banner .cal-months-grid{gap:5px!important;overflow:visible!important}
-.cal-layout-banner .cal-month-tile{padding:.35rem .4rem!important;min-height:60px!important;max-height:80px!important;overflow:hidden}
-.cal-layout-banner .cal-month-name{font-size:.65rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-.cal-layout-banner .cal-month-days{font-size:.58rem!important}
+.cal-layout-banner .cal-month-tile{padding:.4rem .5rem!important;min-height:70px!important;overflow:hidden}
+.cal-layout-banner .cal-month-name{font-size:.68rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:var(--month-name)!important}
+.cal-layout-banner .cal-month-days{font-size:.62rem!important;color:var(--text-muted)!important}
 .cal-layout-banner .lore-drawer,.cal-layout-banner .lore-pill{display:none!important}
-.cal-layout-banner .cal-event-badge{font-size:.56rem!important;padding:.08rem .3rem!important;white-space:nowrap!important;overflow:hidden!important;max-width:100%!important}
+.cal-layout-banner .cal-event-badge{font-size:.6rem!important;padding:.1rem .4rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:calc(100% - 4px)!important}
 .cal-layout-banner .cal-moons-row,.cal-layout-banner .world-lore-block,.cal-layout-banner .cal-meta-row{display:none!important}
-.cal-layout-banner .cal-world-name{font-size:1.1rem!important}
-.cal-layout-banner .cal-footer{margin-top:.6rem!important}
+.cal-layout-banner .cal-world-name{font-size:1.2rem!important}
+.cal-layout-banner .cal-footer{margin-top:.5rem!important}
 
 .cal-layout-grid .cal-world-header,.cal-layout-grid .cal-era,
 .cal-layout-grid .cal-meta-row,.cal-layout-grid .cal-moons-row,
 .cal-layout-grid .cal-footer,.cal-layout-grid .world-lore-block{display:none!important}
 .cal-layout-grid{padding:.6rem!important}
-.cal-layout-grid .cal-months-grid{margin-top:0!important;gap:5px!important;grid-template-columns:repeat(4,1fr)!important}
-.cal-layout-grid .cal-month-tile{padding:.45rem .55rem!important;min-height:56px!important}
-.cal-layout-grid .cal-month-name{font-size:.75rem!important}
-.cal-layout-grid .cal-month-days{font-size:.65rem!important}
-.cal-layout-grid .lore-drawer,.cal-layout-grid .lore-pill{display:none!important}
-.cal-layout-grid .cal-event-badge{font-size:.62rem!important;padding:.1rem .35rem!important}
+.cal-layout-grid .cal-months-grid{margin-top:0!important;gap:6px!important;grid-template-columns:repeat(4,1fr)!important}
+.cal-layout-grid .cal-month-tile{padding:.6rem .7rem!important;min-height:80px!important}
+.cal-layout-grid .cal-month-name{font-size:.85rem!important;color:var(--month-name)!important}
+.cal-layout-grid .cal-month-days{font-size:.72rem!important;color:var(--text-muted)!important;margin-bottom:.3rem!important}
+.cal-layout-grid .lore-pill{display:none!important}
+.cal-layout-grid .lore-drawer{display:block!important;overflow:hidden!important;max-height:3.8rem!important;font-size:.68rem!important;line-height:1.45!important;color:var(--text-dim)!important;margin-top:.3rem!important;font-style:italic;opacity:.9}
+.cal-layout-grid .cal-event-badge{font-size:.7rem!important;padding:.15rem .5rem!important;margin-top:.3rem!important}
+.cal-layout-grid .cal-month-accent{height:4px!important}
 
 /* ── LAYOUT: LORE SHEET — 2-col, all lore expanded, readable ── */
 .cal-layout-lore{max-width:720px!important;width:720px!important}
