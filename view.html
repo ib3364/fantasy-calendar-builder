@@ -176,6 +176,50 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="waypoint"] .lore-section-header::before{content:'◈ ';color:var(--accent)}
 
 @media(max-width:600px){.cal-months-grid{grid-template-columns:repeat(2,1fr)}.cal-world-name{font-size:1.5rem}.cal-card{padding:1.5rem}}
+/* ── Layout Picker Modal ── */
+#layout-picker-modal{display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);padding:1rem}
+#layout-picker-modal.open{display:flex}
+.layout-picker-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);width:min(680px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.layout-picker-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;border-bottom:1px solid var(--border)}
+.layout-picker-title{font-family:var(--font-display);color:var(--text);font-size:1rem;font-weight:bold}
+.layout-picker-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem;line-height:1}
+.layout-picker-close:hover{color:var(--accent)}
+.layout-picker-subtitle{padding:.6rem 1.2rem;font-size:.78rem;color:var(--text-dim);font-family:var(--font-body);border-bottom:1px solid var(--border)}
+.layout-options{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;padding:1.2rem}
+.layout-option{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-card);padding:.8rem;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.layout-option:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.06)}
+.layout-option.current{border-color:var(--accent);box-shadow:0 0 0 1px rgba(var(--accent-rgb),.3)}
+.layout-thumb{width:100%;aspect-ratio:1.5;border-radius:2px;overflow:hidden;background:var(--bg);border:1px solid var(--border)}
+.layout-thumb svg{width:100%;height:100%}
+.layout-option-name{font-family:var(--font-body);font-size:.78rem;font-weight:700;color:var(--text);text-align:center}
+.layout-option-desc{font-family:var(--font-body);font-size:.68rem;color:var(--text-dim);text-align:center;line-height:1.4}
+.layout-option-btn{margin-top:.3rem;background:var(--accent);color:var(--bg);border:none;padding:.35rem .9rem;font-size:.72rem;font-weight:700;cursor:pointer;border-radius:var(--radius-btn);font-family:var(--font-body);clip-path:var(--btn-clip);width:100%}
+.layout-option-btn:hover{opacity:.88}
+.layout-picker-note{padding:.7rem 1.2rem;font-size:.7rem;color:var(--text-dim);font-family:var(--font-body);border-top:1px solid var(--border);text-align:center}
+
+/* ── Layout CSS classes applied to cal-card before screenshot ── */
+
+/* POSTER: tall, 2-col months, big title */
+.cal-layout-poster{max-width:480px!important;width:480px!important}
+.cal-layout-poster .cal-months-grid{grid-template-columns:repeat(2,1fr)!important}
+
+/* BANNER: wide, single row of months */
+.cal-layout-banner{max-width:1100px!important;width:1100px!important}
+.cal-layout-banner .cal-months-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))!important}
+.cal-layout-banner .cal-month-tile{min-height:80px}
+
+/* GRID ONLY: hide header, just month cards */
+.cal-layout-grid .cal-world-header,.cal-layout-grid .cal-era,
+.cal-layout-grid .cal-meta-row,.cal-layout-grid .cal-moons-row,
+.cal-layout-grid .cal-footer,.cal-layout-grid .world-lore-block{display:none!important}
+.cal-layout-grid .cal-months-grid{margin-top:0!important}
+
+/* LORE SHEET: clean readable text, wider layout, lore forced open */
+.cal-layout-lore{max-width:700px!important;width:700px!important;font-size:1rem}
+.cal-layout-lore .cal-months-grid{grid-template-columns:1fr 1fr!important}
+.cal-layout-lore .lore-drawer{display:block!important;max-height:none!important;opacity:1!important}
+.cal-layout-lore .lore-pill{display:none!important}
+
 </style>
 </head>
 <body>
@@ -184,7 +228,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-actions">
     <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
-    <button class="btn-download" onclick="downloadCalendar()">📥 Download PNG</button>
+    <button class="btn-download" onclick="openLayoutPicker()">📥 Download PNG</button>
     <a href="builder.html" class="btn-build">Build your own →</a>
   </div>
 </nav>
@@ -325,7 +369,7 @@ function toggleDrawer(pill){
   pill.textContent=open?'lore ▴':'lore ▾';
 }
 
-async function downloadCalendar(){
+async function downloadWithLayout(layoutId){
   if(!calData){alert('No calendar to download.');return;}
 
   const btn=document.querySelector('.btn-download');
@@ -361,6 +405,10 @@ async function downloadCalendar(){
     const card=document.getElementById('cal-card');
     if(!card){alert('Calendar not loaded yet.');return;}
 
+    // Apply layout class before screenshot
+    const layoutClass=layoutId&&layoutId!=='card'?'cal-layout-'+layoutId:'';
+    if(layoutClass)card.classList.add(layoutClass);
+
     // Expand all lore drawers so lore is visible in the downloaded image
     const allDrawers=card.querySelectorAll('.lore-drawer');
     const wasOpen=[];
@@ -385,16 +433,18 @@ async function downloadCalendar(){
       }
     });
 
-    // Restore drawer states
+    // Restore drawer states and layout class
     allDrawers.forEach((d,i)=>{if(!wasOpen[i])d.classList.remove('open');});
+    if(layoutClass)card.classList.remove(layoutClass);
 
     const worldName=(calData.w||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    const layoutSuffix=layoutId&&layoutId!=='card'?'-'+layoutId:'';
     const dataUrl=canvas.toDataURL('image/png');
 
     // Mobile-safe download: try anchor click, fallback to open in new tab
     try{
       const link=document.createElement('a');
-      link.download=worldName+'-calendar.png';
+      link.download=worldName+layoutSuffix+'-calendar.png';
       link.href=dataUrl;
       document.body.appendChild(link);
       link.click();
@@ -458,5 +508,148 @@ function drawImg(ctx,img,x,y,w,h){if(!img)return;const scale=Math.min(w/img.widt
 })();
 loadCalendar();
 </script>
+
+<script>
+/* ── LAYOUT PICKER ── */
+const LAYOUTS=[
+  {
+    id:'card',
+    name:'Card',
+    desc:'Exactly as shown on screen',
+    badge:'Default',
+    thumb:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="5" width="110" height="70" rx="3" fill="currentColor" opacity=".06" stroke="currentColor" stroke-width=".5" opacity=".3"/>
+      <rect x="12" y="12" width="40" height="5" rx="1" fill="currentColor" opacity=".5"/>
+      <rect x="12" y="20" width="25" height="3" rx="1" fill="currentColor" opacity=".3"/>
+      <rect x="12" y="28" width="12" height="3" rx="1" fill="currentColor" opacity=".2"/>
+      <rect x="27" y="28" width="12" height="3" rx="1" fill="currentColor" opacity=".2"/>
+      <rect x="12" y="38" width="24" height="14" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="39" y="38" width="24" height="14" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="66" y="38" width="24" height="14" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="93" y="38" width="20" height="14" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="12" y="55" width="24" height="14" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="39" y="55" width="24" height="14" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+    </svg>`
+  },
+  {
+    id:'poster',
+    name:'Poster',
+    desc:'Tall format, 2-column months. Great for printing or framing.',
+    badge:'Print',
+    thumb:`<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="5" width="70" height="110" rx="3" fill="currentColor" opacity=".06" stroke="currentColor" stroke-width=".5"/>
+      <rect x="12" y="12" width="50" height="7" rx="1" fill="currentColor" opacity=".5"/>
+      <rect x="18" y="22" width="35" height="3" rx="1" fill="currentColor" opacity=".3"/>
+      <rect x="12" y="30" width="14" height="3" rx="1" fill="currentColor" opacity=".2"/>
+      <rect x="28" y="30" width="14" height="3" rx="1" fill="currentColor" opacity=".2"/>
+      <rect x="12" y="38" width="26" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="42" y="38" width="26" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="12" y="57" width="26" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="42" y="57" width="26" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="12" y="76" width="26" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="42" y="76" width="26" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+    </svg>`
+  },
+  {
+    id:'banner',
+    name:'Banner',
+    desc:'Wide horizontal format. Perfect for Discord or Twitter headers.',
+    badge:'Social',
+    thumb:`<svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="3" width="154" height="54" rx="2" fill="currentColor" opacity=".06" stroke="currentColor" stroke-width=".5"/>
+      <rect x="8" y="8" width="45" height="6" rx="1" fill="currentColor" opacity=".5"/>
+      <rect x="8" y="17" width="25" height="3" rx="1" fill="currentColor" opacity=".3"/>
+      <rect x="8" y="23" width="10" height="2" rx="1" fill="currentColor" opacity=".2"/>
+      <rect x="20" y="23" width="10" height="2" rx="1" fill="currentColor" opacity=".2"/>
+      <rect x="60" y="8" width="16" height="44" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="79" y="8" width="16" height="44" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="98" y="8" width="16" height="44" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="117" y="8" width="16" height="44" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="136" y="8" width="16" height="44" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+    </svg>`
+  },
+  {
+    id:'grid',
+    name:'Grid Only',
+    desc:'Just the month cards, no header or footer. Clean embed or wallpaper.',
+    badge:'Minimal',
+    thumb:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="5" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="34" y="5" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="63" y="5" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="92" y="5" width="23" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="5" y="24" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="34" y="24" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="63" y="24" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="92" y="24" width="23" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="5" y="43" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+      <rect x="34" y="43" width="26" height="16" rx="1" fill="currentColor" opacity=".12" stroke="currentColor" stroke-width=".5"/>
+    </svg>`
+  },
+  {
+    id:'lore',
+    name:'Lore Sheet',
+    desc:'All lore expanded in a readable 2-column layout. Worldbuilding reference.',
+    badge:'Reference',
+    thumb:`<svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg">
+      <rect x="5" y="5" width="110" height="70" rx="2" fill="currentColor" opacity=".06" stroke="currentColor" stroke-width=".5"/>
+      <rect x="10" y="10" width="45" height="5" rx="1" fill="currentColor" opacity=".5"/>
+      <rect x="10" y="18" width="30" height="2" rx="1" fill="currentColor" opacity=".25"/>
+      <rect x="10" y="24" width="50" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="10" y="28" width="35" height="2" rx="1" fill="currentColor" opacity=".25"/>
+      <rect x="10" y="32" width="42" height="2" rx="1" fill="currentColor" opacity=".15"/>
+      <rect x="10" y="36" width="38" height="2" rx="1" fill="currentColor" opacity=".15"/>
+      <rect x="64" y="24" width="50" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="64" y="28" width="35" height="2" rx="1" fill="currentColor" opacity=".25"/>
+      <rect x="64" y="32" width="42" height="2" rx="1" fill="currentColor" opacity=".15"/>
+      <rect x="64" y="36" width="38" height="2" rx="1" fill="currentColor" opacity=".15"/>
+      <rect x="10" y="44" width="50" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+      <rect x="64" y="44" width="50" height="16" rx="1" fill="currentColor" opacity=".08" stroke="currentColor" stroke-width=".5"/>
+    </svg>`
+  },
+];
+
+function openLayoutPicker(){
+  const modal=document.getElementById('layout-picker-modal');
+  modal.classList.add('open');
+}
+function closeLayoutPicker(){
+  document.getElementById('layout-picker-modal').classList.remove('open');
+}
+
+function renderLayoutPicker(){
+  const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const grid=document.getElementById('layout-options-grid');
+  if(!grid)return;
+  grid.innerHTML=LAYOUTS.map(l=>`
+    <div class="layout-option${l.id==='card'?' current':''}" onclick="triggerDownload('${l.id}')">
+      <div class="layout-thumb" style="color:${accent}">${l.thumb}</div>
+      <div class="layout-option-name">${l.name} <span style="font-size:.62rem;opacity:.6;font-weight:400">${l.badge}</span></div>
+      <div class="layout-option-desc">${l.desc}</div>
+      <button class="layout-option-btn">Download ${l.name}</button>
+    </div>
+  `).join('');
+}
+
+async function triggerDownload(layoutId){
+  closeLayoutPicker();
+  await downloadWithLayout(layoutId);
+}
+
+renderLayoutPicker();
+</script>
+
+<!-- Layout Picker Modal -->
+<div id="layout-picker-modal" onclick="if(event.target.id==='layout-picker-modal')closeLayoutPicker()">
+  <div class="layout-picker-box">
+    <div class="layout-picker-header">
+      <span class="layout-picker-title">📐 Choose a layout to download</span>
+      <button class="layout-picker-close" onclick="closeLayoutPicker()">&#x2715;</button>
+    </div>
+    <div class="layout-picker-subtitle">Each layout uses your active theme. The image is pixel-perfect — exactly what you see on screen.</div>
+    <div class="layout-options" id="layout-options-grid"></div>
+    <div class="layout-picker-note">⚡ Tip: the lore sheet layout forces all lore open — great for sharing your worldbuilding notes.</div>
+  </div>
+</div>
 </body>
 </html>
