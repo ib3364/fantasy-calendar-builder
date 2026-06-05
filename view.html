@@ -610,6 +610,7 @@ const LAYOUTS=[
 ];
 
 function openLayoutPicker(){
+  renderLayoutPicker();
   const modal=document.getElementById('layout-picker-modal');
   modal.classList.add('open');
 }
@@ -636,7 +637,6 @@ async function triggerDownload(layoutId){
   await downloadWithLayout(layoutId);
 }
 
-renderLayoutPicker();
 </script>
 
 <!-- Layout Picker Modal -->
