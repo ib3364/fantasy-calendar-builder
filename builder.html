@@ -266,6 +266,35 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .scan-line{display:none}
 
 @media(max-width:768px){.builder-layout{grid-template-columns:1fr}.preview-panel{border-top:1px solid var(--border2);padding:1.2rem}.cal-months-grid{grid-template-columns:repeat(2,1fr)}.event-row{display:flex;flex-direction:column;gap:.5rem}.event-row input,.event-row select{width:100%}}
+
+/* ── Icon Picker Modal ── */
+#icon-picker-modal{display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
+.icon-picker-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);width:min(640px,100%);max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.icon-picker-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;border-bottom:1px solid var(--border);gap:.8rem;flex-shrink:0}
+.icon-picker-title{font-family:var(--font-display);color:var(--text);font-size:1rem;font-weight:bold}
+.icon-picker-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem;border-radius:var(--radius-btn)}
+.icon-picker-close:hover{color:var(--accent)}
+.icon-picker-search{padding:.7rem 1.1rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.icon-picker-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;font-family:var(--font-body);font-size:.88rem;border-radius:var(--radius-btn);outline:none;box-sizing:border-box}
+.icon-picker-search input:focus{border-color:var(--accent)}
+.icon-picker-categories{display:flex;gap:.4rem;padding:.6rem 1.1rem;flex-wrap:wrap;border-bottom:1px solid var(--border);flex-shrink:0}
+.icon-cat-btn{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.28rem .65rem;font-size:.72rem;cursor:pointer;border-radius:var(--radius-pill);font-family:var(--font-body);transition:all .15s}
+.icon-cat-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+.icon-picker-body{flex:1;overflow-y:auto;padding:.8rem 1.1rem}
+.icon-picker-status{font-size:.72rem;color:var(--text-dim);font-family:var(--font-body);margin-bottom:.6rem}
+#icon-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:.4rem}
+.icon-result-btn{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-card);width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;transition:all .15s;padding:0}
+.icon-result-btn:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);transform:scale(1.1)}
+.emoji-btn{font-size:1.3rem}
+.icon-loading{grid-column:1/-1;text-align:center;color:var(--text-dim);font-family:var(--font-body);font-size:.82rem;padding:2rem}
+.btn-icon-pick{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:.32rem .75rem;font-size:.72rem;cursor:pointer;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn);display:inline-flex;align-items:center;gap:.3rem;transition:all .2s}
+.btn-icon-pick:hover{background:rgba(var(--accent-rgb),.12)}
+.btn-icon-pick::before{content:'🔍 '}
+[data-theme="expanse"] .btn-icon-pick::before{content:'[PICK] ';font-family:'Share Tech Mono',monospace;font-size:.68rem}
+[data-theme="iron"] .btn-icon-pick::before{content:'⚜ '}
+[data-theme="waypoint"] .btn-icon-pick::before{content:'◈ '}
+[data-theme="verdant"] .btn-icon-pick::before{content:'🌿 '}
+
 </style>
 </head>
 <body>
@@ -302,6 +331,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
         <label>World icon <span style="color:var(--text-dimmer)">(optional)</span></label>
         <div class="icon-upload-row">
           <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('world-icon-input')">Upload icon</button>
+          <button type="button" class="btn-icon-pick" onclick="openIconPicker('world','world-icon-preview','world')">Pick icon</button>
           <span class="icon-size-hint">Recommended: 64×64 px · PNG or SVG · max 80KB</span>
         </div>
         <input type="file" id="world-icon-input" accept="image/*" style="display:none" onchange="handleIconUpload(this,'world','world-icon-preview')"/>
@@ -414,6 +444,7 @@ function buildMonthFields(){
     </div>
     <div class="icon-upload-row">
       <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('month-icon-input-${i}')">Upload icon</button>
+      <button type="button" class="btn-icon-pick" onclick="openIconPicker('month-${i}','month-icon-preview-${i}','month')">Pick icon</button>
       <span class="icon-size-hint">32×32 px · PNG/SVG · max 40KB</span>
     </div>
     <input type="file" id="month-icon-input-${i}" accept="image/*" style="display:none" onchange="handleIconUpload(this,'month-${i}','month-icon-preview-${i}')"/>
@@ -447,6 +478,7 @@ function renderMoonList(){
       </div>
       <div class="icon-upload-row">
         <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('moon-icon-input-${i}')">Upload icon</button>
+        <button type="button" class="btn-icon-pick" onclick="openIconPicker('moon-${i}','moon-icon-preview-${i}','moon')">Pick icon</button>
         <span class="icon-size-hint">32×32 px · PNG/SVG · max 40KB</span>
       </div>
       <input type="file" id="moon-icon-input-${i}" accept="image/*" style="display:none" onchange="handleIconUpload(this,'moon-${i}','moon-icon-preview-${i}')"/>
@@ -486,6 +518,7 @@ function renderEventList(){
       </div>
       <div class="icon-upload-row">
         <button type="button" class="btn-icon-upload" onclick="triggerIconUpload('event-icon-input-${i}')">Upload icon</button>
+        <button type="button" class="btn-icon-pick" onclick="openIconPicker('event-${i}','event-icon-preview-${i}','event')">Pick icon</button>
         <span class="icon-size-hint">28×28 px · PNG/SVG · max 30KB — replaces emoji if set</span>
       </div>
       <input type="file" id="event-icon-input-${i}" accept="image/*" style="display:none" onchange="handleIconUpload(this,'event-${i}','event-icon-preview-${i}')"/>
@@ -791,7 +824,26 @@ async function downloadCalendar(){
     }catch(e){
       const w=window.open('','_blank');
       if(w){
-        w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap “Save Image” to download</p></body></html>');
+        w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap “Save Image” to download</p>
+<!-- Icon Picker Modal -->
+<div id="icon-picker-modal" onclick="if(event.target===this)closeIconPicker()">
+  <div class="icon-picker-box">
+    <div class="icon-picker-header">
+      <span class="icon-picker-title">🔍 Pick an icon</span>
+      <button class="icon-picker-close" onclick="closeIconPicker()">✕</button>
+    </div>
+    <div class="icon-picker-search">
+      <input id="icon-search-input" type="text" placeholder="Search 150,000+ icons (e.g. moon, dragon, sword, fire...)" oninput="onIconSearch(this.value)"/>
+    </div>
+    <div class="icon-picker-categories" id="icon-categories"></div>
+    <div class="icon-picker-body">
+      <div class="icon-picker-status" id="icon-picker-status">Browse categories or search above</div>
+      <div id="icon-results-grid"></div>
+    </div>
+  </div>
+</div>
+
+</body></html>');
       }
     }
 
@@ -1180,6 +1232,252 @@ function roundRect(ctx,x,y,w,h,r){fillRoundRect(ctx,x,y,w,h,r);} // legacy alias
 })();
 
 updatePreview();
+/* ═══════════════════════════════════════════════════
+   ICON PICKER — Iconify API + Emoji categories
+   Opens as modal, works for all field types
+   Keeps existing upload button intact
+═══════════════════════════════════════════════════ */
+
+// State for the picker
+let _pickerTarget = null; // {key, previewId, type}
+
+// Fantasy-focused category presets using Iconify icon sets
+const ICON_CATEGORIES = [
+  { label: '⭐ Fantasy',   query: 'fantasy',    set: 'game-icons' },
+  { label: '🌙 Celestial', query: 'moon star sun', set: 'twemoji' },
+  { label: '⚔ Combat',    query: 'sword shield', set: 'game-icons' },
+  { label: '🌿 Nature',    query: 'tree leaf nature', set: 'twemoji' },
+  { label: '🔥 Elements',  query: 'fire water earth wind', set: 'game-icons' },
+  { label: '🏰 World',     query: 'castle tower kingdom', set: 'game-icons' },
+  { label: '✨ Symbols',   query: 'star rune magic glyph', set: 'game-icons' },
+  { label: '😀 Emoji',     query: 'emoji face', set: 'twemoji' },
+];
+
+// Emoji quick-pick grid (expanded from original 10)
+const EMOJI_GRID = [
+  '🌕','🌙','⭐','🌟','💫','☀','🌤','⛅','🌈','❄',
+  '🔥','💧','🌊','🌪','⛈','🌿','🍂','🌸','🌺','🌻',
+  '⚔','🗡','🛡','🏹','🪄','🔮','💎','🪙','📜','🗺',
+  '🏰','🗼','⛩','🕌','🏛','🐉','🦅','🦁','🐺','🦊',
+  '🌋','🏔','🗻','🌴','🌵','💀','👑','⚗','🔱','✨',
+  '🎉','🎊','🎭','🎪','🎶','🧿','🪬','🔯','☯','🕎',
+  '❤','💙','💚','💛','💜','🖤','🤍','🧡','💔','♾',
+  '🌍','🌎','🌏','🪐','🌌','🚀','⚡','🌠','☄','🛸',
+];
+
+function openIconPicker(key, previewId, fieldType) {
+  _pickerTarget = { key, previewId, fieldType };
+  const modal = document.getElementById('icon-picker-modal');
+  modal.style.display = 'flex';
+  document.getElementById('icon-search-input').value = '';
+  document.getElementById('icon-picker-status').textContent = 'Search for icons or browse categories below';
+  renderEmojiGrid();
+  document.getElementById('icon-search-input').focus();
+}
+
+function closeIconPicker() {
+  document.getElementById('icon-picker-modal').style.display = 'none';
+  _pickerTarget = null;
+}
+
+function renderEmojiGrid() {
+  const grid = document.getElementById('icon-results-grid');
+  grid.innerHTML = EMOJI_GRID.map(e =>
+    `<button class="icon-result-btn emoji-btn" onclick="selectEmoji('${e}')" title="${e}">${e}</button>`
+  ).join('');
+}
+
+async function searchIcons(query) {
+  if (!query.trim()) { renderEmojiGrid(); return; }
+  const status = document.getElementById('icon-picker-status');
+  const grid = document.getElementById('icon-results-grid');
+  status.textContent = 'Searching...';
+  grid.innerHTML = '<div class="icon-loading">Loading icons...</div>';
+  try {
+    // Iconify search API — free, no key needed
+    const url = `https://api.iconify.design/search?query=${encodeURIComponent(query)}&limit=64&prefixes=game-icons,twemoji,noto,mdi,fluent-emoji`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.icons || data.icons.length === 0) {
+      grid.innerHTML = '<div class="icon-loading">No icons found. Try a different search.</div>';
+      status.textContent = 'No results';
+      return;
+    }
+    status.textContent = `${data.icons.length} icons found`;
+    grid.innerHTML = data.icons.map(id => {
+      const svgUrl = `https://api.iconify.design/${id.replace(':','/').replace(':','/')}.svg?color=${encodeURIComponent(getCurrentAccentHex())}`;
+      return `<button class="icon-result-btn" onclick="selectIconifyIcon('${id}')" title="${id}">
+        <img src="${svgUrl}" alt="${id}" width="28" height="28" loading="lazy" onerror="this.parentElement.style.display='none'"/>
+      </button>`;
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="icon-loading">Could not connect to icon library. Check your internet connection.</div>';
+    status.textContent = 'Error loading icons';
+  }
+}
+
+async function browseCategory(query, set) {
+  const status = document.getElementById('icon-picker-status');
+  const grid = document.getElementById('icon-results-grid');
+  status.textContent = `Loading ${query}...`;
+  grid.innerHTML = '<div class="icon-loading">Loading icons...</div>';
+  try {
+    const url = `https://api.iconify.design/search?query=${encodeURIComponent(query)}&limit=64&prefixes=${set}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (!data.icons || data.icons.length === 0) {
+      grid.innerHTML = '<div class="icon-loading">No icons found for this category.</div>';
+      return;
+    }
+    status.textContent = `${data.icons.length} icons`;
+    grid.innerHTML = data.icons.map(id => {
+      const svgUrl = `https://api.iconify.design/${id.replace(':','/').replace(':','/')}.svg?color=${encodeURIComponent(getCurrentAccentHex())}`;
+      return `<button class="icon-result-btn" onclick="selectIconifyIcon('${id}')" title="${id}">
+        <img src="${svgUrl}" alt="${id}" width="28" height="28" loading="lazy" onerror="this.parentElement.style.display='none'"/>
+      </button>`;
+    }).join('');
+  } catch(e) {
+    grid.innerHTML = '<div class="icon-loading">Could not load icons.</div>';
+  }
+}
+
+function getCurrentAccentHex() {
+  return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#888888';
+}
+
+async function selectIconifyIcon(iconId) {
+  if (!_pickerTarget) return;
+  const status = document.getElementById('icon-picker-status');
+  status.textContent = 'Loading icon...';
+  try {
+    // Fetch SVG from Iconify
+    const accent = getCurrentAccentHex();
+    const svgUrl = `https://api.iconify.design/${iconId.replace(':','/').replace(':','/')}.svg?color=${encodeURIComponent(accent)}`;
+    const res = await fetch(svgUrl);
+    const svgText = await res.text();
+    // Convert SVG to data URL
+    const blob = new Blob([svgText], {type:'image/svg+xml'});
+    const objectUrl = URL.createObjectURL(blob);
+    // Compress through canvas pipeline (same as upload)
+    const img = new Image();
+    img.onload = () => {
+      const { key, previewId, fieldType } = _pickerTarget;
+      const sizes = { world:64, month:32, moon:32, event:28 };
+      const sz = sizes[fieldType] || 32;
+      const canvas = document.createElement('canvas');
+      canvas.width = sz; canvas.height = sz;
+      const ctx = canvas.getContext('2d');
+      const scale = Math.min(sz/img.width, sz/img.height);
+      const w = img.width*scale, h = img.height*scale;
+      ctx.clearRect(0,0,sz,sz);
+      ctx.drawImage(img, (sz-w)/2, (sz-h)/2, w, h);
+      const dataUrl = canvas.toDataURL('image/png', 0.9);
+      URL.revokeObjectURL(objectUrl);
+      applyPickedIcon(dataUrl, key, previewId);
+      closeIconPicker();
+    };
+    img.onerror = () => { status.textContent = 'Failed to load icon. Try another.'; URL.revokeObjectURL(objectUrl); };
+    img.src = objectUrl;
+  } catch(e) {
+    status.textContent = 'Failed to load icon. Try another.';
+  }
+}
+
+function selectEmoji(emoji) {
+  if (!_pickerTarget) return;
+  const { key, previewId, fieldType } = _pickerTarget;
+  // Render emoji to canvas and save as data URL
+  const sizes = { world:64, month:32, moon:32, event:28 };
+  const sz = sizes[fieldType] || 32;
+  const canvas = document.createElement('canvas');
+  canvas.width = sz*2; canvas.height = sz*2;
+  const ctx = canvas.getContext('2d');
+  ctx.font = `${sz*1.4}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, sz, sz);
+  const dataUrl = canvas.toDataURL('image/png', 0.9);
+  applyPickedIcon(dataUrl, key, previewId);
+  // Also update emoji selector if it's an event
+  if (key.startsWith('event-')) {
+    const idx = parseInt(key.split('-')[1]);
+    if (!isNaN(idx) && state.events[idx]) {
+      state.events[idx].emoji = emoji;
+      const sel = document.getElementById(`ev-emoji-sel-${idx}`);
+      if (sel) {
+        // Add option if not present
+        let found = false;
+        for (let opt of sel.options) { if (opt.value === emoji) { opt.selected = true; found = true; break; } }
+        if (!found) { const opt = new Option(emoji, emoji, true, true); sel.add(opt); }
+      }
+    }
+  }
+  closeIconPicker();
+  updatePreview();
+}
+
+function applyPickedIcon(dataUrl, key, previewId) {
+  // Store in state.icons (same structure as upload)
+  if (key === 'world') {
+    state.icons.world = dataUrl;
+  } else if (key.startsWith('month-')) {
+    const idx = parseInt(key.split('-')[1]);
+    if (!state.icons.months) state.icons.months = [];
+    state.icons.months[idx] = dataUrl;
+  } else if (key.startsWith('moon-')) {
+    const idx = parseInt(key.split('-')[1]);
+    if (!state.icons.moons) state.icons.moons = [];
+    state.icons.moons[idx] = dataUrl;
+  } else if (key.startsWith('event-')) {
+    const idx = parseInt(key.split('-')[1]);
+    if (!state.icons.events) state.icons.events = [];
+    state.icons.events[idx] = dataUrl;
+  }
+  // Show preview (same as upload)
+  const wrap = document.getElementById(previewId);
+  if (wrap) {
+    wrap.style.display = 'flex';
+    const thumb = wrap.querySelector('img');
+    if (thumb) thumb.src = dataUrl;
+  }
+  updatePreview();
+}
+
+// Debounced search
+let _searchTimer = null;
+function onIconSearch(val) {
+  clearTimeout(_searchTimer);
+  if (!val.trim()) { renderEmojiGrid(); document.getElementById('icon-picker-status').textContent = 'Browse categories or search above'; return; }
+  _searchTimer = setTimeout(() => searchIcons(val), 400);
+}
+
+
+// Render category buttons
+(function(){
+  const cats = document.getElementById('icon-categories');
+  if(!cats) return;
+  const CATS=[
+    {label:'⭐ Fantasy',query:'fantasy',set:'game-icons'},
+    {label:'🌙 Celestial',query:'moon star sun',set:'twemoji'},
+    {label:'⚔ Combat',query:'sword shield axe',set:'game-icons'},
+    {label:'🌿 Nature',query:'tree leaf forest',set:'twemoji'},
+    {label:'🔥 Elements',query:'fire water earth',set:'game-icons'},
+    {label:'🏰 World',query:'castle tower city',set:'game-icons'},
+    {label:'✨ Magic',query:'magic rune glyph',set:'game-icons'},
+    {label:'😀 All Emoji',query:'',set:'twemoji'},
+  ];
+  CATS.forEach(c=>{
+    const btn=document.createElement('button');
+    btn.className='icon-cat-btn';
+    btn.textContent=c.label;
+    btn.onclick=()=>{
+      if(!c.query){renderEmojiGrid();document.getElementById('icon-picker-status').textContent='Emoji quick-pick';}
+      else browseCategory(c.query,c.set);
+    };
+    cats.appendChild(btn);
+  });
+})();
+
 </script>
 </body>
 </html>
