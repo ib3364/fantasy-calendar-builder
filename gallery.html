@@ -132,8 +132,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
   </div>
 </nav>
 <div class="page-header">
-  <h1>World calendars made by the community</h1>
-  <p>Click any calendar to view it in full, or build your own world below.</p>
+  <h1>Real fictional world calendars</h1>
+  <p>Middle-earth, Tamriel, Faerûn, Roshar, The Continent — click any to view in full.</p>
   <a href="builder.html" class="btn-primary">Build your own calendar — it's free</a>
 </div>
 <div class="gallery" id="gallery"></div>
@@ -159,11 +159,168 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 <script>
 const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8'];
 const EXAMPLES=[
-  {world:'The World of Aethermoor',era:'Year of the Silver Age',months:[{name:'Frostmere',days:32},{name:'Ashveil',days:28},{name:'Bloomtide',days:30},{name:'Goldenmark',days:31},{name:'Emberholt',days:30},{name:'Duskfall',days:29},{name:'Silvane',days:33},{name:'Harrowend',days:31}],moons:[{name:'Lumis',cycle:28},{name:'Vael',cycle:14}],events:[{name:'Winter Rite',month:1,emoji:'❄'},{name:'Petal Festival',month:3,emoji:'🌸'},{name:"Sun's Peak",month:5,emoji:'🔥'},{name:'Twin Moons',month:7,emoji:'🌕'}],daysWeek:6},
-  {world:'The Iron Dominion',era:'Third Epoch of Steel',months:[{name:'Ashmonth',days:30},{name:'Ironmark',days:30},{name:'Coalfall',days:28},{name:'Forgetime',days:32},{name:'Smokeveil',days:30},{name:'Cinderend',days:30}],moons:[{name:'Greyface',cycle:20}],events:[{name:"Forgemaster's Day",month:4,emoji:'⚔'},{name:'The Long Dark',month:1,emoji:'🔥'}],daysWeek:5},
-  {world:"Yss'thara the Drowned World",era:'Age of Tides',months:[{name:'Deepcurrent',days:36},{name:'Saltmere',days:36},{name:'Stormwatch',days:36},{name:'Wavecrest',days:36},{name:'Tidewane',days:36},{name:'Stillwater',days:36},{name:'Abyssmark',days:36},{name:'Shallowing',days:36}],moons:[{name:'Pearl',cycle:36},{name:'Coral',cycle:18},{name:'Abyss',cycle:9}],events:[{name:'Great Flood',month:3,emoji:'🌊'},{name:'Still Night',month:6,emoji:'✨'}],daysWeek:9},
-  {world:'The Ember Wastes',era:'After the Sundering',months:[{name:'Scorchmark',days:40},{name:'Ashdrift',days:40},{name:'Glassfall',days:40},{name:'Emberrise',days:40}],moons:[{name:'Cinder',cycle:10}],events:[{name:'Day of Ash',month:2,emoji:'🍂'},{name:'The Burning',month:4,emoji:'🔥'}],daysWeek:8},
-  {world:'Sylvara the Living Forest',era:'Green Millennium',months:[{name:'Rootwake',days:28},{name:'Budding',days:28},{name:'Canopytide',days:28},{name:'Bloomhigh',days:28},{name:'Rustlefall',days:28},{name:'Barkmere',days:28},{name:'Deeproot',days:28},{name:'Frostbark',days:28},{name:'Seedrest',days:28},{name:'Thawsong',days:28},{name:'Sproutrise',days:28},{name:'Fernmark',days:28}],moons:[{name:'Greenface',cycle:28}],events:[{name:'Great Bloom',month:4,emoji:'🌸'},{name:'Falling',month:8,emoji:'🍂'},{name:'Seed Festival',month:9,emoji:'✨'}],daysWeek:7},
+
+  // ── 1. MIDDLE-EARTH: THE SHIRE CALENDAR (Tolkien) ──
+  {
+    world: 'The Shire, Middle-earth',
+    era: 'Third Age of Arda',
+    daysWeek: 7,
+    worldLore: 'The Shire Reckoning was devised by Hobbits and is measured from the year the Fallohide brothers crossed the Brandywine. The calendar has 12 months, each of 30 days, with extra days at Midsummer and Yule that belong to no month.',
+    months: [
+      {name:'Afteryule',   days:30, lore:'The month after Yule celebrations. Named for the great feast of renewal. Cold and quiet in the Shire, but larders are full and pipes are lit.'},
+      {name:'Solmath',     days:30, lore:'The month of mud and early thaw. Named for the returning sun. Hobbits rarely venture far from their holes in Solmath.'},
+      {name:'Rethe',       days:30, lore:'Named for the goddess Rheda. The first true month of spring, when seeds are planted and the Green Hill Country turns vivid.'},
+      {name:'Astron',      days:30, lore:'The "opening" month. Gardens burst into colour and the Free Fair of Michel Delving is spoken of again with anticipation.'},
+      {name:'Thrimidge',   days:30, lore:'Month of plenty. Named for the three milkings a day that cows yield in this rich season. Farmers are at their happiest.'},
+      {name:'Forelithe',   days:30, lore:'The month before Lithe. Preparations for Midsummer festivities begin. Pipeweed is harvested and barrels of Old Toby are rolled out.'},
+      {name:'Afterlithe',  days:30, lore:'The month after Midsummer. Long golden evenings and the smell of cut hay. Bilbo Baggins was born on a Mersday of this month.'},
+      {name:'Wedmath',     days:30, lore:'Named for the weeds that must be pulled in high summer. Hot and somewhat tiresome, but berries are plentiful and ale is cold.'},
+      {name:'Halimath',    days:30, lore:'The holy month, linked to harvest. The Shire\'s great harvest festivals take place under amber skies and cooling nights.'},
+      {name:'Winterfilth', days:30, lore:'Named for the filth of autumn rains filling the roads with mud. The last of the crops are gathered before the cold truly sets in.'},
+      {name:'Blotmath',    days:30, lore:'The bleak month. Named after ancient sacrificial rites now forgotten. Livestock is slaughtered and salted for the winter ahead.'},
+      {name:'Foreyule',    days:30, lore:'The month before Yule. Hearth-fires burn long and family gatherings warm the chill. Gift-giving and the telling of old tales begins.'},
+    ],
+    moons: [
+      {name:'The Moon', cycle:30, lore:'Hobbits track the Moon carefully for planting and harvest. A full moon at Midsummer is considered especially lucky.'},
+    ],
+    events: [
+      {name:'Lithe — Midsummer',   month:6,  emoji:'🌕', lore:'A three-day festival outside any month. The Free Fair of Michel Delving is held here every seven years with games, feasting and the Mayor\'s address.'},
+      {name:'Yule',                month:12, emoji:'🎉', lore:'Two days bridging the end of Foreyule and start of Afteryule. The most beloved celebration in the Shire — gifts, songs and tremendous amounts of food.'},
+      {name:'Bilbo\'s Birthday',   month:7,  emoji:'🎂', lore:'The 22nd of Afterlithe. Bilbo and Frodo Baggins share this birthday. The Party of the century was held here in III 3001, including spectacular fireworks by Gandalf.'},
+      {name:'Harvest Festival',    month:9,  emoji:'🍂', lore:'Celebrated throughout Halimath. Hobbits gather the last grain, press the cider, and feast for three nights in the fields under lantern light.'},
+      {name:'Overlithe (leap day)',month:7,  emoji:'✨', lore:'Occurs only in Leap Years. An extra day of Midsummer, considered especially magical. Merrymaking runs all night and it is said the Old Forest stirs.'},
+    ],
+  },
+
+  // ── 2. TAMRIEL CALENDAR (Elder Scrolls) ──
+  {
+    world: 'Tamriel',
+    era: 'Third Era',
+    daysWeek: 7,
+    worldLore: 'The Tamrielic calendar was standardised by the Cyrodilic Empires and is used across all provinces. It divides the year into 12 months of 30 days each (360 total) with a 7-day week named after celestial and divine figures. The two moons Masser and Secunda govern tides, Khajiiti birth-forms, and many magical phenomena.',
+    months: [
+      {name:'Morning Star',  days:30, lore:'First month of the Imperial year. Cold across most of Tamriel. Nords celebrate the birth of the year with mead-drinking contests. New Life Festival is observed on the 1st.'},
+      {name:"Sun's Dawn",    days:30, lore:'Valentine\'s Day equivalent in Tamriel. The Lovers\' Feast is celebrated on the 16th. The Heart of Order is worshipped in Morrowind during this cold, dim month.'},
+      {name:'First Seed',    days:30, lore:'Spring planting month. Farmers across Cyrodiil and Elsweyr plant their crops. The Flower Festival of Bravil falls on the 7th. Argonians begin their great spawning in Black Marsh.'},
+      {name:"Rain's Hand",   days:30, lore:'Named for the heavy rains that sweep Tamriel. The Aurbis is said to be closest to the mortal plane at this time. Mages\' Guild towers glow with experimental energies.'},
+      {name:'Second Seed',   days:30, lore:'Late spring, second planting. The Dancers of Akatosh perform their ancient rites on the 7th in Kvatch. Khajiit trade caravans move freely across the Gold Road.'},
+      {name:'Midyear',       days:30, lore:'Midsummer month. The Tiber Septim Holiday falls on the 1st. The heat is sweltering in Elsweyr and Hammerfell. The frozen north of Skyrim finally thaws at the shorelines.'},
+      {name:"Sun's Height",  days:30, lore:'Hottest month. The Festival of Blades is held in Morrowind\'s Telvanni towers. Imperial Legions historically launch their major campaigns in this month of long days.'},
+      {name:'Last Seed',     days:30, lore:'Harvest begins. The Harvest\'s End Festival on the 13th celebrates the bounty. Skooma trade peaks as moon-sugar is refined in Elsweyr and shipped north by caravan.'},
+      {name:'Hearthfire',    days:30, lore:'Named for the hearth-fires lit against the growing cold. Annual Meeting of Mages on the 3rd. Daedric activity increases as the veil between worlds thins.'},
+      {name:'Frost Fall',    days:30, lore:'Autumn begins in earnest. The Witches\' Festival on the 13th celebrates the dead and the Daedra — jack-o-lanterns and illusory hauntings fill city streets.'},
+      {name:"Sun's Dusk",    days:30, lore:'The Warrior\'s Festival on the 20th. Snow blankets Skyrim, High Rock and the Jerall Mountains. The Imperial City\'s White Gold Tower is lit with thousands of lanterns.'},
+      {name:'Evening Star',  days:30, lore:'Final month. The Saturalia winter festival falls on the 25th with feasting and gift-giving. The Emperor traditionally gives clemency to one prisoner on this day.'},
+    ],
+    moons: [
+      {name:'Masser',   cycle:36, lore:'The larger of Tamriel\'s two moons, pale and pocked with craters. Khajiit are born under specific lunar phases of Masser, determining their sub-species called "Furstocks".'},
+      {name:'Secunda',  cycle:16, lore:'Smaller, reddish moon. Sailors navigate by Secunda in the Abecean Sea. When both moons align, known as "the Hungry Moon", it is considered deeply inauspicious.'},
+    ],
+    events: [
+      {name:'New Life Festival',  month:1,  emoji:'🎉', lore:'Celebrated on Morning Star 1st across all provinces. Citizens decorate with New Life lights, exchange gifts, and attend the Cheer of Honourhall.'},
+      {name:'Witches Festival',   month:10, emoji:'🎃', lore:'Frost Fall 13th. One of the oldest festivals in Tamriel. Citizens dress as monsters and Daedra. Witches and warlocks walk openly in the streets.'},
+      {name:'Saturalia',          month:12, emoji:'⭐', lore:'Evening Star 25th. The great winter feast. Merchants give free samples, nobles host public banquets, and the Mages Guild offers free spell-teaching for one day.'},
+      {name:'Tiber Septim Day',   month:6,  emoji:'👑', lore:'Midyear 1st. Celebrates the founding of the Third Tamrielic Empire by Tiber Septim — later deified as Talos. Grand Legion parades march through the Imperial City.'},
+      {name:'Harvest\'s End',     month:8,  emoji:'🌾', lore:'Last Seed 13th. Crops are gathered and offerings made to Kynareth and Zenithar. The Harvest of Cyrodiil market is the largest annual trading event in the continent.'},
+    ],
+  },
+
+  // ── 3. CALENDAR OF HARPTOS (Forgotten Realms / D&D) ──
+  {
+    world: 'Faerûn, the Forgotten Realms',
+    era: 'Year of Wild Magic (1372 DR)',
+    daysWeek: 10,
+    worldLore: 'The Calendar of Harptos was devised by the wizard Harptos of Kaalinth and has been in use for over a thousand years. The year is divided into twelve months of thirty days each, with five special intercalary days — called "festival days" — that fall between certain months and belong to no tenday.',
+    months: [
+      {name:'Hammer',     days:30, lore:'Deepwinter. The coldest month across Faerûn. Adventurers shelter in city taverns. The frozen Moonsea sees ice trade between Zhentil Keep and Phlan.'},
+      {name:'Alturiak',   days:30, lore:'The Claw of Winter. Still bitter cold, but occasionally broken by a "false spring." Dwarven holds in the mountains hold their grand crafting competitions during Alturiak.'},
+      {name:'Ches',       days:30, lore:'The Claw of the Sunsets — actually the first month of spring. Merchants begin restocking caravans. The thieves\' guilds of Waterdeep hold internal elections.'},
+      {name:'Tarsakh',    days:30, lore:'The Claw of Storms. Spring rains sweep across the Sword Coast. The Harpers hold their great annual meeting during a Tarsakh tenday in a location known only to members.'},
+      {name:'Mirtul',     days:30, lore:'The Melting. Rivers and mountain snowmelt flood the lowlands. The Black Network reopens its trade routes across the High Road. Merchants begin moving.'},
+      {name:'Kythorn',    days:30, lore:'The Time of Flowers. All of Faerûn blooms. The elves of Evereska emerge from winter seclusion. The city of Silverymoon holds its Festival of Fellowship.'},
+      {name:'Flamerule',  days:30, lore:'Summertide — the hottest month. The Amnian navy patrols the Sea of Swords. The great Festival of the Lion in Baldur\'s Gate draws merchants from across the Realms.'},
+      {name:'Eleasis',    days:30, lore:'Highsun. Long days and short nights. The Weave is at its most stable during Eleasis — mages schedule their most ambitious experiments for this month.'},
+      {name:'Elient',     days:30, lore:'The Fading. Autumn begins. Harvest is gathered across the Western Heartlands. The Zhentarim increase their raids before winter closes the mountain passes.'},
+      {name:'Marpenoth',  days:30, lore:'Leaffall. The great leaves of the Forest of Tethyr turn red and gold. Merchant caravans make their last runs before snow blocks the Dagger Hills.'},
+      {name:'Uktar',      days:30, lore:'The Rotting. Autumn rains strip the last leaves. The Feast of the Moon falls at month\'s end. Graveyards are visited, ancestors honoured, and ghosts are reported widely.'},
+      {name:'Nightal',    days:30, lore:'The Drawing Down. The last month of the year. Preparations for Midwinter begin. The Arcane Brotherhood locks itself in Luskan\'s Host Tower for its annual deliberations.'},
+    ],
+    moons: [
+      {name:'Selune', cycle:30, lore:'The goddess of the moon made manifest. Her tears — a trail of golden stars — follow her across the sky. Lycanthropes, the Selunite clergy, and sea-navigators all track her phases obsessively.'},
+    ],
+    events: [
+      {name:'Midwinter',      month:1,  emoji:'❄', lore:'A festival day between Hammer and Alturiak. In Cormyr, nobles present their midwinter gifts to the Crown. In colder climates, fires are lit to call back the sun.'},
+      {name:'Greengrass',     month:4,  emoji:'🌸', lore:'Between Tarsakh and Mirtul. The official first day of spring. Flowers are planted on graves, and offerings made to Chauntea and Mielikki. Druids dance in forest clearings.'},
+      {name:'Midsummer',      month:7,  emoji:'🌕', lore:'Between Flamerule and Eleasis. The most magical night of the year. The Weave crackles with energy. Betrothals are announced and weddings performed under open sky.'},
+      {name:'Highharvestide', month:8,  emoji:'🍂', lore:'Between Eleasis and Elient. The great harvest festival. Tithing to temples of Chauntea. Enormous markets open in every major city — the best time to buy anything in Faerûn.'},
+      {name:'Feast of the Moon',month:11,emoji:'💀', lore:'Between Uktar and Nightal. The night when the dead are closest. Graveyards are safe to visit. Clan histories are told. The Order of the Gilded Eye lifts its veil briefly.'},
+    ],
+  },
+
+  // ── 4. ROSHAR CALENDAR (Stormlight Archive / Brandon Sanderson) ──
+  {
+    world: 'Roshar',
+    era: 'Era of Solitude',
+    daysWeek: 5,
+    worldLore: 'The Rosharan calendar is built around the Highstorm cycle — the most powerful and constant force on the planet. The year contains 500 days divided into 10 months of 50 days, each further divided into ten 5-day weeks. The week days are named after the ten Heralds: Jes, Nan, Chach, Vev, Palah, Shash, Betab, Kak, Tanat, Ishi.',
+    months: [
+      {name:'Jesevan',    days:50, lore:'First month, governed by Jezrien, Herald of Kings. The highstorms are most frequent in Jesevan — sometimes coming every four days. Stormwardens are busiest making predictions.'},
+      {name:'Nananvan',   days:50, lore:'Month of Nalan, the Herald of Justice. Courts traditionally hear their most complex cases in Nananvan. Alethi lighteyes hold their winter duelling competitions indoors.'},
+      {name:'Chachanan',  days:50, lore:'Governed by Chana, Herald of the Common People. The fertile Shattered Plains plateau rim blossoms after spring storms. Soulcasters work overtime replenishing stores.'},
+      {name:'Vevanees',   days:50, lore:'Month of Vedel, Herald of Healer. Ardents from all monasteries conduct their annual healing pilgrimages to the poorest towns of Alethkar and Jah Keved.'},
+      {name:'Palaheses',  days:50, lore:'Governed by Palah, Herald of Scholars. The Palanaeum holds its great library review. New discoveries in Stormlight research are presented at the Kharbranth annual conclave.'},
+      {name:'Shashanan',  days:50, lore:'Month of Shalash, Herald of Beauty. Despite the rumour that her statues are defaced wherever she passes, this month\'s festivals are the most ornate on Roshar.'},
+      {name:'Betabanes',  days:50, lore:'Governed by Battar, Herald of Wise Ones. The Azish scribes produce their most important governmental texts in Betabanes. The Prime Aqasix traditionally addresses the empire.'},
+      {name:'Kakevah',    days:50, lore:'Month of Kalak, Herald of Maker. Artificers, smiths and craftsmen guild competitions are held. The Soulcasters of the Vorin church display new constructions of incredible complexity.'},
+      {name:'Tanatanev',  days:50, lore:'Governed by Talenel — Taln — the Stonesinew, Herald of War. Military campaigns traditionally close at the end of Tanatanev before the great storms of year\'s end arrive.'},
+      {name:'Ishishach',  days:50, lore:'The final month, governed by Ishar, Herald of Luck and Oaths. Oaths sworn in Ishishach are considered doubly binding. Radiants historically bonded their spren in this month.'},
+    ],
+    moons: [
+      {name:'Salas',   cycle:20, lore:'The small, violet moon that rises first each night. Often called "the Quiet Sister." Rosharan fishermen of the Frostlands use Salas to judge storm timing.'},
+      {name:'Nomon',   cycle:32, lore:'The large, blue moon, brilliant and steady. The primary navigation reference for night sailors in the Reshi Isles and the Purelake. Considered an omen of peace.'},
+      {name:'Mishim',  cycle:10, lore:'Tiny and green, racing rapidly across the sky. Considered mischievous by most Rosharans. The Shin consider Mishim a trapped god attempting escape from the night sky.'},
+    ],
+    events: [
+      {name:'The Weeping',         month:3,  emoji:'🌧', lore:'An 8-day period between the third and fourth months when no Highstorms come — instead a slow, cold, constant rain falls across all of Roshar. Many find it eerie and depressing. Spren behave unusually.'},
+      {name:'Middlefest',          month:5,  emoji:'🎭', lore:'A public festival at the midpoint of the year. Games, storytelling, and travelling performers spread across cities. Lighteyes and darkeyes alike celebrate together for these three days.'},
+      {name:'Day of Recreance',    month:8,  emoji:'💔', lore:'A solemn day of remembrance for the day the Knights Radiant abandoned their Shardblades and Shardplate, leaving humanity defenceless. Not officially recognised but quietly observed.'},
+      {name:'Longnight',           month:10, emoji:'⭐', lore:'The final night of the year, when three of the five moons are visible. Families gather to speak the names of their dead. A single candle is left burning through the night for each person lost.'},
+      {name:'Highstorm Feast',     month:1,  emoji:'⚡', lore:'Celebrated just before the first great storm of the year. Communities gather inside stone buildings, share the best of their stored food, and listen to the storm rage outside.'},
+    ],
+  },
+
+  // ── 5. THE WITCHER CALENDAR (The Continent) ──
+  {
+    world: 'The Continent',
+    era: 'The Age of the Elves\' Twilight',
+    daysWeek: 7,
+    worldLore: 'The calendar used across the Continent was inherited from Elven tradition and adapted by humans after the Conjunction of the Spheres. It divides the year into 12 months, preserving Elvish seasonal names alongside human festival names. The Elder Speech names are still used by Dryads, Elves and old mages.',
+    months: [
+      {name:'Birch',       days:31, lore:'First month of spring. The Continent awakens. Witchers leave their keeps after winter to walk the roads again. Known in the Elder Speech as "Anis." Peasants plant the first seeds.'},
+      {name:'Belleteyn',   days:30, lore:'Month of the great spring festival Belleteyn — a night of fires, dancing and fertility rites held on the cusp of Birch and Belleteyn. Portals between worlds thin. Monsters are unusually active.'},
+      {name:'Maius',       days:31, lore:'Late spring. The sap rises in the great Brokilon Forest. Dryads forbid any human entry during Maius. The trading roads between Temeria and Redania are busiest in this month.'},
+      {name:'June',        days:30, lore:'Early summer. The Nilfgaardian army\'s campaign season begins. Merchants from the Far South arrive at Novigrad markets. The druids of the Blue Mountains hold their circular rites.'},
+      {name:'Lammas',      days:31, lore:'High summer harvest. Named for the first bread baked from new grain. The great Haystacking Fair of Oxenfurt draws traders from seven kingdoms. Ciri was born in this month.'},
+      {name:'Velen',       days:30, lore:'The Eternal Fire cult\'s most important month. Processions through Novigrad carry the sacred flame. In rural Velen the marshes fill with nekkers and drowners as water levels rise.'},
+      {name:'Saovine',     days:31, lore:'The month of the dead, climaxing with Saovine night — when the spectre of the unlaid dead walk freely. Candles are lit in windows. Witchers earn triple coin for clearing hauntings in Saovine.'},
+      {name:'October',     days:30, lore:'Autumn deepens. The Skellige Isles hold their great clan Ard Skellig feast. Jarl elections are called. The first frost coats the Kaedwen mountains and the snow leopards descend.'},
+      {name:'Midinváerne',  days:30, lore:'Mid-winter month of Elven origin. The Elder Speech name means "the long dark." The Continent\'s elves hold their sacred Gathering in the valleys of Dol Blathanna.'},
+      {name:'Ominous',     days:31, lore:'The darkest and most feared month. Wild hunts have been sighted. The Crones of Crookback Bog accept their annual tribute. Mages seal their towers against something unnamed.'},
+      {name:'Yule',        days:30, lore:'The great winter feast. Gifts are exchanged, yule logs burned, and the long night is celebrated with dancing in even the poorest villages. Geralt traditionally spends this month at Kaer Morhen.'},
+      {name:'Imbolc',      days:28, lore:'Last month of winter, named for the coming spring. The White Frost is feared to return in Imbolc — old witches still perform protective rituals. Snowdrops push through frozen ground.'},
+    ],
+    moons: [
+      {name:'The White Lady', cycle:28, lore:'The Continent\'s moon, called the White Lady in common tongue and "Aine" in Elder Speech. Full moons trigger lycanthropy in afflicted humans. Mages harvest moonstone dust only on the night of the full White Lady.'},
+    ],
+    events: [
+      {name:'Belleteyn Night',    month:2,  emoji:'🔥', lore:'The great spring festival. Bonfires are lit on every hilltop. Young people leap the flames for luck. Ancient and somewhat bawdy — the Eternal Fire preachers disapprove strongly.'},
+      {name:'Lammas Harvest',     month:5,  emoji:'🌾', lore:'The first loaf baked from new grain is offered to Melitele, goddess of hearth and harvest. Great fairs fill the roads. Witchers are hired in numbers to protect the caravans.'},
+      {name:'Saovine Night',      month:7,  emoji:'💀', lore:'The most dangerous night on the Continent. Every inn is full, every door locked. Wraiths, spectres and ancient evil walk freely. Witchers work without sleep for three days and nights.'},
+      {name:'Yule Feast',         month:11, emoji:'🍻', lore:'Kaer Morhen\'s great annual gathering. The witchers return to their fortress, share their year\'s stories, drink considerable quantities of mead, and arm-wrestle until dawn.'},
+      {name:'Imbolc Rites',       month:12, emoji:'❄', lore:'Old protective magic performed by village wise-women and druids to guard against the returning cold. Geralt once described these rituals as "surprisingly effective" — high praise from a witcher.'},
+    ],
+  },
+
 ];
 function encodeCalendar(ex){
   const data={
