@@ -824,9 +824,7 @@ async function downloadCalendar(){
     }catch(e){
       const w=window.open('','_blank');
       if(w){
-        w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap “Save Image” to download</p>
-
-</body></html>');
+        w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap "Save Image" to download</p></body></html>');
       }
     }
 
