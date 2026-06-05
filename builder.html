@@ -825,23 +825,6 @@ async function downloadCalendar(){
       const w=window.open('','_blank');
       if(w){
         w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap “Save Image” to download</p>
-<!-- Icon Picker Modal -->
-<div id="icon-picker-modal" onclick="if(event.target===this)closeIconPicker()">
-  <div class="icon-picker-box">
-    <div class="icon-picker-header">
-      <span class="icon-picker-title">🔍 Pick an icon</span>
-      <button class="icon-picker-close" onclick="closeIconPicker()">✕</button>
-    </div>
-    <div class="icon-picker-search">
-      <input id="icon-search-input" type="text" placeholder="Search 150,000+ icons (e.g. moon, dragon, sword, fire...)" oninput="onIconSearch(this.value)"/>
-    </div>
-    <div class="icon-picker-categories" id="icon-categories"></div>
-    <div class="icon-picker-body">
-      <div class="icon-picker-status" id="icon-picker-status">Browse categories or search above</div>
-      <div id="icon-results-grid"></div>
-    </div>
-  </div>
-</div>
 
 </body></html>');
       }
@@ -1479,5 +1462,23 @@ function onIconSearch(val) {
 })();
 
 </script>
+
+<!-- Icon Picker Modal -->
+<div id="icon-picker-modal" onclick="if(event.target===this)closeIconPicker()">
+  <div class="icon-picker-box">
+    <div class="icon-picker-header">
+      <span class="icon-picker-title">Pick an icon</span>
+      <button class="icon-picker-close" onclick="closeIconPicker()">&#x2715;</button>
+    </div>
+    <div class="icon-picker-search">
+      <input id="icon-search-input" type="text" placeholder="Search 150,000+ icons (e.g. moon, dragon, sword, fire...)" oninput="onIconSearch(this.value)"/>
+    </div>
+    <div class="icon-picker-categories" id="icon-categories"></div>
+    <div class="icon-picker-body">
+      <div class="icon-picker-status" id="icon-picker-status">Browse categories or search above</div>
+      <div id="icon-results-grid"></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
