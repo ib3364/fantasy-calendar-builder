@@ -207,6 +207,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="expanse"] .theme-opt.active::before{content:'> ';font-family:'Share Tech Mono',monospace}
 [data-theme="waypoint"] .theme-opt.active::before{content:'◈ '}
 [data-theme="verdant"] .theme-opt.active::before{content:'✦ '}
+[data-theme="blood"] .theme-opt.active::before{content:'✠ '}
+[data-theme="void"] .theme-opt.active::before{content:'◈ '}
 
 /* ── LORE ── */
 .lore-toggle{background:none;border:none;cursor:pointer;font-size:.75rem;color:var(--text-dim);font-family:var(--font-body);padding:.3rem 0;display:flex;align-items:center;gap:.35rem;margin-top:.5rem;letter-spacing:.03em}
@@ -511,19 +513,20 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="void"] .cal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,89,182,0.5),transparent)}
 
 /* Blood Court meta pills — gothic inset */
-[data-theme="blood"] .cal-meta-pill{border-style:solid;background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.25);color:#c89898;font-style:italic}
+[data-theme="blood"] .cal-meta-pill{border-style:solid;background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.3);color:#c89898;font-style:italic}
 [data-theme="blood"] .cal-meta-pill .pill-icon{display:none}
-[data-theme="blood"] .cal-meta-pill::before{content:'†';color:rgba(192,57,43,.5);margin-right:.25rem;font-size:.7rem}
+[data-theme="blood"] .cal-meta-pill::before{content:attr(data-blood);color:rgba(192,57,43,.65);margin-right:.3rem;font-size:.78rem}
 
 /* Void Chronicle meta pills — cosmic orbs */
-[data-theme="void"] .cal-meta-pill{background:rgba(155,89,182,.08);border-color:rgba(155,89,182,.25);color:#a880c8;border-radius:99px}
-[data-theme="void"] .cal-meta-pill .pill-icon{font-size:.8em;opacity:.8}
+[data-theme="void"] .cal-meta-pill{background:rgba(155,89,182,.08);border-color:rgba(155,89,182,.3);color:#a880c8;border-radius:99px}
+[data-theme="void"] .cal-meta-pill .pill-icon{display:none}
+[data-theme="void"] .cal-meta-pill::before{content:attr(data-void);color:rgba(155,89,182,.7);margin-right:.3rem;font-size:.78rem}
 
 /* Blood Court moon pills */
-[data-theme="blood"] .moon-pill::before{content:'☩ ';font-size:.65rem}
+[data-theme="blood"] .moon-pill::before{content:'☾ ';font-size:.7rem;color:rgba(192,57,43,.7)}
 
 /* Void Chronicle moon pills */
-[data-theme="void"] .moon-pill::before{content:'✦ ';font-size:.65rem}
+[data-theme="void"] .moon-pill::before{content:'☽ ';font-size:.7rem;color:rgba(155,89,182,.75)}
 
 /* Blood Court cal-card download btn */
 [data-theme="blood"] .btn-download{color:#0d0305}
@@ -531,10 +534,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="void"] .btn-download{color:#06040e}
 
 /* Blood Court event badge */
-[data-theme="blood"] .cal-event-badge::before{content:'☩ ';font-size:.65em;color:rgba(192,57,43,.6);font-style:normal}
+[data-theme="blood"] .cal-event-badge::before{content:'⸸ ';font-size:.7em;color:rgba(192,57,43,.65);font-style:normal}
 
 /* Void Chronicle event badge */
-[data-theme="void"] .cal-event-badge::before{content:'✦ ';font-size:.55em;color:rgba(155,89,182,.6)}
+[data-theme="void"] .cal-event-badge::before{content:'✶ ';font-size:.62em;color:rgba(155,89,182,.7)}
 
 /* Blood Court month tile identity */
 [data-theme="blood"] .cal-month-tile{background:linear-gradient(135deg,rgba(192,57,43,0.07) 0%,transparent 60%);border:1px solid rgba(192,57,43,0.2);box-shadow:inset 0 0 0 1px rgba(192,57,43,0.06),0 2px 8px rgba(0,0,0,0.5)}
@@ -913,8 +916,8 @@ function copyLink(){
   const c=document.getElementById('copy-confirm');c.style.display='block';setTimeout(()=>c.style.display='none',3000);
 }
 
-function metaPill(emoji,text,code,heraldic,waypoint,verdant){
-  return`<span class="cal-meta-pill" data-code="${code}" data-heraldic="${heraldic}" data-waypoint="${waypoint}" data-verdant="${verdant}"><span class="pill-icon">${emoji}</span> ${text}</span>`;
+function metaPill(emoji,text,code,heraldic,waypoint,verdant,blood,voidsym){
+  return`<span class="cal-meta-pill" data-code="${code}" data-heraldic="${heraldic}" data-waypoint="${waypoint}" data-verdant="${verdant}" data-blood="${blood||''}" data-void="${voidsym||''}"><span class="pill-icon">${emoji}</span> ${text}</span>`;
 }
 
 function updatePreview(){
@@ -989,9 +992,9 @@ function renderPreview(){
     <div class="cal-world-header">${worldIcon}<div class="cal-world-name">${worldName}</div></div>
     ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
     <div class="cal-meta-row">
-      ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿')}
-      ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦')}
-      ${metaPill('🗓',`${state.daysWeek}-day week`,'[CYC]','☽','▣','◎')}
+      ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿','✠','◈')}
+      ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦','☉','✦')}
+      ${metaPill('🗓',`${state.daysWeek}-day week`,'[CYC]','☽','▣','◎','☽','☾')}
     </div>
     ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
     <div class="cal-months-grid">${monthCards}</div>
@@ -1003,9 +1006,9 @@ function renderPreview(){
     <div class="cal-world-name">${worldName}</div>
     ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
     <div class="cal-meta-row">
-      ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿')}
-      ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦')}
-      ${metaPill('🗓',`${state.daysWeek}-day week`,'[CYC]','☽','▣','◎')}
+      ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿','✠','◈')}
+      ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦','☉','✦')}
+      ${metaPill('🗓',`${state.daysWeek}-day week`,'[CYC]','☽','▣','◎','☽','☾')}
     </div>
     ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
     <div class="cal-months-grid">${monthCards}</div>
