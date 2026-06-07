@@ -338,6 +338,36 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   opacity:.8;
 }
 
+/* ── Font Picker Modal ── */
+#font-picker-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);padding:1rem}
+#font-picker-modal.open{display:flex}
+.font-picker-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);width:min(700px,100%);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.font-picker-header{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.font-picker-title{font-family:var(--font-display);color:var(--text);font-size:1rem;font-weight:bold}
+.font-picker-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem}
+.font-picker-close:hover{color:var(--accent)}
+.font-picker-actions{display:flex;gap:.6rem;padding:.6rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0;align-items:center}
+.font-picker-hint{font-size:.72rem;color:var(--text-dim);font-family:var(--font-body);flex:1}
+.btn-font-reset{background:none;border:1px solid var(--border);color:var(--text-dim);padding:.28rem .7rem;font-size:.72rem;cursor:pointer;border-radius:var(--radius-btn);font-family:var(--font-body)}
+.btn-font-reset:hover{border-color:var(--accent);color:var(--accent)}
+#font-picker-grid{overflow-y:auto;padding:1rem 1.2rem;display:flex;flex-direction:column;gap:1.2rem}
+.font-cat-section{}
+.font-cat-label{font-size:.68rem;font-weight:700;color:var(--accent);font-family:var(--font-body);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem;opacity:.8}
+.font-cat-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.font-option{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.45rem .9rem;cursor:pointer;border-radius:var(--radius-btn);font-size:1rem;transition:all .15s;line-height:1.2}
+.font-option:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+.font-option.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);color:var(--accent)}
+
+/* ── Font trigger button (Step 1 builder) ── */
+.btn-font-pick{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:.35rem .85rem;font-size:.78rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);clip-path:var(--btn-clip);display:inline-flex;align-items:center;gap:.4rem;transition:all .2s}
+.btn-font-pick:hover{background:rgba(var(--accent-rgb),.1)}
+.font-current-label{font-size:.72rem;color:var(--text-dim);font-family:var(--font-body);font-style:italic}
+
+/* ── Font button in view.html (next to theme switcher) ── */
+#font-switcher{position:fixed;bottom:1.2rem;right:70px;z-index:9999;font-family:var(--font-body)}
+#font-toggle-btn{background:var(--surface);border:1px solid var(--border);width:46px;height:46px;cursor:pointer;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;clip-path:var(--btn-clip);color:var(--text);font-family:serif}
+#font-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
+
 </style>
 </head>
 <body>
@@ -361,6 +391,11 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
     <div class="cta-text"><h3>Build your own world's calendar</h3><p>Free. No account needed. Ready in 10 minutes.</p></div>
     <a href="builder.html" class="btn-build" style="white-space:nowrap">Start building — it's free →</a>
   </div>
+</div>
+
+
+<div id="font-switcher">
+  <button id="font-toggle-btn" title="Change font" onclick="openFontPicker()">Aa</button>
 </div>
 
 <div id="theme-switcher">
@@ -426,6 +461,8 @@ function loadCalendar(){
     const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0)||numMonths*daysMonth;
     document.getElementById('edit-link').href='builder.html?c='+c;
     document.title=worldName+' — Fantasy Calendar Builder';
+    // Apply font from URL
+    if(data.f){loadGFont(data.f).then(()=>applyCalFont(data.f));}
 
     const monthsToRender=months.length>0?months:Array.from({length:numMonths},(_,i)=>({name:`Month ${i+1}`,days:daysMonth,lore:'',icon:''}));
 
@@ -747,6 +784,136 @@ async function triggerDownload(layoutId){
     <div class="layout-picker-subtitle">Each layout uses your active theme. The image is pixel-perfect — exactly what you see on screen.</div>
     <div class="layout-options" id="layout-options-grid"></div>
     <div class="layout-picker-note">⚡ Tip: the lore sheet layout forces all lore open — great for sharing your worldbuilding notes.</div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   FONT PICKER — Google Fonts curated list
+   Applied globally to the calendar card
+═══════════════════════════════════════ */
+
+const FONT_CATEGORIES = [
+  {
+    cat: 'Classic Fantasy',
+    fonts: ['Cinzel','Cinzel Decorative','Cormorant Garamond','EB Garamond','Playfair Display','Crimson Text']
+  },
+  {
+    cat: 'Medieval',
+    fonts: ['IM Fell English','UnifrakturMaguntia','Almendra','Cardo','MedievalSharp','Uncial Antiqua']
+  },
+  {
+    cat: 'Elegant Serif',
+    fonts: ['Spectral','Lora','Merriweather','Libre Baskerville','Bitter','Vollkorn']
+  },
+  {
+    cat: 'Sci-Fi / Tech',
+    fonts: ['Orbitron','Rajdhani','Exo 2','Share Tech Mono','Space Mono','Audiowide']
+  },
+  {
+    cat: 'Handwritten',
+    fonts: ['Kaushan Script','Dancing Script','Satisfy','Pacifico','Caveat','Permanent Marker']
+  },
+  {
+    cat: 'Display',
+    fonts: ['Abril Fatface','Bebas Neue','Righteous','Philosopher','Italianno','Charmonman']
+  },
+];
+
+let _currentFont = '';
+
+function loadGFont(name) {
+  if (!name) return Promise.resolve();
+  const id = 'gf-' + name.replace(/\s+/g, '-').toLowerCase();
+  if (document.getElementById(id)) return Promise.resolve();
+  return new Promise(res => {
+    const l = document.createElement('link');
+    l.id = id; l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(name) + ':ital,wght@0,400;0,700;1,400&display=swap';
+    l.onload = res; l.onerror = res;
+    document.head.appendChild(l);
+  });
+}
+
+function applyCalFont(name) {
+  _currentFont = name || '';
+  // Apply to cal-card (view) or cal-preview (builder)
+  const el = document.getElementById('cal-card') || document.getElementById('cal-preview');
+  if (!el) return;
+  if (name) {
+    el.style.setProperty('--font-body', `"${name}", serif`);
+    el.style.setProperty('--font-display', `"${name}", serif`);
+  } else {
+    el.style.removeProperty('--font-body');
+    el.style.removeProperty('--font-display');
+  }
+  // Save to state if builder
+  if (typeof state !== 'undefined') {
+    state.font = name || '';
+    if (typeof updatePreview === 'function') updatePreview();
+  }
+  // Save to localStorage for view page
+  if (name) localStorage.setItem('fcb-font', name);
+  else localStorage.removeItem('fcb-font');
+}
+
+function openFontPicker() {
+  renderFontPicker();
+  document.getElementById('font-picker-modal').classList.add('open');
+}
+function closeFontPicker() {
+  document.getElementById('font-picker-modal').classList.remove('open');
+}
+
+function renderFontPicker() {
+  const grid = document.getElementById('font-picker-grid');
+  if (!grid) return;
+  grid.innerHTML = FONT_CATEGORIES.map(cat => `
+    <div class="font-cat-section">
+      <div class="font-cat-label">${cat.cat}</div>
+      <div class="font-cat-row">
+        ${cat.fonts.map(f => `
+          <button class="font-option${_currentFont===f?' active':''}"
+            onclick="selectFont('${f}')"
+            style="font-family:'${f}',serif"
+            data-font="${f}">
+            ${f}
+          </button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  // Preload visible fonts for preview
+  FONT_CATEGORIES.forEach(cat => cat.fonts.forEach(f => loadGFont(f)));
+}
+
+async function selectFont(name) {
+  await loadGFont(name);
+  applyCalFont(name);
+  // Update active state in picker
+  document.querySelectorAll('.font-option').forEach(b => {
+    b.classList.toggle('active', b.dataset.font === name);
+  });
+}
+
+function resetFont() {
+  applyCalFont('');
+  document.querySelectorAll('.font-option').forEach(b => b.classList.remove('active'));
+}
+
+</script>
+
+<!-- Font Picker Modal -->
+<div id="font-picker-modal" onclick="if(event.target.id==='font-picker-modal')closeFontPicker()">
+  <div class="font-picker-box">
+    <div class="font-picker-header">
+      <span class="font-picker-title">Aa Choose a font</span>
+      <button class="font-picker-close" onclick="closeFontPicker()">&#x2715;</button>
+    </div>
+    <div class="font-picker-actions">
+      <span class="font-picker-hint">Each font is shown in its own style. Pick one that fits your world.</span>
+      <button class="btn-font-reset" onclick="resetFont();closeFontPicker()">Reset to default</button>
+    </div>
+    <div id="font-picker-grid"></div>
   </div>
 </div>
 </body>
