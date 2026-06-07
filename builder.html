@@ -487,6 +487,68 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 #font-toggle-btn{background:var(--surface);border:1px solid var(--border);width:46px;height:46px;cursor:pointer;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;clip-path:var(--btn-clip);color:var(--text);font-family:serif}
 #font-toggle-btn:hover{border-color:var(--accent);color:var(--accent)}
 
+[data-theme="blood"]{--bg:#0d0305;--surface:#180608;--surface2:#200a0e;--border:#5c1520;--border2:#3a0d14;--accent:#c0392b;--accent2:#e8a0a0;--text:#f0e0e2;--text-muted:#c89898;--text-dim:#7a4448;--text-dimmer:#4a2428;--text-dimmest:#2a1418;--input-bg:#100406;--input-bg2:#0c0304;--nav-bg:#100406;--card-border:#5c1520;--month-name:#e8a0a0;--moon-pill-bg:rgba(192,57,43,0.1);--moon-pill-border:rgba(192,57,43,0.35);--moon-pill-text:#e8a0a0;--accent-rgb:192,57,43;--accent2-dark:#100406;--radius-card:2px;--radius-pill:1px;--radius-btn:2px;--font-display:'IM Fell English','Palatino Linotype',Georgia,serif;--font-body:'IM Fell English',Georgia,serif;--btn-clip:none;--card-clip:none;--card-bg:#180608;--shadow:0 4px 24px rgba(0,0,0,0.8),inset 0 1px 0 rgba(192,57,43,0.1);--event-bg:rgba(192,57,43,0.1);--event-color:#e8a0a0;--event-border:rgba(192,57,43,0.4)}
+[data-theme="void"]{--bg:#06040e;--surface:#0e0a1e;--surface2:#0a0818;--border:#3a2060;--border2:#241440;--accent:#9b59b6;--accent2:#c39bd3;--text:#e8d8f8;--text-muted:#a880c8;--text-dim:#5a3878;--text-dimmer:#361e4e;--text-dimmest:#1e1030;--input-bg:#080612;--input-bg2:#06040e;--nav-bg:#06040e;--card-border:#3a2060;--month-name:#c39bd3;--moon-pill-bg:rgba(155,89,182,0.1);--moon-pill-border:rgba(155,89,182,0.35);--moon-pill-text:#c39bd3;--accent-rgb:155,89,182;--accent2-dark:#06040e;--radius-card:4px;--radius-pill:99px;--radius-btn:4px;--font-display:'Spectral','Palatino Linotype',Georgia,serif;--font-body:'Spectral',Georgia,serif;--btn-clip:none;--card-clip:none;--card-bg:#0e0a1e;--shadow:0 4px 32px rgba(0,0,0,0.9),0 0 60px rgba(155,89,182,0.05);--event-bg:rgba(155,89,182,0.08);--event-color:#c39bd3;--event-border:rgba(155,89,182,0.3)}
+
+/* Blood Court body texture — dark vein-like noise */
+[data-theme="blood"] body::before{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E")}
+
+/* Void Chronicle body texture — deep starfield */
+[data-theme="void"] body::before{background:radial-gradient(ellipse at 20% 20%,rgba(155,89,182,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(100,60,160,0.04) 0%,transparent 60%)}
+
+/* Blood Court nav — dark drip ornament */
+[data-theme="blood"] nav::after{content:'✦ ✦ ✦';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--accent);letter-spacing:.5em;background:var(--nav-bg);padding:0 .5rem}
+
+/* Void Chronicle nav — constellation dots */
+[data-theme="void"] nav::after{content:'· · ✦ · ·';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.6rem;color:var(--accent);letter-spacing:.3em;background:var(--nav-bg);padding:0 .5rem;opacity:.6}
+
+/* Blood Court cal-card — gothic frame */
+[data-theme="blood"] .cal-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(192,57,43,0.1);pointer-events:none}
+[data-theme="blood"] .cal-card::after{content:'☩';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--card-bg);padding:0 .6rem;color:var(--accent);font-size:1rem;line-height:1;opacity:.7}
+
+/* Void Chronicle cal-card — cosmic glow */
+[data-theme="void"] .cal-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(155,89,182,0.06) 0%,transparent 60%);pointer-events:none}
+[data-theme="void"] .cal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,89,182,0.5),transparent)}
+
+/* Blood Court meta pills — gothic inset */
+[data-theme="blood"] .cal-meta-pill{border-style:solid;background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.25);color:#c89898;font-style:italic}
+[data-theme="blood"] .cal-meta-pill .pill-icon{display:none}
+[data-theme="blood"] .cal-meta-pill::before{content:'†';color:rgba(192,57,43,.5);margin-right:.25rem;font-size:.7rem}
+
+/* Void Chronicle meta pills — cosmic orbs */
+[data-theme="void"] .cal-meta-pill{background:rgba(155,89,182,.08);border-color:rgba(155,89,182,.25);color:#a880c8;border-radius:99px}
+[data-theme="void"] .cal-meta-pill .pill-icon{font-size:.8em;opacity:.8}
+
+/* Blood Court moon pills */
+[data-theme="blood"] .moon-pill::before{content:'☩ ';font-size:.65rem}
+
+/* Void Chronicle moon pills */
+[data-theme="void"] .moon-pill::before{content:'✦ ';font-size:.65rem}
+
+/* Blood Court cal-card download btn */
+[data-theme="blood"] .btn-download{color:#0d0305}
+/* Void Chronicle cal-card download btn */
+[data-theme="void"] .btn-download{color:#06040e}
+
+/* Blood Court event badge */
+[data-theme="blood"] .cal-event-badge::before{content:'☩ ';font-size:.65em;color:rgba(192,57,43,.6);font-style:normal}
+
+/* Void Chronicle event badge */
+[data-theme="void"] .cal-event-badge::before{content:'✦ ';font-size:.55em;color:rgba(155,89,182,.6)}
+
+/* Blood Court month tile identity */
+[data-theme="blood"] .cal-month-tile{background:linear-gradient(135deg,rgba(192,57,43,0.07) 0%,transparent 60%);border:1px solid rgba(192,57,43,0.2);box-shadow:inset 0 0 0 1px rgba(192,57,43,0.06),0 2px 8px rgba(0,0,0,0.5)}
+[data-theme="blood"] .cal-month-tile::after{content:'';position:absolute;inset:4px;border:1px solid rgba(192,57,43,0.07);pointer-events:none}
+[data-theme="blood"] .cal-month-tile::before{content:'☩';position:absolute;top:3px;right:5px;font-size:6px;color:rgba(192,57,43,0.3);pointer-events:none;line-height:1}
+
+/* Void Chronicle month tile identity */
+[data-theme="void"] .cal-month-tile{background:rgba(155,89,182,0.04);border:1px solid rgba(155,89,182,0.18);border-radius:4px;box-shadow:0 0 20px rgba(155,89,182,0.04),inset 0 0 30px rgba(155,89,182,0.02)}
+[data-theme="void"] .cal-month-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,89,182,0.3),transparent);pointer-events:none}
+[data-theme="void"] .cal-month-tile::after{content:none}
+
+/* Spectral font for void */
+[data-theme="void"] .cal-world-name,[data-theme="void"] .cal-month-name{font-style:italic}
+
 </style>
 </head>
 <body>
