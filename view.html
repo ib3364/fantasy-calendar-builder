@@ -367,7 +367,7 @@ function loadCalendar(){
         <div class="cal-months-grid">${monthCards}</div>
         <div class="cal-footer">
           <span class="cal-footer-brand">${monthsToRender.length} months · ${totalDays} days/year · ${daysWeek}-day week</span>
-          <span class="cal-footer-stats">${moons.filter(m=>m.name).length} moon${moons.filter(m=>m.name).length!==1?'s':''} · ${events.filter(e=>e.name).length} event${events.filter(e=>e.name).length!==1?'s':''}</span>
+          <span class="cal-footer-stats">${events.filter(e=>e.name).length} holiday${events.filter(e=>e.name).length!==1?'s':''} · ${loreCount} lore entr${loreCount!==1?'ies':'y'}</span>
         </div>
       </div>`;
   }catch(e){
