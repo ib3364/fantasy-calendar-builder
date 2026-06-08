@@ -1035,6 +1035,60 @@ function resetFont() {
   document.querySelectorAll('.font-option').forEach(b => b.classList.remove('active'));
 }
 
+
+
+// ── Custom font upload — applies locally for preview & download ──
+function triggerFontUpload() {
+  let inp = document.getElementById('custom-font-input');
+  if (!inp) {
+    inp = document.createElement('input');
+    inp.type = 'file';
+    inp.id = 'custom-font-input';
+    inp.accept = '.ttf,.otf,.woff,.woff2,font/ttf,font/otf,font/woff,font/woff2';
+    inp.style.display = 'none';
+    inp.addEventListener('change', handleFontUpload);
+    document.body.appendChild(inp);
+  }
+  inp.click();
+}
+
+async function handleFontUpload(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  // Size guard — fonts over ~2MB are unusual and slow
+  if (file.size > 2 * 1024 * 1024) {
+    alert('That font file is quite large (over 2MB). Please choose a smaller font file.');
+    return;
+  }
+  try {
+    const dataUrl = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+    // Derive a clean font name from the filename
+    const rawName = file.name.replace(/\.(ttf|otf|woff2?|TTF|OTF|WOFF2?)$/,'');
+    const fontName = 'Custom-' + rawName.replace(/[^a-zA-Z0-9]/g,'-');
+    // Register the font via @font-face
+    let styleEl = document.getElementById('custom-font-face');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'custom-font-face';
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = `@font-face{font-family:"${fontName}";src:url("${dataUrl}");font-display:swap}`;
+    // Wait for the font to actually load, then apply
+    if (document.fonts && document.fonts.load) {
+      try { await document.fonts.load(`16px "${fontName}"`); } catch(err){}
+    }
+    applyCalFont(fontName);
+    closeFontPicker();
+  } catch (err) {
+    alert('Could not load that font file. Please try a different .ttf, .otf, .woff, or .woff2 file.');
+  }
+}
+
 </script>
 
 <!-- Font Picker Modal -->
@@ -1045,7 +1099,8 @@ function resetFont() {
       <button class="font-picker-close" onclick="closeFontPicker()">&#x2715;</button>
     </div>
     <div class="font-picker-actions">
-      <span class="font-picker-hint">Each font is shown in its own style. Pick one that fits your world.</span>
+      <span class="font-picker-hint">Pick a Google Font (travels in shared links) or upload your own (preview &amp; download only).</span>
+      <button class="btn-font-reset" onclick="triggerFontUpload()">⬆ Upload font</button>
       <button class="btn-font-reset" onclick="resetFont();closeFontPicker()">Reset to default</button>
     </div>
     <div id="font-picker-grid"></div>
