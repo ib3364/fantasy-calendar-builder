@@ -969,7 +969,8 @@ function buildShareUrl(){
   const encoded=encodeState();
   const url=window.location.origin+'/view.html?c='+encoded;
   document.getElementById('share-url').value=url;
-  document.getElementById('view-link').href=url;
+  // "Open full view" goes to the chooser (Normal vs Interactive)
+  document.getElementById('view-link').href=window.location.origin+'/interactive.html?c='+encoded;
 }
 
 function copyLink(){
