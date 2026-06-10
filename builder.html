@@ -609,6 +609,24 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="stone"] .cal-month-accent{height:3px!important;opacity:.6;box-shadow:inset 0 -1px 2px rgba(0,0,0,.4)}
 [data-theme="stone"] .btn-download{color:#2a2826}
 
+
+/* ── View-mode chooser modal ── */
+#view-chooser-modal{display:none;position:fixed;inset:0;z-index:10001;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1.5rem}
+#view-chooser-modal.open{display:flex}
+.vc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);max-width:680px;width:100%;padding:1.8rem;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative}
+.vc-close{position:absolute;top:1rem;right:1.1rem;background:none;border:none;color:var(--text-dim);font-size:1.3rem;cursor:pointer;line-height:1}
+.vc-close:hover{color:var(--accent)}
+.vc-title{font-family:var(--font-display);font-size:1.4rem;color:var(--text);margin-bottom:.4rem;text-align:center}
+.vc-sub{font-size:.85rem;color:var(--text-dim);text-align:center;margin-bottom:1.6rem;font-family:var(--font-body)}
+.vc-choices{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:560px){.vc-choices{grid-template-columns:1fr}}
+.vc-choice{background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius-card);padding:1.6rem 1.2rem;cursor:pointer;transition:all .2s;text-align:center}
+.vc-choice:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 24px rgba(var(--accent-rgb),0.15)}
+.vc-choice-icon{font-size:2.2rem;margin-bottom:.7rem}
+.vc-choice h3{font-family:var(--font-display);font-size:1.05rem;color:var(--accent);margin-bottom:.5rem}
+.vc-choice p{font-size:.78rem;color:var(--text-muted);margin:0;line-height:1.5;font-family:var(--font-body)}
+.vc-badge{display:inline-block;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;background:rgba(var(--accent-rgb),.15);color:var(--accent);padding:.15rem .5rem;border-radius:99px;margin-top:.6rem}
+
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
 </head>
@@ -743,9 +761,19 @@ function goStep(n){
   document.getElementById('step-'+n).classList.add('active');
   document.getElementById('current-step-num').textContent=n;
   for(let i=1;i<=5;i++){const p=document.getElementById('prog-'+i);p.classList.remove('active','done');if(i<n)p.classList.add('done');if(i===n)p.classList.add('active');}
-  if(n===2)buildMonthFields();if(n===3)renderMoonList();if(n===4)renderEventList();if(n===5){buildSummary();buildShareUrl();}
+  if(n===2)buildMonthFields();if(n===3)renderMoonList();if(n===4)renderEventList();if(n===5){buildSummary();buildShareUrl();showViewChooser();}
   updatePreview();
 }
+
+function showViewChooser(){
+  const encoded=encodeState();
+  const modal=document.getElementById('view-chooser-modal');
+  if(!modal)return;
+  document.getElementById('vc-normal').onclick=()=>{window.open(window.location.origin+'/view.html?c='+encoded,'_blank');closeViewChooser();};
+  document.getElementById('vc-interactive').onclick=()=>{window.open(window.location.origin+'/interactive.html?c='+encoded,'_blank');closeViewChooser();};
+  modal.classList.add('open');
+}
+function closeViewChooser(){const m=document.getElementById('view-chooser-modal');if(m)m.classList.remove('open');}
 
 function getAccent(){return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()}
 function getBorder(){return getComputedStyle(document.documentElement).getPropertyValue('--border').trim()}
@@ -2129,6 +2157,29 @@ async function handleFontUpload(e) {
       <button class="btn-font-reset" onclick="resetFont();closeFontPicker()">Reset to default</button>
     </div>
     <div id="font-picker-grid"></div>
+  </div>
+</div>
+
+<!-- View-mode chooser (shown after Finish & share) -->
+<div id="view-chooser-modal" onclick="if(event.target.id==='view-chooser-modal')closeViewChooser()">
+  <div class="vc-box">
+    <button class="vc-close" onclick="closeViewChooser()">&#x2715;</button>
+    <div class="vc-title">Your world is ready! 🎉</div>
+    <div class="vc-sub">Choose how to open your calendar — you can always come back to this.</div>
+    <div class="vc-choices">
+      <div class="vc-choice" id="vc-normal">
+        <div class="vc-choice-icon">🗂️</div>
+        <h3>Normal View</h3>
+        <p>The classic calendar card. Switch themes, choose layouts, and download a polished PNG image.</p>
+        <span class="vc-badge">Quick &amp; shareable</span>
+      </div>
+      <div class="vc-choice" id="vc-interactive">
+        <div class="vc-choice-icon">📖</div>
+        <h3>Interactive View</h3>
+        <p>An immersive themed experience. Customise icons, backgrounds &amp; fonts, then export a self-contained interactive page.</p>
+        <span class="vc-badge">Immersive &amp; unique</span>
+      </div>
+    </div>
   </div>
 </div>
 </body>
