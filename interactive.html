@@ -143,7 +143,10 @@ function ivInit(){
   IV.events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2]||'',lore:(p[3]||'').replace(/‖/g,'|'),icon:p[4]||''};});
   IV.font=data.f||'';
   if(IV.font)ivLoadGFont(IV.font);
-  ivRenderChooser();
+  // If the builder already chose interactive mode, skip the chooser
+  const mode=new URLSearchParams(location.search).get('mode');
+  if(mode==='interactive'){ ivStartInteractive(); }
+  else { ivRenderChooser(); }
 }
 
 function ivLoadGFont(name){
