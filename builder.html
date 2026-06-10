@@ -770,7 +770,7 @@ function showViewChooser(){
   const modal=document.getElementById('view-chooser-modal');
   if(!modal)return;
   document.getElementById('vc-normal').onclick=()=>{window.open(window.location.origin+'/view.html?c='+encoded,'_blank');closeViewChooser();};
-  document.getElementById('vc-interactive').onclick=()=>{window.open(window.location.origin+'/interactive.html?c='+encoded,'_blank');closeViewChooser();};
+  document.getElementById('vc-interactive').onclick=()=>{window.open(window.location.origin+'/interactive.html?mode=interactive&c='+encoded,'_blank');closeViewChooser();};
   modal.classList.add('open');
 }
 function closeViewChooser(){const m=document.getElementById('view-chooser-modal');if(m)m.classList.remove('open');}
