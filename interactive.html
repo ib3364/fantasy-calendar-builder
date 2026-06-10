@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Interactive View — Fantasy Calendar Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════
+   INTERACTIVE VIEW — base + theme variables
+   (theme var blocks copied from view.html so
+    the interactive file is fully self-contained)
+═══════════════════════════════════════ */
+:root{--bg:#f5f0e8;--surface:#ede7d9;--surface2:#e4ddcb;--border:#cbbfa6;--border2:#dad0bb;--accent:#7c5c2e;--accent2:#a67c3e;--text:#3a3020;--text-muted:#5e5440;--text-dim:#8a7c60;--text-dimmer:#a89c80;--text-dimmest:#c2b89c;--input-bg:#f0ebdf;--input-bg2:#e8e1d0;--card-bg:#faf6ee;--card-border:#cbbfa6;--month-name:#5a4420;--moon-pill-bg:rgba(124,92,46,0.08);--moon-pill-border:rgba(124,92,46,0.3);--moon-pill-text:#5a4420;--accent-rgb:124,92,46;--font-display:'Cinzel',Georgia,serif;--font-body:'Cardo',Georgia,serif;--shadow:0 4px 20px rgba(90,70,40,0.15)}
+[data-theme="expanse"]{--bg:#060d12;--surface:#0a1620;--surface2:#0c1a26;--border:#1c4a5e;--border2:#15303e;--accent:#00e5c8;--accent2:#3af0d8;--text:#d0f0ee;--text-muted:#8ab8b8;--text-dim:#4a7888;--text-dimmer:#2e5060;--text-dimmest:#1a3038;--input-bg:#081119;--input-bg2:#060d14;--card-bg:#0a1620;--card-border:#1c4a5e;--month-name:#3af0d8;--moon-pill-bg:rgba(0,229,200,0.08);--moon-pill-border:rgba(0,229,200,0.3);--moon-pill-text:#3af0d8;--accent-rgb:0,229,200;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',sans-serif;--shadow:0 0 30px rgba(0,229,200,0.1)}
+[data-theme="iron"]{--bg:#1c1408;--surface:#28200f;--surface2:#302614;--border:#5e4a1e;--border2:#3e3214;--accent:#d4a040;--accent2:#e8b860;--text:#f0e4c8;--text-muted:#c4b088;--text-dim:#8a7448;--text-dimmer:#5e4e30;--text-dimmest:#3a3018;--input-bg:#181006;--input-bg2:#140c04;--card-bg:#28200f;--card-border:#5e4a1e;--month-name:#e8b860;--moon-pill-bg:rgba(212,160,64,0.1);--moon-pill-border:rgba(212,160,64,0.35);--moon-pill-text:#e8b860;--accent-rgb:212,160,64;--font-display:'Cinzel',serif;--font-body:'Cardo',serif;--shadow:0 4px 20px rgba(0,0,0,0.5)}
+[data-theme="waypoint"]{--bg:#0a1218;--surface:#0e1a24;--surface2:#10202c;--border:#1e4a60;--border2:#163240;--accent:#2ab4e8;--accent2:#5ac8f0;--text:#d0e8f4;--text-muted:#88b0c4;--text-dim:#4a7888;--text-dimmer:#305870;--text-dimmest:#1a3442;--input-bg:#081016;--input-bg2:#060c12;--card-bg:#0e1a24;--card-border:#1e4a60;--month-name:#5ac8f0;--moon-pill-bg:rgba(42,180,232,0.1);--moon-pill-border:rgba(42,180,232,0.35);--moon-pill-text:#5ac8f0;--accent-rgb:42,180,232;--font-display:'Rajdhani',sans-serif;--font-body:'Rajdhani',sans-serif;--shadow:0 4px 24px rgba(0,0,0,0.4)}
+[data-theme="verdant"]{--bg:#0a1a0e;--surface:#0e2614;--surface2:#123018;--border:#1e5e30;--border2:#163e22;--accent:#50c878;--accent2:#70e090;--text:#d8f0dc;--text-muted:#90c49c;--text-dim:#508a60;--text-dimmer:#305e3c;--text-dimmest:#1a3a24;--input-bg:#081609;--input-bg2:#061206;--card-bg:#0e2614;--card-border:#1e5e30;--month-name:#70e090;--moon-pill-bg:rgba(80,200,120,0.1);--moon-pill-border:rgba(80,200,120,0.35);--moon-pill-text:#70e090;--accent-rgb:80,200,120;--font-display:'Cinzel',serif;--font-body:'Cardo',serif;--shadow:0 4px 24px rgba(0,40,20,0.4)}
+[data-theme="blood"]{--bg:#0d0305;--surface:#180608;--surface2:#200a0e;--border:#5c1520;--border2:#3a0d14;--accent:#c0392b;--accent2:#e8a0a0;--text:#f0e0e2;--text-muted:#c89898;--text-dim:#7a4448;--text-dimmer:#4a2428;--text-dimmest:#2a1418;--input-bg:#100406;--input-bg2:#0c0304;--card-bg:#180608;--card-border:#5c1520;--month-name:#e8a0a0;--moon-pill-bg:rgba(192,57,43,0.1);--moon-pill-border:rgba(192,57,43,0.35);--moon-pill-text:#e8a0a0;--accent-rgb:192,57,43;--font-display:'IM Fell English',Georgia,serif;--font-body:'IM Fell English',Georgia,serif;--shadow:0 4px 24px rgba(0,0,0,0.8)}
+[data-theme="void"]{--bg:#06040e;--surface:#0e0a1e;--surface2:#0a0818;--border:#3a2060;--border2:#241440;--accent:#9b59b6;--accent2:#c39bd3;--text:#e8d8f8;--text-muted:#a880c8;--text-dim:#5a3878;--text-dimmer:#361e4e;--text-dimmest:#1e1030;--input-bg:#080612;--input-bg2:#06040e;--card-bg:#0e0a1e;--card-border:#3a2060;--month-name:#c39bd3;--moon-pill-bg:rgba(155,89,182,0.1);--moon-pill-border:rgba(155,89,182,0.35);--moon-pill-text:#c39bd3;--accent-rgb:155,89,182;--font-display:'Spectral',serif;--font-body:'Spectral',serif;--shadow:0 4px 32px rgba(0,0,0,0.9)}
+[data-theme="desert"]{--bg:#3a1e0e;--surface:#4e2a14;--surface2:#42230f;--border:#8a4a1e;--border2:#5e3216;--accent:#e8852e;--accent2:#f0b860;--text:#f8e4c0;--text-muted:#d8a874;--text-dim:#a86840;--text-dimmer:#7a4828;--text-dimmest:#52301a;--input-bg:#341a0c;--input-bg2:#2e160a;--card-bg:#4e2a14;--card-border:#8a4a1e;--month-name:#f0b860;--moon-pill-bg:rgba(232,133,46,0.12);--moon-pill-border:rgba(232,133,46,0.4);--moon-pill-text:#f0b860;--accent-rgb:232,133,46;--font-display:'Cinzel',serif;--font-body:'Cardo',serif;--shadow:0 4px 18px rgba(20,8,0,0.5)}
+[data-theme="neon"]{--bg:#0a0612;--surface:#140a1e;--surface2:#0f0818;--border:#ff2d95;--border2:#3a1830;--accent:#ff2d95;--accent2:#00f0ff;--text:#f8e8ff;--text-muted:#c890d8;--text-dim:#a050a0;--text-dimmer:#6a2860;--text-dimmest:#3a1838;--input-bg:#0c0616;--input-bg2:#0a0512;--card-bg:#140a1e;--card-border:#ff2d95;--month-name:#00f0ff;--moon-pill-bg:rgba(255,45,149,0.1);--moon-pill-border:rgba(255,45,149,0.4);--moon-pill-text:#ff2d95;--accent-rgb:255,45,149;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',monospace;--shadow:0 0 30px rgba(255,45,149,0.12)}
+[data-theme="stone"]{--bg:#2a2826;--surface:#34322e;--surface2:#2e2c28;--border:#5a564e;--border2:#403c36;--accent:#9a8c70;--accent2:#bcaa86;--text:#d8d2c4;--text-muted:#a8a090;--text-dim:#787060;--text-dimmer:#585044;--text-dimmest:#3e3a32;--input-bg:#262420;--input-bg2:#222019;--card-bg:#34322e;--card-border:#5a564e;--month-name:#bcaa86;--moon-pill-bg:rgba(154,140,112,0.1);--moon-pill-border:rgba(154,140,112,0.35);--moon-pill-text:#bcaa86;--accent-rgb:154,140,112;--font-display:'Cinzel',serif;--font-body:'Cardo',serif;--shadow:inset 0 2px 4px rgba(0,0,0,0.4),0 3px 8px rgba(0,0,0,0.5)}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;transition:background .4s}
+.iv-loading{display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:1rem;color:var(--text-dim)}
+</style>
+</head>
+<body>
+<div id="iv-root"><div class="iv-loading"><div>Loading interactive view…</div></div></div>
+
+<style>
+/* ── Chooser overlay ── */
+.iv-chooser{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:1.5rem}
+.iv-chooser-inner{max-width:760px;width:100%;text-align:center}
+.iv-chooser h1{font-family:var(--font-display);font-size:1.8rem;color:var(--text);margin-bottom:.5rem}
+.iv-chooser p{color:var(--text-dim);margin-bottom:2rem;font-size:.95rem}
+.iv-choices{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+@media(max-width:640px){.iv-choices{grid-template-columns:1fr}}
+.iv-choice{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem 1.5rem;cursor:pointer;transition:all .2s;text-align:center}
+.iv-choice:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
+.iv-choice-icon{font-size:2.4rem;margin-bottom:.8rem}
+.iv-choice h2{font-family:var(--font-display);font-size:1.15rem;color:var(--accent);margin-bottom:.5rem}
+.iv-choice p{font-size:.82rem;color:var(--text-muted);margin:0;line-height:1.5}
+
+/* ── Phase toolbar ── */
+.iv-toolbar{position:fixed;top:0;left:0;right:0;height:54px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;z-index:50}
+.iv-toolbar-left{display:flex;align-items:center;gap:.8rem}
+.iv-toolbar-title{font-family:var(--font-display);font-size:1rem;color:var(--text)}
+.iv-tab-group{display:flex;gap:.4rem;background:var(--input-bg);border-radius:6px;padding:.2rem}
+.iv-tab{background:none;border:none;color:var(--text-dim);padding:.4rem .9rem;font-size:.8rem;cursor:pointer;border-radius:4px;font-family:var(--font-body)}
+.iv-tab.active{background:var(--accent);color:var(--bg)}
+.iv-btn{background:var(--accent);color:var(--bg);border:none;padding:.5rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer;border-radius:5px;font-family:var(--font-body)}
+.iv-btn:hover{opacity:.9}
+.iv-btn-ghost{background:none;border:1px solid var(--border);color:var(--text-muted)}
+.iv-btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── Stage (holds preview or edit) ── */
+.iv-stage{position:fixed;top:54px;left:0;right:0;bottom:0;overflow:auto}
+
+/* ── Edit panel ── */
+.iv-edit-wrap{display:grid;grid-template-columns:300px 1fr;height:100%}
+.iv-edit-sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:1rem}
+.iv-edit-preview{overflow:auto;position:relative}
+.iv-edit-section{margin-bottom:1.3rem}
+.iv-edit-label{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);opacity:.8;margin-bottom:.6rem}
+.iv-edit-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.iv-mini-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:.3rem .65rem;font-size:.72rem;cursor:pointer;border-radius:4px;font-family:var(--font-body)}
+.iv-mini-btn:hover{background:rgba(var(--accent-rgb),.1)}
+.iv-edit-hint{font-size:.7rem;color:var(--text-dim);line-height:1.4;margin-top:.3rem}
+.iv-slot-select{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem;border-radius:4px;font-family:var(--font-body);font-size:.8rem;margin-bottom:.5rem}
+
+/* ═══ CARTOGRAPHER NOTEBOOK ═══ */
+.nb-stage{display:flex;align-items:center;justify-content:center;min-height:100%;padding:2rem 1rem}
+.notebook{display:grid;grid-template-columns:1fr 1fr;width:min(960px,100%);aspect-ratio:1.5;max-height:80vh;background:var(--card-bg);box-shadow:var(--shadow);position:relative;border-radius:4px}
+.notebook::before{content:'';position:absolute;left:50%;top:3%;bottom:3%;width:2px;background:linear-gradient(180deg,transparent,rgba(var(--accent-rgb),.3),transparent);transform:translateX(-50%)}
+.nb-page{padding:2rem 2.2rem;overflow-y:auto;position:relative}
+.nb-page-left{border-right:1px solid rgba(var(--accent-rgb),.12)}
+.nb-index-title{font-family:var(--font-display);font-size:1.3rem;color:var(--accent);margin-bottom:.3rem}
+.nb-index-sub{font-size:.78rem;font-style:italic;color:var(--text-dim);margin-bottom:1.2rem}
+.nb-month-list{list-style:none}
+.nb-month-item{padding:.5rem .6rem;cursor:pointer;border-radius:3px;display:flex;align-items:center;gap:.6rem;font-family:var(--font-body);color:var(--text-muted);transition:all .15s;border-left:2px solid transparent}
+.nb-month-item:hover{background:rgba(var(--accent-rgb),.06);color:var(--text)}
+.nb-month-item.active{background:rgba(var(--accent-rgb),.1);border-left-color:var(--accent);color:var(--accent)}
+.nb-month-num{font-size:.7rem;opacity:.5;min-width:1.4rem}
+.nb-month-itemname{flex:1;font-size:.9rem}
+.nb-month-ico{width:18px;height:18px;object-fit:contain;opacity:0;transition:opacity .2s}
+.nb-month-item:hover .nb-month-ico{opacity:1}
+.nb-detail-head{border-bottom:1px solid rgba(var(--accent-rgb),.15);padding-bottom:.8rem;margin-bottom:1rem}
+.nb-detail-name{font-family:var(--font-display);font-size:1.5rem;color:var(--accent)}
+.nb-detail-meta{font-size:.8rem;color:var(--text-dim);font-style:italic;margin-top:.2rem}
+.nb-detail-body{font-family:var(--font-body);font-size:.95rem;line-height:1.7;color:var(--text-muted);min-height:120px}
+.nb-lore-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(var(--accent-rgb),.12)}
+.nb-lore-arrow{background:none;border:1px solid var(--border);color:var(--text-muted);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem}
+.nb-lore-arrow:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.nb-lore-arrow:disabled{opacity:.25;cursor:default}
+.nb-lore-dots{display:flex;gap:.4rem}
+.nb-lore-dot{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.nb-lore-dot.active{background:var(--accent)}
+.nb-detail-event{margin-top:1rem;padding:.6rem .8rem;background:rgba(var(--accent-rgb),.08);border-left:2px solid var(--accent);border-radius:3px;font-size:.85rem}
+.nb-empty{color:var(--text-dim);font-style:italic;text-align:center;margin-top:3rem}
+</style>
+<script>
+/* ═══ Interactive View — core ═══ */
+let IV = { data:null, theme:'', months:[], moons:[], events:[],
+           selectedMonth:0, lorePage:0, font:'', customFontFace:'',
+           perLoreBg:{} /* key "monthIdx:loreIdx" -> css background */ };
+
+function ivDecode(){
+  const params=new URLSearchParams(location.search);
+  const c=params.get('c');
+  if(!c)return null;
+  const strategies=[
+    ()=>JSON.parse(decodeURIComponent(atob(c))),
+    ()=>JSON.parse(atob(c)),
+    ()=>JSON.parse(decodeURIComponent(decodeURIComponent(atob(c)))),
+    ()=>JSON.parse(decodeURIComponent(atob(decodeURIComponent(c)))),
+  ];
+  for(const s of strategies){try{const d=s();if(d&&d.w!==undefined)return d;}catch(e){}}
+  return null;
+}
+
+function ivSplitLore(loreStr){
+  if(!loreStr||!loreStr.trim())return [];
+  // Multiple lore entries separated by blank line or --- delimiter
+  return loreStr.split(/\n\s*\n|\s*---\s*/).map(s=>s.trim()).filter(Boolean);
+}
+
+function ivInit(){
+  const data=ivDecode();
+  if(!data){
+    document.getElementById('iv-root').innerHTML='<div class="iv-loading"><div>No calendar found. <a href="builder.html" style="color:var(--accent)">Build one →</a></div></div>';
+    return;
+  }
+  IV.data=data;
+  IV.theme=localStorage.getItem('fcb-theme')||'';
+  document.documentElement.setAttribute('data-theme',IV.theme);
+  IV.months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
+  IV.moons=(data.mo||[]).map(s=>{const p=s.split('|');return{name:p[0],cycle:parseInt(p[1]),lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
+  IV.events=(data.ev||[]).map(s=>{const p=s.split('|');return{name:p[0],month:parseInt(p[1]),emoji:p[2]||'',lore:(p[3]||'').replace(/‖/g,'|'),icon:p[4]||''};});
+  IV.font=data.f||'';
+  if(IV.font)ivLoadGFont(IV.font);
+  ivRenderChooser();
+}
+
+function ivLoadGFont(name){
+  if(!name||name.startsWith('Custom-'))return;
+  const id='gf-'+name.replace(/\s+/g,'-').toLowerCase();
+  if(document.getElementById(id))return;
+  const l=document.createElement('link');l.id=id;l.rel='stylesheet';
+  l.href='https://fonts.googleapis.com/css2?family='+encodeURIComponent(name)+':ital,wght@0,400;0,700;1,400&display=swap';
+  document.head.appendChild(l);
+}
+
+/* ── Chooser ── */
+function ivRenderChooser(){
+  const w=IV.data.w||'Your World';
+  document.getElementById('iv-root').innerHTML=`
+    <div class="iv-chooser">
+      <div class="iv-chooser-inner">
+        <h1>${w}</h1>
+        <p>Choose how you'd like to view this calendar</p>
+        <div class="iv-choices">
+          <div class="iv-choice" onclick="location.href='view.html'+location.search">
+            <div class="iv-choice-icon">🗂️</div>
+            <h2>Normal View</h2>
+            <p>The classic calendar card. Switch themes, pick layouts, and download a polished PNG image.</p>
+          </div>
+          <div class="iv-choice" onclick="ivStartInteractive()">
+            <div class="iv-choice-icon">📖</div>
+            <h2>Interactive View</h2>
+            <p>An immersive, themed experience unique to your world. Customise icons, backgrounds &amp; fonts, then export a self-contained interactive page.</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ── Start interactive: go to edit phase ── */
+let ivPhase='edit';
+function ivStartInteractive(){ ivPhase='edit'; ivRenderShell(); }
+
+function ivRenderShell(){
+  const root=document.getElementById('iv-root');
+  root.innerHTML=`
+    <div class="iv-toolbar">
+      <div class="iv-toolbar-left">
+        <span class="iv-toolbar-title">📖 ${IV.data.w||'Interactive'}</span>
+        <div class="iv-tab-group">
+          <button class="iv-tab ${ivPhase==='edit'?'active':''}" onclick="ivSetPhase('edit')">Edit</button>
+          <button class="iv-tab ${ivPhase==='preview'?'active':''}" onclick="ivSetPhase('preview')">Preview</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:.6rem">
+        <button class="iv-btn iv-btn-ghost" onclick="ivRenderChooser()">← Back</button>
+        <button class="iv-btn" onclick="ivExport()">⬇ Export HTML</button>
+      </div>
+    </div>
+    <div class="iv-stage" id="iv-stage"></div>`;
+  ivRenderStage();
+}
+function ivSetPhase(p){ ivPhase=p; ivRenderShell(); }
+
+function ivRenderStage(){
+  const stage=document.getElementById('iv-stage');
+  if(ivPhase==='edit'){ stage.innerHTML=ivEditHTML(); ivRenderNotebook('iv-edit-canvas'); }
+  else { stage.innerHTML='<div id="iv-preview-canvas" style="height:100%"></div>'; ivRenderNotebook('iv-preview-canvas'); }
+}
+
+/* ── Edit phase ── */
+function ivEditHTML(){
+  const monthOpts=IV.months.map((m,i)=>`<option value="${i}">${i+1}. ${m.name||'Month '+(i+1)}</option>`).join('');
+  return `<div class="iv-edit-wrap">
+    <div class="iv-edit-sidebar">
+      <div class="iv-edit-section">
+        <div class="iv-edit-label">Font</div>
+        <div class="iv-edit-row">
+          <button class="iv-mini-btn" onclick="ivOpenFontLib()">Aa Pick font</button>
+          <button class="iv-mini-btn" onclick="ivUploadFont()">⬆ Upload</button>
+        </div>
+        <div class="iv-edit-hint">Applies to the whole interactive view.</div>
+      </div>
+      <div class="iv-edit-section">
+        <div class="iv-edit-label">Month icons</div>
+        <select class="iv-slot-select" id="iv-icon-month"><option value="">Select a month…</option>${monthOpts}</select>
+        <div class="iv-edit-row">
+          <button class="iv-mini-btn" onclick="ivPickIcon()">🔍 Pick icon</button>
+          <button class="iv-mini-btn" onclick="ivUploadIcon()">⬆ Upload</button>
+        </div>
+        <div class="iv-edit-hint">Icon shows on hover in the notebook index.</div>
+      </div>
+      <div class="iv-edit-section">
+        <div class="iv-edit-label">Lore-page background</div>
+        <select class="iv-slot-select" id="iv-bg-month"><option value="">Select a month…</option>${monthOpts}</select>
+        <select class="iv-slot-select" id="iv-bg-lore"><option value="">Select lore entry…</option></select>
+        <div class="iv-edit-row">
+          <button class="iv-mini-btn" onclick="ivUploadBg()">⬆ Image</button>
+          <input type="color" id="iv-bg-color" onchange="ivSetBgColor(this.value)" style="width:34px;height:30px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer"/>
+          <button class="iv-mini-btn" onclick="ivClearBg()">Clear</button>
+        </div>
+        <div class="iv-edit-hint">Each lore entry can have its own background.</div>
+      </div>
+    </div>
+    <div class="iv-edit-preview"><div id="iv-edit-canvas" style="height:100%"></div></div>
+  </div>`;
+}
+
+/* Populate lore-entry dropdown when a month is chosen for bg */
+document.addEventListener('change',e=>{
+  if(e.target&&e.target.id==='iv-bg-month'){
+    const mi=parseInt(e.target.value);
+    const sel=document.getElementById('iv-bg-lore');
+    if(isNaN(mi)){sel.innerHTML='<option value="">Select lore entry…</option>';return;}
+    const entries=ivSplitLore(IV.months[mi].lore);
+    sel.innerHTML='<option value="">Select lore entry…</option>'+
+      (entries.length?entries.map((_,i)=>`<option value="${i}">Lore page ${i+1}</option>`).join('')
+       :'<option value="">(no lore)</option>');
+  }
+});
+</script>
+<script>
+/* ═══ CARTOGRAPHER NOTEBOOK renderer ═══ */
+function ivRenderNotebook(canvasId){
+  const el=document.getElementById(canvasId);
+  if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle = IV.font ? `style="--font-body:'${IV.font}',serif;--font-display:'${IV.font}',serif"` : '';
+  el.innerHTML=`<div class="nb-stage"><div class="notebook" id="iv-notebook" ${fontStyle}>
+    <div class="nb-page nb-page-left">
+      <div class="nb-index-title">${w}</div>
+      ${era?`<div class="nb-index-sub">${era}</div>`:''}
+      <ul class="nb-month-list" id="nb-list">
+        ${IV.months.map((m,i)=>`
+          <li class="nb-month-item ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})">
+            <span class="nb-month-num">${String(i+1).padStart(2,'0')}</span>
+            <span class="nb-month-itemname">${m.name||'Month '+(i+1)}</span>
+            ${m.icon?`<img class="nb-month-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="nb-page nb-page-right" id="nb-detail"></div>
+  </div></div>`;
+  ivRenderDetail();
+}
+
+function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0; 
+  document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+  ivRenderDetail();
+}
+
+function ivRenderDetail(){
+  const d=document.getElementById('nb-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="nb-empty">Select a month</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  // per-lore background
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  d.style.background=bg||'';
+  d.innerHTML=`
+    <div class="nb-detail-head">
+      <div class="nb-detail-name">${m.name||'Month '+(IV.selectedMonth+1)}</div>
+      <div class="nb-detail-meta">${m.days||''} days${evs.length?' · '+evs.length+' event'+(evs.length>1?'s':''):''}</div>
+    </div>
+    <div class="nb-detail-body">${curLore||'<span style="opacity:.5">No lore recorded for this month.</span>'}</div>
+    ${evs.map(e=>`<div class="nb-detail-event">${e.icon?`<img src="${e.icon}" style="width:16px;height:16px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="nb-lore-nav">
+        <button class="nb-lore-arrow" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <div class="nb-lore-dots">${Array.from({length:totalPages},(_,i)=>`<span class="nb-lore-dot ${i===IV.lorePage?'active':''}"></span>`).join('')}</div>
+        <button class="nb-lore-arrow" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
+      </div>`:''}`;
+}
+
+function ivLoreNav(dir){
+  const m=IV.months[IV.selectedMonth];
+  const total=Math.max(1,ivSplitLore(m.lore).length);
+  IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
+  ivRenderDetail();
+}
+
+/* ═══ EDIT TOOLS ═══ */
+function ivCompressImg(dataUrl, size, cb){
+  const img=new Image();
+  img.onload=()=>{const c=document.createElement('canvas');c.width=size;c.height=size;const cx=c.getContext('2d');
+    const sc=Math.min(size/img.width,size/img.height);const w=img.width*sc,h=img.height*sc;
+    cx.clearRect(0,0,size,size);cx.drawImage(img,(size-w)/2,(size-h)/2,w,h);cb(c.toDataURL('image/png',.9));};
+  img.src=dataUrl;
+}
+function ivFileToDataUrl(accept,cb){
+  const inp=document.createElement('input');inp.type='file';inp.accept=accept;inp.style.display='none';
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>cb(r.result,f);r.readAsDataURL(f);};
+  document.body.appendChild(inp);inp.click();
+}
+
+// Icons
+function ivUploadIcon(){
+  const sel=document.getElementById('iv-icon-month');const mi=parseInt(sel.value);
+  if(isNaN(mi)){alert('Pick a month first.');return;}
+  ivFileToDataUrl('image/*',(url)=>ivCompressImg(url,32,(small)=>{IV.months[mi].icon=small;ivRenderStage();ivRestoreSelect('iv-icon-month',mi);}));
+}
+function ivPickIcon(){
+  const sel=document.getElementById('iv-icon-month');const mi=parseInt(sel.value);
+  if(isNaN(mi)){alert('Pick a month first.');return;}
+  ivOpenIconLib(mi);
+}
+function ivRestoreSelect(id,val){const s=document.getElementById(id);if(s)s.value=val;}
+
+// Backgrounds
+function ivUploadBg(){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){alert('Pick a month and lore entry first.');return;}
+  ivFileToDataUrl('image/*',(url)=>{IV.perLoreBg[mi+':'+li]=`center/cover no-repeat url("${url}")`;IV.selectedMonth=mi;IV.lorePage=li;ivRenderStage();});
+}
+function ivSetBgColor(color){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){alert('Pick a month and lore entry first.');return;}
+  IV.perLoreBg[mi+':'+li]=color;IV.selectedMonth=mi;IV.lorePage=li;ivRenderStage();
+}
+function ivClearBg(){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li))return;
+  delete IV.perLoreBg[mi+':'+li];ivRenderStage();
+}
+
+// Fonts
+function ivUploadFont(){
+  ivFileToDataUrl('.ttf,.otf,.woff,.woff2',(url,f)=>{
+    const nm='Custom-'+f.name.replace(/\.[^.]+$/,'').replace(/[^a-zA-Z0-9]/g,'-');
+    let st=document.getElementById('iv-custom-font');if(!st){st=document.createElement('style');st.id='iv-custom-font';document.head.appendChild(st);}
+    st.textContent=`@font-face{font-family:"${nm}";src:url("${url}");font-display:swap}`;
+    IV.font=nm;IV.customFontFace=st.textContent;
+    if(document.fonts&&document.fonts.load){document.fonts.load(`16px "${nm}"`).then(()=>ivRenderStage());}else ivRenderStage();
+  });
+}
+const IV_FONTS=['Cinzel','Cormorant Garamond','EB Garamond','IM Fell English','Spectral','Lora','Merriweather','Orbitron','Rajdhani','Cardo','Uncial Antiqua','MedievalSharp'];
+function ivOpenFontLib(){
+  const pick=prompt('Type a font name:\n\n'+IV_FONTS.join(', '));
+  if(pick&&pick.trim()){IV.font=pick.trim();ivLoadGFont(IV.font);IV.customFontFace='';setTimeout(ivRenderStage,300);}
+}
+function ivOpenIconLib(mi){
+  const q=prompt('Search icons (e.g. moon, sword, fire):');
+  if(!q)return;
+  fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=1&prefixes=game-icons,twemoji,mdi')
+    .then(r=>r.json()).then(d=>{
+      if(!d.icons||!d.icons.length){alert('No icons found.');return;}
+      const id=d.icons[0];const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      const svgUrl='https://api.iconify.design/'+id.replace(':','/')+'.svg?color='+encodeURIComponent(accent);
+      fetch(svgUrl).then(r=>r.text()).then(svg=>{
+        const burl='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
+        ivCompressImg(burl,32,(small)=>{IV.months[mi].icon=small;ivRenderStage();ivRestoreSelect('iv-icon-month',mi);});
+      });
+    }).catch(()=>alert('Icon library unavailable.'));
+}
+</script>
+<script>
+/* ═══ EXPORT — self-contained interactive HTML ═══ */
+function ivExport(){
+  // Build a standalone HTML that opens directly in preview mode, fully interactive,
+  // all assets (icons, backgrounds, font) embedded as data-URLs already in IV.
+  const themeVarsBlock = document.querySelector('style').textContent; // first <style> = theme vars
+  const nbCss = Array.from(document.querySelectorAll('style')).map(s=>s.textContent).join('\n');
+
+  const exportData = {
+    w:IV.data.w, e:IV.data.e, theme:IV.theme, font:IV.font,
+    customFontFace:IV.customFontFace||'',
+    months:IV.months, moons:IV.moons, events:IV.events,
+    perLoreBg:IV.perLoreBg
+  };
+
+  const html = `<!DOCTYPE html><html data-theme="${IV.theme}"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${(IV.data.w||'Calendar')} — Interactive</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet"/>
+${IV.font&&!IV.font.startsWith('Custom-')?`<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(IV.font)}:ital@0;1&display=swap" rel="stylesheet"/>`:''}
+<style>${nbCss}
+${IV.customFontFace?IV.customFontFace:''}
+body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}</style>
+</head><body>
+<div id="iv-root"></div>
+<script>
+const IV=${JSON.stringify(exportData).replace(/<\/script>/g,'<\\/script>')};
+IV.selectedMonth=0;IV.lorePage=0;
+${ivSplitLore.toString()}
+${ivRenderExportNotebook.toString()}
+${ivSelectMonth.toString()}
+${ivRenderDetail.toString()}
+${ivLoreNav.toString()}
+document.addEventListener('DOMContentLoaded',()=>ivRenderExportNotebook('iv-root'));
+<\/script>
+</body></html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=(IV.data.w||'calendar').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-interactive.html';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+
+/* Standalone notebook renderer for export (no edit deps) */
+function ivRenderExportNotebook(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif;--font-display:'${IV.font}',serif"`:'';
+  root.innerHTML='<div class="nb-stage"><div class="notebook" '+fontStyle+'>'+
+    '<div class="nb-page nb-page-left"><div class="nb-index-title">'+w+'</div>'+
+    (era?'<div class="nb-index-sub">'+era+'</div>':'')+
+    '<ul class="nb-month-list">'+IV.months.map(function(m,i){return '<li class="nb-month-item'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"><span class="nb-month-num">'+String(i+1).padStart(2,'0')+'</span><span class="nb-month-itemname">'+(m.name||'Month '+(i+1))+'</span>'+(m.icon?'<img class="nb-month-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="nb-page nb-page-right" id="nb-detail"></div></div></div>';
+  ivRenderDetail();
+}
+</script>
+<script>ivInit();</script>
+</body>
+</html>
