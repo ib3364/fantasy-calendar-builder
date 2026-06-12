@@ -385,24 +385,69 @@ function ivUploadFont(){
     if(document.fonts&&document.fonts.load){document.fonts.load(`16px "${nm}"`).then(()=>ivRenderStage());}else ivRenderStage();
   });
 }
-const IV_FONTS=['Cinzel','Cormorant Garamond','EB Garamond','IM Fell English','Spectral','Lora','Merriweather','Orbitron','Rajdhani','Cardo','Uncial Antiqua','MedievalSharp'];
+const IV_FONTS=[
+  {cat:'Classic Fantasy',fonts:['Cinzel','Cormorant Garamond','EB Garamond','Playfair Display','Crimson Text']},
+  {cat:'Medieval',fonts:['IM Fell English','UnifrakturMaguntia','Almendra','MedievalSharp','Uncial Antiqua']},
+  {cat:'Elegant Serif',fonts:['Spectral','Lora','Merriweather','Libre Baskerville','Cardo']},
+  {cat:'Sci-Fi / Tech',fonts:['Orbitron','Rajdhani','Exo 2','Share Tech Mono','Space Mono']},
+  {cat:'Handwritten',fonts:['Kaushan Script','Dancing Script','Satisfy','Caveat']},
+  {cat:'Display',fonts:['Abril Fatface','Bebas Neue','Righteous','Philosopher']},
+];
 function ivOpenFontLib(){
-  const pick=prompt('Type a font name:\n\n'+IV_FONTS.join(', '));
-  if(pick&&pick.trim()){IV.font=pick.trim();ivLoadGFont(IV.font);IV.customFontFace='';setTimeout(ivRenderStage,300);}
+  const grid=document.getElementById('iv-fontlib-grid');
+  grid.innerHTML=IV_FONTS.map(c=>`
+    <div style="margin-bottom:1rem">
+      <div style="font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);opacity:.8;margin-bottom:.45rem">${c.cat}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+        ${c.fonts.map(f=>`<button class="iv-font-opt${IV.font===f?' active':''}" style="font-family:'${f}',serif" onclick="ivSelectFontLib('${f}')">${f}</button>`).join('')}
+      </div>
+    </div>`).join('');
+  IV_FONTS.forEach(c=>c.fonts.forEach(ivLoadGFont));
+  document.getElementById('iv-fontlib-modal').classList.add('open');
 }
+function ivCloseFontLib(){document.getElementById('iv-fontlib-modal').classList.remove('open');}
+function ivSelectFontLib(name){
+  IV.font=name;IV.customFontFace='';ivLoadGFont(name);
+  document.querySelectorAll('.iv-font-opt').forEach(b=>b.classList.toggle('active',b.textContent===name));
+  setTimeout(ivRenderStage,250);
+}
+
+let _ivIconTargetMonth=null;
 function ivOpenIconLib(mi){
-  const q=prompt('Search icons (e.g. moon, sword, fire):');
-  if(!q)return;
-  fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=1&prefixes=game-icons,twemoji,mdi')
+  _ivIconTargetMonth=mi;
+  document.getElementById('iv-iconlib-search').value='';
+  document.getElementById('iv-iconlib-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">Search for icons above, or try the quick categories.</div>';
+  document.getElementById('iv-iconlib-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('iv-iconlib-search').focus(),100);
+}
+function ivCloseIconLib(){document.getElementById('iv-iconlib-modal').classList.remove('open');}
+let _ivIconTimer=null;
+function ivIconSearch(q){
+  clearTimeout(_ivIconTimer);
+  if(!q.trim()){return;}
+  _ivIconTimer=setTimeout(()=>ivDoIconSearch(q),350);
+}
+function ivDoIconSearch(q){
+  const grid=document.getElementById('iv-iconlib-grid');
+  grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">Loading…</div>';
+  const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=60&prefixes=game-icons,twemoji,mdi,noto,fluent-emoji')
     .then(r=>r.json()).then(d=>{
-      if(!d.icons||!d.icons.length){alert('No icons found.');return;}
-      const id=d.icons[0];const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-      const svgUrl='https://api.iconify.design/'+id.replace(':','/')+'.svg?color='+encodeURIComponent(accent);
-      fetch(svgUrl).then(r=>r.text()).then(svg=>{
-        const burl='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
-        ivCompressImg(burl,32,(small)=>{IV.months[mi].icon=small;ivRenderStage();ivRestoreSelect('iv-icon-month',mi);});
-      });
-    }).catch(()=>alert('Icon library unavailable.'));
+      if(!d.icons||!d.icons.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">No icons found. Try another word.</div>';return;}
+      grid.innerHTML=d.icons.map(id=>{
+        const svgUrl='https://api.iconify.design/'+id.replace(':','/')+'.svg?color='+encodeURIComponent(accent);
+        return `<button class="iv-icon-opt" onclick="ivSelectIconLib('${id}')" title="${id}"><img src="${svgUrl}" width="26" height="26" loading="lazy"/></button>`;
+      }).join('');
+    }).catch(()=>{grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">Icon library unavailable. Check your connection.</div>';});
+}
+function ivSelectIconLib(id){
+  const mi=_ivIconTargetMonth; if(mi===null)return;
+  const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const svgUrl='https://api.iconify.design/'+id.replace(':','/')+'.svg?color='+encodeURIComponent(accent);
+  fetch(svgUrl).then(r=>r.text()).then(svg=>{
+    const burl='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
+    ivCompressImg(burl,32,(small)=>{IV.months[mi].icon=small;ivCloseIconLib();ivRenderStage();ivRestoreSelect('iv-icon-month',mi);});
+  }).catch(()=>alert('Could not load that icon.'));
 }
 </script>
 <script>
@@ -427,7 +472,26 @@ function ivExport(){
 ${IV.font&&!IV.font.startsWith('Custom-')?`<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(IV.font)}:ital@0;1&display=swap" rel="stylesheet"/>`:''}
 <style>${nbCss}
 ${IV.customFontFace?IV.customFontFace:''}
-body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}</style>
+body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}
+/* ── Interactive icon/font picker modals ── */
+.iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
+.iv-modal.open{display:flex}
+.iv-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;width:min(640px,100%);max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.iv-modal-head{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;border-bottom:1px solid var(--border)}
+.iv-modal-title{font-family:var(--font-display);font-size:1rem;color:var(--text)}
+.iv-modal-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem;line-height:1}
+.iv-modal-close:hover{color:var(--accent)}
+.iv-modal-search{padding:.7rem 1.1rem;border-bottom:1px solid var(--border)}
+.iv-modal-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;font-size:.88rem;border-radius:5px;outline:none;font-family:var(--font-body);box-sizing:border-box}
+.iv-modal-search input:focus{border-color:var(--accent)}
+.iv-modal-body{overflow-y:auto;padding:1rem 1.1rem}
+#iv-iconlib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:.4rem}
+.iv-icon-opt{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
+.iv-icon-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.1);transform:scale(1.08)}
+.iv-font-opt{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem .9rem;cursor:pointer;border-radius:5px;font-size:1rem;transition:all .15s;line-height:1.2}
+.iv-font-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+.iv-font-opt.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);color:var(--accent)}
+</style>
 </head><body>
 <div id="iv-root"></div>
 <script>
@@ -463,6 +527,31 @@ function ivRenderExportNotebook(rootId){
   ivRenderDetail();
 }
 </script>
+
+<!-- Icon library modal -->
+<div class="iv-modal" id="iv-iconlib-modal" onclick="if(event.target.id==='iv-iconlib-modal')ivCloseIconLib()">
+  <div class="iv-modal-box">
+    <div class="iv-modal-head">
+      <span class="iv-modal-title">🔍 Pick an icon</span>
+      <button class="iv-modal-close" onclick="ivCloseIconLib()">&#x2715;</button>
+    </div>
+    <div class="iv-modal-search">
+      <input id="iv-iconlib-search" type="text" placeholder="Search 150,000+ icons (moon, dragon, sword, fire…)" oninput="ivIconSearch(this.value)"/>
+    </div>
+    <div class="iv-modal-body"><div id="iv-iconlib-grid"></div></div>
+  </div>
+</div>
+<!-- Font library modal -->
+<div class="iv-modal" id="iv-fontlib-modal" onclick="if(event.target.id==='iv-fontlib-modal')ivCloseFontLib()">
+  <div class="iv-modal-box">
+    <div class="iv-modal-head">
+      <span class="iv-modal-title">Aa Choose a font</span>
+      <button class="iv-modal-close" onclick="ivCloseFontLib()">&#x2715;</button>
+    </div>
+    <div class="iv-modal-body"><div id="iv-fontlib-grid"></div></div>
+  </div>
+</div>
+
 <script>ivInit();</script>
 </body>
 </html>
