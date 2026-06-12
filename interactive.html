@@ -102,6 +102,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .nb-lore-dot.active{background:var(--accent)}
 .nb-detail-event{margin-top:1rem;padding:.6rem .8rem;background:rgba(var(--accent-rgb),.08);border-left:2px solid var(--accent);border-radius:3px;font-size:.85rem}
 .nb-empty{color:var(--text-dim);font-style:italic;text-align:center;margin-top:3rem}
+
+/* ── Interactive icon/font picker modals ── */
+.iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
+.iv-modal.open{display:flex}
+.iv-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;width:min(640px,100%);max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.iv-modal-head{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;border-bottom:1px solid var(--border)}
+.iv-modal-title{font-family:var(--font-display);font-size:1rem;color:var(--text)}
+.iv-modal-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem;line-height:1}
+.iv-modal-close:hover{color:var(--accent)}
+.iv-modal-search{padding:.7rem 1.1rem;border-bottom:1px solid var(--border)}
+.iv-modal-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;font-size:.88rem;border-radius:5px;outline:none;font-family:var(--font-body);box-sizing:border-box}
+.iv-modal-search input:focus{border-color:var(--accent)}
+.iv-modal-body{overflow-y:auto;padding:1rem 1.1rem}
+#iv-iconlib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:.4rem}
+.iv-icon-opt{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
+.iv-icon-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.1);transform:scale(1.08)}
+.iv-font-opt{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem .9rem;cursor:pointer;border-radius:5px;font-size:1rem;transition:all .15s;line-height:1.2}
+.iv-font-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+.iv-font-opt.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);color:var(--accent)}
 </style>
 <script>
 /* ═══ Interactive View — core ═══ */
@@ -472,26 +491,7 @@ function ivExport(){
 ${IV.font&&!IV.font.startsWith('Custom-')?`<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(IV.font)}:ital@0;1&display=swap" rel="stylesheet"/>`:''}
 <style>${nbCss}
 ${IV.customFontFace?IV.customFontFace:''}
-body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}
-/* ── Interactive icon/font picker modals ── */
-.iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
-.iv-modal.open{display:flex}
-.iv-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;width:min(640px,100%);max-height:86vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-.iv-modal-head{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.1rem;border-bottom:1px solid var(--border)}
-.iv-modal-title{font-family:var(--font-display);font-size:1rem;color:var(--text)}
-.iv-modal-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem;line-height:1}
-.iv-modal-close:hover{color:var(--accent)}
-.iv-modal-search{padding:.7rem 1.1rem;border-bottom:1px solid var(--border)}
-.iv-modal-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;font-size:.88rem;border-radius:5px;outline:none;font-family:var(--font-body);box-sizing:border-box}
-.iv-modal-search input:focus{border-color:var(--accent)}
-.iv-modal-body{overflow-y:auto;padding:1rem 1.1rem}
-#iv-iconlib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:.4rem}
-.iv-icon-opt{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
-.iv-icon-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.1);transform:scale(1.08)}
-.iv-font-opt{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem .9rem;cursor:pointer;border-radius:5px;font-size:1rem;transition:all .15s;line-height:1.2}
-.iv-font-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
-.iv-font-opt.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);color:var(--accent)}
-</style>
+body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}</style>
 </head><body>
 <div id="iv-root"></div>
 <script>
@@ -527,6 +527,7 @@ function ivRenderExportNotebook(rootId){
   ivRenderDetail();
 }
 </script>
+
 
 <!-- Icon library modal -->
 <div class="iv-modal" id="iv-iconlib-modal" onclick="if(event.target.id==='iv-iconlib-modal')ivCloseIconLib()">
