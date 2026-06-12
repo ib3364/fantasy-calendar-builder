@@ -125,6 +125,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .iv-iconlib-cats{display:flex;gap:.4rem;padding:.6rem 1.1rem;flex-wrap:wrap;border-bottom:1px solid var(--border)}
 .iv-icon-cat{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.28rem .65rem;font-size:.72rem;cursor:pointer;border-radius:99px;font-family:var(--font-body)}
 .iv-icon-cat:hover{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+
+/* ── Icon zoom popup (double-click a month) ── */
+#iv-icon-pop{display:none;position:fixed;inset:0;z-index:300;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px)}
+#iv-icon-pop.open{display:flex}
+.iv-icon-pop-inner{background:var(--card-bg);border:1px solid var(--accent);border-radius:10px;padding:1.6rem 2rem;text-align:center;box-shadow:0 16px 50px rgba(0,0,0,0.5);animation:ivPopIn .18s ease-out}
+.iv-icon-pop-inner img{width:160px;height:160px;object-fit:contain;display:block;margin:0 auto}
+.iv-icon-pop-name{margin-top:.9rem;font-family:var(--font-display);font-size:1.1rem;color:var(--accent)}
+@keyframes ivPopIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
 <script>
 /* ═══ Interactive View — core ═══ */
@@ -300,7 +308,7 @@ function ivRenderNotebook(canvasId){
       ${era?`<div class="nb-index-sub">${era}</div>`:''}
       <ul class="nb-month-list" id="nb-list">
         ${IV.months.map((m,i)=>`
-          <li class="nb-month-item ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})">
+          <li class="nb-month-item ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
             <span class="nb-month-num">${String(i+1).padStart(2,'0')}</span>
             <span class="nb-month-itemname">${m.name||'Month '+(i+1)}</span>
             ${m.icon?`<img class="nb-month-ico" src="${m.icon}" alt=""/>`:''}
@@ -312,6 +320,19 @@ function ivRenderNotebook(canvasId){
   ivRenderDetail();
 }
 
+function ivShowIconPop(i){
+  const m=IV.months[i]; if(!m||!m.icon)return;
+  const name=m.name||'Month '+(i+1);
+  let pop=document.getElementById('iv-icon-pop');
+  if(!pop){pop=document.createElement('div');pop.id='iv-icon-pop';document.body.appendChild(pop);}
+  pop.innerHTML='<div class="iv-icon-pop-inner"><img src="'+m.icon+'" alt=""/><div class="iv-icon-pop-name">'+name+'</div></div>';
+  pop.classList.add('open');
+  // dismiss on any click
+  setTimeout(function(){
+    function dismiss(){pop.classList.remove('open');document.removeEventListener('click',dismiss);}
+    document.addEventListener('click',dismiss);
+  },10);
+}
 function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0; 
   document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
   ivRenderDetail();
@@ -524,6 +545,7 @@ body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{posi
 const IV=${JSON.stringify(exportData).replace(/<\/script>/g,'<\\/script>')};
 IV.selectedMonth=0;IV.lorePage=0;
 ${ivSplitLore.toString()}
+${ivShowIconPop.toString()}
 ${ivRenderExportNotebook.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
@@ -548,7 +570,7 @@ function ivRenderExportNotebook(rootId){
   root.innerHTML='<div class="nb-stage"><div class="notebook" '+fontStyle+'>'+
     '<div class="nb-page nb-page-left"><div class="nb-index-title">'+w+'</div>'+
     (era?'<div class="nb-index-sub">'+era+'</div>':'')+
-    '<ul class="nb-month-list">'+IV.months.map(function(m,i){return '<li class="nb-month-item'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"><span class="nb-month-num">'+String(i+1).padStart(2,'0')+'</span><span class="nb-month-itemname">'+(m.name||'Month '+(i+1))+'</span>'+(m.icon?'<img class="nb-month-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<ul class="nb-month-list">'+IV.months.map(function(m,i){return '<li class="nb-month-item'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="nb-month-num">'+String(i+1).padStart(2,'0')+'</span><span class="nb-month-itemname">'+(m.name||'Month '+(i+1))+'</span>'+(m.icon?'<img class="nb-month-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="nb-page nb-page-right" id="nb-detail"></div></div></div>';
   ivRenderDetail();
 }
