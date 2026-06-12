@@ -121,6 +121,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .iv-font-opt{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem .9rem;cursor:pointer;border-radius:5px;font-size:1rem;transition:all .15s;line-height:1.2}
 .iv-font-opt:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
 .iv-font-opt.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.12);color:var(--accent)}
+
+.iv-iconlib-cats{display:flex;gap:.4rem;padding:.6rem 1.1rem;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.iv-icon-cat{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.28rem .65rem;font-size:.72rem;cursor:pointer;border-radius:99px;font-family:var(--font-body)}
+.iv-icon-cat:hover{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),.08)}
 </style>
 <script>
 /* ═══ Interactive View — core ═══ */
@@ -413,17 +417,26 @@ const IV_FONTS=[
   {cat:'Display',fonts:['Abril Fatface','Bebas Neue','Righteous','Philosopher']},
 ];
 function ivOpenFontLib(){
-  const grid=document.getElementById('iv-fontlib-grid');
-  grid.innerHTML=IV_FONTS.map(c=>`
-    <div style="margin-bottom:1rem">
-      <div style="font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);opacity:.8;margin-bottom:.45rem">${c.cat}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:.4rem">
-        ${c.fonts.map(f=>`<button class="iv-font-opt${IV.font===f?' active':''}" style="font-family:'${f}',serif" onclick="ivSelectFontLib('${f}')">${f}</button>`).join('')}
-      </div>
-    </div>`).join('');
+  ivRenderFontGrid('');
   IV_FONTS.forEach(c=>c.fonts.forEach(ivLoadGFont));
   document.getElementById('iv-fontlib-modal').classList.add('open');
+  setTimeout(()=>{const s=document.getElementById('iv-fontlib-search');if(s){s.value='';s.focus();}},100);
 }
+function ivRenderFontGrid(filter){
+  const f=(filter||'').toLowerCase().trim();
+  const grid=document.getElementById('iv-fontlib-grid');
+  const cats=IV_FONTS.map(c=>{
+    const matches=c.fonts.filter(fn=>!f||fn.toLowerCase().includes(f));
+    if(!matches.length)return '';
+    return `<div style="margin-bottom:1rem">
+      <div style="font-size:.66rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);opacity:.8;margin-bottom:.45rem">${c.cat}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+        ${matches.map(fn=>`<button class="iv-font-opt${IV.font===fn?' active':''}" style="font-family:'${fn}',serif" onclick="ivSelectFontLib('${fn}')">${fn}</button>`).join('')}
+      </div></div>`;
+  }).filter(Boolean).join('');
+  grid.innerHTML=cats||'<div style="text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">No fonts match that search.</div>';
+}
+function ivFontSearch(q){ ivRenderFontGrid(q); }
 function ivCloseFontLib(){document.getElementById('iv-fontlib-modal').classList.remove('open');}
 function ivSelectFontLib(name){
   IV.font=name;IV.customFontFace='';ivLoadGFont(name);
@@ -431,11 +444,23 @@ function ivSelectFontLib(name){
   setTimeout(ivRenderStage,250);
 }
 
+const IV_ICON_CATS=[
+  {label:'⭐ Fantasy',query:'fantasy',set:'game-icons'},
+  {label:'🌙 Celestial',query:'moon star sun',set:'twemoji'},
+  {label:'⚔️ Combat',query:'sword shield axe',set:'game-icons'},
+  {label:'🌿 Nature',query:'tree leaf forest',set:'twemoji'},
+  {label:'🔥 Elements',query:'fire water earth',set:'game-icons'},
+  {label:'🏰 World',query:'castle tower city',set:'game-icons'},
+  {label:'✨ Magic',query:'magic rune glyph',set:'game-icons'},
+];
 let _ivIconTargetMonth=null;
 function ivOpenIconLib(mi){
   _ivIconTargetMonth=mi;
   document.getElementById('iv-iconlib-search').value='';
-  document.getElementById('iv-iconlib-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">Search for icons above, or try the quick categories.</div>';
+  // Render category buttons
+  const cats=document.getElementById('iv-iconlib-cats');
+  if(cats)cats.innerHTML=IV_ICON_CATS.map(c=>`<button class="iv-icon-cat" onclick="ivBrowseIconCat('${c.query}','${c.set}')">${c.label}</button>`).join('');
+  document.getElementById('iv-iconlib-grid').innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">Search above, or tap a category.</div>';
   document.getElementById('iv-iconlib-modal').classList.add('open');
   setTimeout(()=>document.getElementById('iv-iconlib-search').focus(),100);
 }
@@ -444,13 +469,14 @@ let _ivIconTimer=null;
 function ivIconSearch(q){
   clearTimeout(_ivIconTimer);
   if(!q.trim()){return;}
-  _ivIconTimer=setTimeout(()=>ivDoIconSearch(q),350);
+  _ivIconTimer=setTimeout(()=>ivDoIconSearch(q,'game-icons,twemoji,noto,mdi,fluent-emoji'),350);
 }
-function ivDoIconSearch(q){
+function ivBrowseIconCat(query,set){ ivDoIconSearch(query,set); }
+function ivDoIconSearch(q,prefixes){
   const grid=document.getElementById('iv-iconlib-grid');
   grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">Loading…</div>';
   const accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
-  fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=60&prefixes=game-icons,twemoji,mdi,noto,fluent-emoji')
+  fetch('https://api.iconify.design/search?query='+encodeURIComponent(q)+'&limit=96&prefixes='+prefixes)
     .then(r=>r.json()).then(d=>{
       if(!d.icons||!d.icons.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">No icons found. Try another word.</div>';return;}
       grid.innerHTML=d.icons.map(id=>{
@@ -539,6 +565,7 @@ function ivRenderExportNotebook(rootId){
     <div class="iv-modal-search">
       <input id="iv-iconlib-search" type="text" placeholder="Search 150,000+ icons (moon, dragon, sword, fire…)" oninput="ivIconSearch(this.value)"/>
     </div>
+    <div class="iv-iconlib-cats" id="iv-iconlib-cats"></div>
     <div class="iv-modal-body"><div id="iv-iconlib-grid"></div></div>
   </div>
 </div>
@@ -548,6 +575,9 @@ function ivRenderExportNotebook(rootId){
     <div class="iv-modal-head">
       <span class="iv-modal-title">Aa Choose a font</span>
       <button class="iv-modal-close" onclick="ivCloseFontLib()">&#x2715;</button>
+    </div>
+    <div class="iv-modal-search">
+      <input id="iv-fontlib-search" type="text" placeholder="Search fonts by name…" oninput="ivFontSearch(this.value)"/>
     </div>
     <div class="iv-modal-body"><div id="iv-fontlib-grid"></div></div>
   </div>
