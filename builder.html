@@ -658,7 +658,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
       <div class="world-lore-field">
         <label>World lore <span style="color:var(--text-dimmer)">(optional)</span></label>
         <textarea class="lore-textarea" id="world-lore" placeholder="Describe your world's history, cosmology, or calendar origin... e.g. 'The calendar was decreed by the First Mages after the Great Sundering, aligning each month with a star constellation.'" oninput="onLoreInput(this,'world-lore-count')" rows="3"></textarea>
-        <div class="lore-char-count" id="world-lore-count">0 / 600</div>
+        <div class="lore-char-count" id="world-lore-count">0 characters</div>
       </div>
       <div class="world-lore-field">
         <label>Calendar font <span style="color:var(--text-dimmer)">(optional)</span></label>
@@ -850,7 +850,7 @@ function buildMonthFields(){
     <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
     <div class="lore-area">
       <textarea class="lore-textarea" placeholder="What happens in this month? Why does it exist? Any seasonal traditions, historical events, or cultural significance..." oninput="updateMonth(${i},'lore',this.value);onLoreInput(this,'mlc-${i}')" rows="2">${lore}</textarea>
-      <div class="lore-char-count" id="mlc-${i}">${lore.length} / 400</div>
+      <div class="lore-char-count" id="mlc-${i}">${lore.length} characters</div>
     </div>`;
     container.appendChild(w);
   }
@@ -884,7 +884,7 @@ function renderMoonList(){
       <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
       <div class="lore-area">
         <textarea class="lore-textarea" placeholder="What myth surrounds this moon? Who worships it? Does its cycle affect tides, magic, or harvests?" oninput="updateMoon(${i},'lore',this.value);onLoreInput(this,'molc-${i}')" rows="2">${moon.lore||''}</textarea>
-        <div class="lore-char-count" id="molc-${i}">${(moon.lore||'').length} / 400</div>
+        <div class="lore-char-count" id="molc-${i}">${(moon.lore||'').length} characters</div>
       </div>`;
     container.appendChild(div);
   });
@@ -924,7 +924,7 @@ function renderEventList(){
       <button class="lore-toggle" onclick="toggleLore(this)"><span class="lt-icon">▶</span> Add lore</button>
       <div class="lore-area">
         <textarea class="lore-textarea" placeholder="Why does this holiday exist? What happened on this date? How do people celebrate it?" oninput="updateEvent(${i},'lore',this.value);onLoreInput(this,'elc-${i}')" rows="2">${ev.lore||''}</textarea>
-        <div class="lore-char-count" id="elc-${i}">${(ev.lore||'').length} / 400</div>
+        <div class="lore-char-count" id="elc-${i}">${(ev.lore||'').length} characters</div>
       </div>`;
     container.appendChild(div);
   });
@@ -1026,11 +1026,8 @@ function toggleLore(btn){
 }
 
 function onLoreInput(el,countId){
-  const max=el.id==='world-lore'?600:400;
-  const len=el.value.length;
-  if(len>max)el.value=el.value.slice(0,max);
   const c=document.getElementById(countId);
-  if(c)c.textContent=Math.min(len,max)+' / '+max;
+  if(c)c.textContent=el.value.length+(el.value.length===1?' character':' characters');
 }
 
 async function buildShareUrl(){
