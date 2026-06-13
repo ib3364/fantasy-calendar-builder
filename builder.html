@@ -468,6 +468,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .font-picker-close{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:.2rem .5rem}
 .font-picker-close:hover{color:var(--accent)}
 .font-picker-actions{display:flex;gap:.6rem;padding:.6rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0;align-items:center}
+.font-picker-searchrow{padding:.7rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.font-picker-searchrow input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;font-size:.88rem;border-radius:5px;outline:none;font-family:var(--font-body);box-sizing:border-box}
+.font-picker-searchrow input:focus{border-color:var(--accent)}
 .font-picker-hint{font-size:.72rem;color:var(--text-dim);font-family:var(--font-body);flex:1}
 .btn-font-reset{background:none;border:1px solid var(--border);color:var(--text-dim);padding:.28rem .7rem;font-size:.72rem;cursor:pointer;border-radius:var(--radius-btn);font-family:var(--font-body)}
 .btn-font-reset:hover{border-color:var(--accent);color:var(--accent)}
@@ -2085,32 +2088,39 @@ function applyCalFont(name) {
 }
 
 function openFontPicker() {
-  renderFontPicker();
+  renderFontPicker('');
   document.getElementById('font-picker-modal').classList.add('open');
+  const s=document.getElementById('font-picker-search');
+  if(s){s.value='';setTimeout(()=>s.focus(),100);}
 }
 function closeFontPicker() {
   document.getElementById('font-picker-modal').classList.remove('open');
 }
+function fontSearch(q){ renderFontPicker(q); }
 
-function renderFontPicker() {
+function renderFontPicker(filter) {
   const grid = document.getElementById('font-picker-grid');
   if (!grid) return;
-  grid.innerHTML = FONT_CATEGORIES.map(cat => `
-    <div class="font-cat-section">
+  const f=(filter||'').toLowerCase().trim();
+  const sections=FONT_CATEGORIES.map(cat => {
+    const matches=cat.fonts.filter(fn=>!f||fn.toLowerCase().includes(f));
+    if(!matches.length)return '';
+    return `<div class="font-cat-section">
       <div class="font-cat-label">${cat.cat}</div>
       <div class="font-cat-row">
-        ${cat.fonts.map(f => `
-          <button class="font-option${_currentFont===f?' active':''}"
-            onclick="selectFont('${f}')"
-            style="font-family:'${f}',serif"
-            data-font="${f}">
-            ${f}
+        ${matches.map(fn => `
+          <button class="font-option${_currentFont===fn?' active':''}"
+            onclick="selectFont('${fn}')"
+            style="font-family:'${fn}',serif"
+            data-font="${fn}">
+            ${fn}
           </button>`).join('')}
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).filter(Boolean).join('');
+  grid.innerHTML = sections || '<div style="text-align:center;color:var(--text-dim);padding:1.5rem;font-size:.8rem">No fonts match that search.</div>';
   // Preload visible fonts for preview
-  FONT_CATEGORIES.forEach(cat => cat.fonts.forEach(f => loadGFont(f)));
+  FONT_CATEGORIES.forEach(cat => cat.fonts.forEach(fn => loadGFont(fn)));
 }
 
 async function selectFont(name) {
@@ -2202,6 +2212,9 @@ async function handleFontUpload(e) {
       <span class="font-picker-hint">Pick a Google Font (travels in shared links) or upload your own (preview &amp; download only).</span>
       <button class="btn-font-reset" onclick="triggerFontUpload()">⬆ Upload font</button>
       <button class="btn-font-reset" onclick="resetFont();closeFontPicker()">Reset to default</button>
+    </div>
+    <div class="font-picker-searchrow">
+      <input id="font-picker-search" type="text" placeholder="Search fonts by name…" oninput="fontSearch(this.value)"/>
     </div>
     <div id="font-picker-grid"></div>
   </div>
