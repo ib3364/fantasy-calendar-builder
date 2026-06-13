@@ -755,6 +755,12 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 <script>
 const ACCENT_COLORS=['#a78bfa','#6ee7b7','#f4b942','#f87171','#60a5fa','#fb923c','#a3e635','#e879f9','#2dd4bf','#f472b6','#facc15','#38bdf8','#c084fc'];
 const state={worldName:'',eraName:'',numMonths:10,daysWeek:7,daysMonth:30,months:[],moons:[],events:[],icons:{world:'',months:[],moons:[],events:[]}};
+// Module-level state declared up-front to avoid temporal-dead-zone errors
+var _pickerTarget = null;
+var _searchTimer = null;
+var _currentFont = '';
+var _shareId = null;
+var _shareSaving = false;
 
 function goStep(n){
   document.querySelectorAll('.step-block').forEach(el=>el.classList.remove('active'));
@@ -783,9 +789,6 @@ async function sbSaveCalendar(dataObj){
   if(!res.ok){throw new Error('save failed '+res.status);}
   return id;
 }
-
-let _shareId=null;       // the short locker id once saved
-let _shareSaving=false;
 
 function showViewChooser(){
   const modal=document.getElementById('view-chooser-modal');
@@ -1648,7 +1651,6 @@ updatePreview();
 ═══════════════════════════════════════════════════ */
 
 // State for the picker
-let _pickerTarget = null; // {key, previewId, type}
 
 // Fantasy-focused category presets using Iconify icon sets
 const ICON_CATEGORIES = [
@@ -1853,7 +1855,6 @@ function applyPickedIcon(dataUrl, key, previewId) {
 }
 
 // Debounced search
-let _searchTimer = null;
 function onIconSearch(val) {
   clearTimeout(_searchTimer);
   if (!val.trim()) { renderEmojiGrid(); document.getElementById('icon-picker-status').textContent = 'Browse categories or search above'; return; }
@@ -2047,7 +2048,6 @@ const FONT_CATEGORIES = [
   },
 ];
 
-let _currentFont = '';
 
 function loadGFont(name) {
   if (!name) return Promise.resolve();
