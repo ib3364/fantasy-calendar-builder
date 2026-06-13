@@ -173,9 +173,30 @@ function ivSplitLore(loreStr){
   return loreStr.split(/\n\s*\n|\s*---\s*/).map(s=>s.trim()).filter(Boolean);
 }
 
-function ivInit(){
-  const data=ivDecode();
-  if(!data){
+/* ── Supabase locker loader ── */
+const SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+const SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+async function ivLoadFromLocker(id){
+  const res=await fetch(SB_URL+'/rest/v1/calendars?id=eq.'+encodeURIComponent(id)+'&select=data',{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  });
+  if(!res.ok)throw new Error('load failed '+res.status);
+  const rows=await res.json();
+  if(!rows||!rows.length)throw new Error('not found');
+  return rows[0].data;
+}
+
+async function ivInit(){
+  const params=new URLSearchParams(location.search);
+  const id=params.get('id');
+  let data=null;
+  if(id){
+    try{ data=await ivLoadFromLocker(id); }
+    catch(e){ console.error('locker load failed:',e); }
+  } else {
+    data=ivDecode();
+  }
+  if(!data||data.w===undefined){
     document.getElementById('iv-root').innerHTML='<div class="iv-loading"><div>No calendar found. <a href="builder.html" style="color:var(--accent)">Build one →</a></div></div>';
     return;
   }
@@ -188,7 +209,7 @@ function ivInit(){
   IV.font=data.f||'';
   if(IV.font)ivLoadGFont(IV.font);
   // If the builder already chose interactive mode, skip the chooser
-  const mode=new URLSearchParams(location.search).get('mode');
+  const mode=params.get('mode');
   if(mode==='interactive'){ ivStartInteractive(); }
   else { ivRenderChooser(); }
 }
