@@ -393,13 +393,17 @@ function ivRenderDetail(){
   const bg=IV.perLoreBg[bgKey]||'';
   const txtColor=IV.perLoreColor[bgKey]||'';
   d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  // when a custom colour is set, force sub-elements (which have their own theme colours) to inherit it
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStyleStrong=txtColor?'color:inherit;':'';
   d.innerHTML=`
     <div class="nb-detail-head">
-      <div class="nb-detail-name">${m.name||'Month '+(IV.selectedMonth+1)}</div>
-      <div class="nb-detail-meta">${m.days||''} days${evs.length?' · '+evs.length+' event'+(evs.length>1?'s':''):''}</div>
+      <div class="nb-detail-name"${inheritStyle}>${m.name||'Month '+(IV.selectedMonth+1)}</div>
+      <div class="nb-detail-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' event'+(evs.length>1?'s':''):''}</div>
     </div>
-    <div class="nb-detail-body"${txtColor?` style="color:${txtColor}"`:''}>${curLore||'<span style="opacity:.5">No lore recorded for this month.</span>'}</div>
-    ${evs.map(e=>`<div class="nb-detail-event">${e.icon?`<img src="${e.icon}" style="width:16px;height:16px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    <div class="nb-detail-body"${inheritStyle}>${curLore||'<span style="opacity:.5">No lore recorded for this month.</span>'}</div>
+    ${evs.map(e=>`<div class="nb-detail-event" style="${inheritStyleStrong}">${e.icon?`<img src="${e.icon}" style="width:16px;height:16px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
     ${totalPages>1?`
       <div class="nb-lore-nav">
         <button class="nb-lore-arrow" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
