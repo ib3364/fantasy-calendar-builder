@@ -559,33 +559,52 @@ function metaPill(emoji, text, code, heraldic, waypoint, verdant, blood, voidsym
   ><span class="pill-icon">${emoji}</span> ${text}</span>`;
 }
 
-function loadCalendar(){
+const SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+const SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+
+async function sbLoadCalendar(id){
+  const res=await fetch(SB_URL+'/rest/v1/calendars?id=eq.'+encodeURIComponent(id)+'&select=data',{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  });
+  if(!res.ok)throw new Error('load failed '+res.status);
+  const rows=await res.json();
+  if(!rows||!rows.length)throw new Error('not found');
+  return rows[0].data;
+}
+
+function showCalError(){
+  document.getElementById('cal-card-wrap').innerHTML=`<div class="error-state"><h2>No calendar found</h2><p>This link may be invalid. <a href="builder.html" style="color:var(--accent)">Build your own calendar →</a></p></div>`;
+}
+
+async function loadCalendar(){
   const params=new URLSearchParams(window.location.search);
+  const id=params.get('id');
   const c=params.get('c');
-  if(!c){
-    document.getElementById('cal-card-wrap').innerHTML=`<div class="error-state"><h2>No calendar found</h2><p>This link may be invalid. <a href="builder.html" style="color:var(--accent)">Build your own calendar →</a></p></div>`;
-    return;
-  }
-  // Try multiple decode strategies — handles all past and present URL formats
-  const strategies=[
-    // Strategy 1: current format — btoa(encodeURIComponent(JSON.stringify(data)))
-    ()=>JSON.parse(decodeURIComponent(atob(c))),
-    // Strategy 2: old format — btoa(JSON.stringify(data)) without encodeURIComponent
-    ()=>JSON.parse(atob(c)),
-    // Strategy 3: double-encoded — encodeURIComponent applied to whole URL param
-    ()=>JSON.parse(decodeURIComponent(decodeURIComponent(atob(c)))),
-    // Strategy 4: URI-decoded first, then base64
-    ()=>JSON.parse(decodeURIComponent(atob(decodeURIComponent(c)))),
-  ];
   let data=null;
-  for(const strategy of strategies){
-    try{data=strategy();if(data&&data.w!==undefined)break;}catch(e){data=null;}
+  if(id){
+    // New short-link format — fetch from the locker
+    try{ data=await sbLoadCalendar(id); }
+    catch(e){ console.error('locker load failed:',e); showCalError(); return; }
+  } else if(c){
+    // Legacy data-in-URL format — try multiple decode strategies
+    const strategies=[
+      ()=>JSON.parse(decodeURIComponent(atob(c))),
+      ()=>JSON.parse(atob(c)),
+      ()=>JSON.parse(decodeURIComponent(decodeURIComponent(atob(c)))),
+      ()=>JSON.parse(decodeURIComponent(atob(decodeURIComponent(c)))),
+    ];
+    for(const strategy of strategies){
+      try{data=strategy();if(data&&data.w!==undefined)break;}catch(e){data=null;}
+    }
   }
-  if(!data){
-    console.error('loadCalendar: all decode strategies failed for param:',c.slice(0,50));
-    document.getElementById('cal-card-wrap').innerHTML=`<div class="error-state"><h2>No calendar found</h2><p>This link may be invalid. <a href="builder.html" style="color:var(--accent)">Build your own calendar →</a></p></div>`;
+  if(!data||data.w===undefined){
+    showCalError();
     return;
   }
+  renderCalendarData(data);
+}
+
+function renderCalendarData(data){
   try{
     calData=data;
     const months=(data.m||[]).map(s=>{const p=s.split('|');return{name:p[0],days:p[1],lore:(p[2]||'').replace(/‖/g,'|'),icon:p[3]||''};});
@@ -594,7 +613,7 @@ function loadCalendar(){
     const numMonths=data.n||10,daysMonth=data.dm||30,daysWeek=data.dw||7;
     const worldName=data.w||'Unnamed World',eraName=data.e||'',worldLore=data.wl||'',worldIcon=data.wi||'';
     const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0)||numMonths*daysMonth;
-    document.getElementById('edit-link').href='builder.html?c='+c;
+    document.getElementById('edit-link').href='builder.html'+window.location.search;
     document.title=worldName+' — Fantasy Calendar Builder';
     // Apply font from URL
     if(data.f){loadGFont(data.f).then(()=>applyCalFont(data.f));}
