@@ -765,15 +765,53 @@ function goStep(n){
   updatePreview();
 }
 
+/* ── Supabase "locker" for unlimited-size sharing ── */
+const SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+const SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+function sbGenId(){
+  const chars='abcdefghijklmnopqrstuvwxyz0123456789';
+  let s='';for(let i=0;i<8;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+async function sbSaveCalendar(dataObj){
+  const id=sbGenId();
+  const res=await fetch(SB_URL+'/rest/v1/calendars',{
+    method:'POST',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+    body:JSON.stringify({id:id,data:dataObj})
+  });
+  if(!res.ok){throw new Error('save failed '+res.status);}
+  return id;
+}
+
+let _shareId=null;       // the short locker id once saved
+let _shareSaving=false;
+
 function showViewChooser(){
-  const encoded=encodeState();
   const modal=document.getElementById('view-chooser-modal');
   if(!modal)return;
-  document.getElementById('vc-normal').onclick=()=>{window.open(window.location.origin+'/view.html?c='+encoded,'_blank');closeViewChooser();};
-  document.getElementById('vc-interactive').onclick=()=>{window.open(window.location.origin+'/interactive.html?mode=interactive&c='+encoded,'_blank');closeViewChooser();};
   modal.classList.add('open');
+  // Wire buttons — they wait for the save to finish if still in progress
+  document.getElementById('vc-normal').onclick=()=>openShared('view',false);
+  document.getElementById('vc-interactive').onclick=()=>openShared('interactive',true);
 }
 function closeViewChooser(){const m=document.getElementById('view-chooser-modal');if(m)m.classList.remove('open');}
+
+async function openShared(which,interactive){
+  let id=_shareId;
+  if(!id){
+    // save not done yet (or failed) — try now
+    try{ id=await sbSaveCalendar(buildDataObject()); _shareId=id; }
+    catch(e){
+      // Fallback to the legacy URL method if the locker is unreachable
+      const encoded=encodeState();
+      const u=interactive?(window.location.origin+'/interactive.html?mode=interactive&c='+encoded):(window.location.origin+'/view.html?c='+encoded);
+      window.open(u,'_blank');closeViewChooser();return;
+    }
+  }
+  const url=interactive?(window.location.origin+'/interactive.html?mode=interactive&id='+id):(window.location.origin+'/view.html?id='+id);
+  window.open(url,'_blank');closeViewChooser();
+}
 
 function getAccent(){return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()}
 function getBorder(){return getComputedStyle(document.documentElement).getPropertyValue('--border').trim()}
@@ -964,9 +1002,9 @@ function buildSummary(){
   document.getElementById('summary').innerHTML=rows.map(([k,v])=>`<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`).join('');
 }
 
-function encodeState(){
+function buildDataObject(){
   const worldLore=document.getElementById('world-lore').value||'';
-  const data={
+  return {
     w:state.worldName,e:state.eraName,n:state.numMonths,dw:state.daysWeek,dm:state.daysMonth,
     wl:worldLore,
     wi:state.icons.world||'',
@@ -975,7 +1013,9 @@ function encodeState(){
     mo:state.moons.map((m,i)=>m.name+'|'+m.cycle+'|'+(m.lore||'').replace(/\|/g,'‖')+'|'+(state.icons.moons&&state.icons.moons[i]||'')),
     ev:state.events.map((e,i)=>e.name+'|'+e.month+'|'+e.emoji+'|'+(e.lore||'').replace(/\|/g,'‖')+'|'+(state.icons.events&&state.icons.events[i]||''))
   };
-  return btoa(encodeURIComponent(JSON.stringify(data)));
+}
+function encodeState(){
+  return btoa(encodeURIComponent(JSON.stringify(buildDataObject())));
 }
 
 function toggleLore(btn){
@@ -993,12 +1033,22 @@ function onLoreInput(el,countId){
   if(c)c.textContent=Math.min(len,max)+' / '+max;
 }
 
-function buildShareUrl(){
-  const encoded=encodeState();
-  const url=window.location.origin+'/view.html?c='+encoded;
-  document.getElementById('share-url').value=url;
-  // "Open full view" goes to the chooser (Normal vs Interactive)
-  document.getElementById('view-link').href=window.location.origin+'/interactive.html?c='+encoded;
+async function buildShareUrl(){
+  const input=document.getElementById('share-url');
+  _shareId=null;
+  input.value='Saving your world…';
+  try{
+    const id=await sbSaveCalendar(buildDataObject());
+    _shareId=id;
+    const url=window.location.origin+'/view.html?id='+id;
+    input.value=url;
+    document.getElementById('view-link').href=window.location.origin+'/interactive.html?id='+id;
+  }catch(e){
+    // Locker unreachable — fall back to legacy data-in-URL link so nothing is lost
+    const encoded=encodeState();
+    input.value=window.location.origin+'/view.html?c='+encoded;
+    document.getElementById('view-link').href=window.location.origin+'/interactive.html?c='+encoded;
+  }
 }
 
 function copyLink(){
