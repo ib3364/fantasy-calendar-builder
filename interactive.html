@@ -74,11 +74,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .iv-slot-select{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem;border-radius:4px;font-family:var(--font-body);font-size:.8rem;margin-bottom:.5rem}
 
 /* ═══ CARTOGRAPHER NOTEBOOK ═══ */
-.nb-stage{display:flex;align-items:center;justify-content:center;min-height:100%;padding:2rem 1rem}
-.notebook{display:grid;grid-template-columns:1fr 1fr;width:min(960px,100%);aspect-ratio:1.5;max-height:80vh;background:var(--card-bg);box-shadow:var(--shadow);position:relative;border-radius:4px}
-.notebook::before{content:'';position:absolute;left:50%;top:3%;bottom:3%;width:2px;background:linear-gradient(180deg,transparent,rgba(var(--accent-rgb),.3),transparent);transform:translateX(-50%)}
-.nb-page{padding:2rem 2.2rem;overflow-y:auto;position:relative}
-.nb-page-left{border-right:1px solid rgba(var(--accent-rgb),.12)}
+.nb-stage{display:flex;align-items:center;justify-content:center;min-height:100%;padding:2.5rem 1.5rem}
+/* Leather cover: outer frame wrapping the journal */
+.notebook{display:grid;grid-template-columns:1fr 1fr;width:min(980px,100%);aspect-ratio:1.5;max-height:82vh;position:relative;border-radius:8px;padding:14px;background:linear-gradient(135deg,#6b4a28 0%,#5a3d20 45%,#48301a 100%);box-shadow:0 18px 50px rgba(40,25,10,0.55),inset 0 1px 0 rgba(255,220,170,0.18),inset 0 0 0 1px rgba(0,0,0,0.3);isolation:isolate}
+/* Leather grain on the cover */
+.notebook::after{content:'';position:absolute;inset:0;border-radius:8px;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23l)' opacity='0.12'/%3E%3C/svg%3E");mix-blend-mode:overlay}
+/* Stitched leather spine down the centre */
+.notebook::before{content:'';position:absolute;left:50%;top:10px;bottom:10px;width:22px;transform:translateX(-50%);z-index:3;background:linear-gradient(90deg,rgba(0,0,0,0.28),rgba(0,0,0,0.06) 35%,rgba(255,220,170,0.12) 50%,rgba(0,0,0,0.06) 65%,rgba(0,0,0,0.28));border-left:1px dashed rgba(255,225,180,0.45);border-right:1px dashed rgba(255,225,180,0.45);background-clip:padding-box}
+/* The paper pages sit above the cover */
+.nb-page{padding:2.1rem 2.3rem;overflow-y:auto;position:relative;z-index:1;background:var(--card-bg);background-image:linear-gradient(to bottom,transparent 0,transparent calc(1.9rem - 1px),rgba(var(--accent-rgb),0.10) calc(1.9rem - 1px),rgba(var(--accent-rgb),0.10) 1.9rem);background-size:100% 1.9rem;background-attachment:local}
+.nb-page-left{border-radius:5px 0 0 5px;box-shadow:inset -14px 0 22px -16px rgba(60,40,15,0.55);background-position-x:0}
+.nb-page-right{border-radius:0 5px 5px 0;box-shadow:inset 14px 0 22px -16px rgba(60,40,15,0.55)}
+/* Red margin rule down each page */
+.nb-page::before{content:'';position:absolute;top:0;bottom:0;width:1px;background:rgba(176,58,46,0.30);z-index:2}
+.nb-page-left::before{left:2.6rem}
+.nb-page-right::before{left:2.6rem}
+/* faint paper grain */
+.nb-page::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23p)' opacity='0.04'/%3E%3C/svg%3E");z-index:0}
+.nb-page>*{position:relative;z-index:1}
 .nb-index-title{font-family:var(--font-display);font-size:1.3rem;color:var(--accent);margin-bottom:.3rem}
 .nb-index-sub{font-size:.78rem;font-style:italic;color:var(--text-dim);margin-bottom:1.2rem}
 .nb-month-list{list-style:none}
