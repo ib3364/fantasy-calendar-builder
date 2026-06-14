@@ -166,6 +166,54 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .hud-lognav-counter{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:rgba(0,229,200,.6);letter-spacing:.1em}
 .hud-empty{color:rgba(0,229,200,.4);text-align:center;margin-top:3rem;font-family:'Share Tech Mono',monospace;letter-spacing:.1em}
 
+/* ═══ ILLUMINATED MANUSCRIPT CODEX (Iron & Vellum) ═══ */
+.cdx-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
+.cdx-book{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;position:relative;border-radius:3px;padding:10px;background:linear-gradient(135deg,#3a2e12 0%,#2a2009 50%,#1c1405 100%);box-shadow:0 16px 46px rgba(0,0,0,.6),inset 0 0 0 1px rgba(212,160,64,.25),inset 0 0 0 4px rgba(28,20,5,.6),inset 0 0 0 5px rgba(212,160,64,.18);overflow:hidden}
+.cdx-page{background:linear-gradient(170deg,#272013 0%,#221b0e 100%);overflow-y:auto;position:relative;padding:1.7rem 1.8rem}
+.cdx-page::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23v)' opacity='0.05'/%3E%3C/svg%3E");z-index:0}
+.cdx-page>*{position:relative;z-index:1}
+.cdx-left{border-right:1px solid rgba(212,160,64,.25);border-radius:3px 0 0 3px}
+.cdx-right{border-radius:0 3px 3px 0}
+/* gold corner filigree on the folio */
+.cdx-right::before{content:'❧';position:absolute;top:.6rem;right:.9rem;color:rgba(212,160,64,.4);font-size:1.1rem;z-index:1}
+.cdx-toc-label{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(212,160,64,.55);margin-bottom:.5rem;text-align:center}
+.cdx-world-name{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#e8b860;letter-spacing:.03em;line-height:1.3;margin-bottom:.25rem;text-align:center}
+.cdx-rule{height:0;border-top:1px solid rgba(212,160,64,.5);border-bottom:1px solid rgba(212,160,64,.5);margin:.7rem auto;width:80%;position:relative}
+.cdx-rule::before{content:'❦';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#221b0e;padding:0 .5rem;color:rgba(212,160,64,.6);font-size:.8rem}
+.cdx-era{font-size:.72rem;color:rgba(196,176,136,.75);font-style:italic;text-align:center;margin-bottom:.9rem}
+.cdx-world-lore{font-family:'Cardo',serif;font-size:.82rem;line-height:1.7;color:#c4b088;font-style:italic;border-left:2px solid rgba(212,160,64,.5);padding:.4rem .7rem;margin-bottom:1rem;background:rgba(212,160,64,.04)}
+.cdx-toc-heading{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(212,160,64,.5);text-align:center;margin-bottom:.7rem}
+.cdx-month-list{list-style:none;margin:0;padding:0}
+.cdx-month-item{display:flex;align-items:center;gap:.65rem;padding:.45rem .6rem;cursor:pointer;color:#c4b088;font-family:'Cardo',serif;font-size:.92rem;border-left:2px solid transparent;transition:all .15s;margin-bottom:1px}
+.cdx-month-item:hover{background:rgba(212,160,64,.06);color:#f0e4c8}
+.cdx-month-item.active{background:rgba(212,160,64,.1);border-left-color:#d4a040;color:#e8b860}
+.cdx-month-num{font-family:'Cinzel',serif;font-size:.7rem;color:rgba(212,160,64,.6);min-width:1.8rem;text-align:right;font-weight:700}
+.cdx-month-item.active .cdx-month-num{color:#e8b860}
+.cdx-month-fleuron{color:rgba(212,160,64,.5);font-size:.7rem;opacity:0;transition:opacity .15s}
+.cdx-month-item.active .cdx-month-fleuron{opacity:1}
+.cdx-month-name{flex:1}
+.cdx-month-ico{width:17px;height:17px;object-fit:contain;opacity:0;transition:opacity .2s}
+.cdx-month-item:hover .cdx-month-ico{opacity:1}
+/* folio detail */
+.cdx-folio{position:relative}
+.cdx-folio-head{display:flex;align-items:flex-start;gap:.9rem;margin-bottom:.4rem}
+.cdx-dropcap{flex-shrink:0;width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:2.2rem;font-weight:700;color:#e8b860;background:linear-gradient(135deg,rgba(212,160,64,.18),rgba(212,160,64,.04));border:2px solid rgba(212,160,64,.55);box-shadow:inset 0 0 12px rgba(212,160,64,.15);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.cdx-folio-titlewrap{padding-top:.3rem}
+.cdx-folio-name{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:#e8b860;letter-spacing:.03em;line-height:1.1}
+.cdx-folio-meta{font-family:'Cardo',serif;font-size:.8rem;color:rgba(196,176,136,.8);font-style:italic;margin-top:.25rem}
+.cdx-folio-rule{height:0;border-top:1px solid rgba(212,160,64,.45);margin:1rem 0;position:relative}
+.cdx-folio-rule::before,.cdx-folio-rule::after{content:'';position:absolute;top:-1px;height:3px;background:rgba(212,160,64,.5);width:24px}
+.cdx-folio-rule::before{left:0}.cdx-folio-rule::after{right:0}
+.cdx-folio-body{font-family:'Cardo',serif;font-size:.96rem;line-height:1.85;color:#d8c8a0;text-align:justify;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.cdx-marginalia{margin-top:1rem;padding:.55rem .8rem;background:rgba(212,160,64,.05);border:1px solid rgba(212,160,64,.22);font-family:'Cardo',serif;font-size:.85rem;color:#e0d2ae;position:relative}
+.cdx-marginalia-mark{color:rgba(212,160,64,.7);margin-right:.4rem;font-weight:700}
+.cdx-folio-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:.9rem;border-top:1px solid rgba(212,160,64,.25)}
+.cdx-folio-arrow{background:none;border:1px solid rgba(212,160,64,.4);color:#e8b860;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;font-family:'Cinzel',serif;transition:all .15s}
+.cdx-folio-arrow:hover:not(:disabled){background:rgba(212,160,64,.12);box-shadow:0 0 10px rgba(212,160,64,.2)}
+.cdx-folio-arrow:disabled{opacity:.25;cursor:default}
+.cdx-folio-folio{font-family:'Cinzel',serif;font-size:.75rem;color:rgba(212,160,64,.65);letter-spacing:.1em}
+.cdx-empty{color:rgba(212,160,64,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -332,6 +380,7 @@ function ivRenderStage(){
 // Picks the themed interactive layout. Falls back to the notebook for themes not yet built.
 function ivRenderMetaphor(canvasId){
   if(IV.theme==='expanse'){ ivRenderHUD(canvasId); }
+  else if(IV.theme==='iron'){ ivRenderCodex(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -434,6 +483,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   if(IV.theme==='expanse'){
     document.querySelectorAll('.hud-month-row').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderHUDDetail();
+  } else if(IV.theme==='iron'){
+    document.querySelectorAll('.cdx-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderCodexDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -476,7 +528,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -534,6 +586,77 @@ function ivRenderHUDDetail(){
         <button class="hud-lognav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹ Prev Log</button>
         <span class="hud-lognav-counter">LOG ${IV.lorePage+1} / ${totalPages}</span>
         <button class="hud-lognav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>Next Log ›</button>
+      </div>`:''}
+  </div>`;
+}
+
+/* ═══ ILLUMINATED CODEX renderer ═══ */
+function ivRenderCodex(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif"`:'';
+  el.innerHTML=`<div class="cdx-stage"><div class="cdx-book" ${fontStyle}>
+    <div class="cdx-page cdx-left">
+      <div class="cdx-toc-label">Codex</div>
+      <div class="cdx-world-name">${w}</div>
+      <div class="cdx-rule"></div>
+      ${era?`<div class="cdx-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="cdx-world-lore">${IV.data.wl}</div>`:''}
+      <div class="cdx-toc-heading">Table of Months</div>
+      <ul class="cdx-month-list">
+        ${IV.months.map((m,i)=>`
+          <li class="cdx-month-item ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="cdx-month-num">${ivRoman(i+1)}</span>
+            <span class="cdx-month-fleuron">❧</span>
+            <span class="cdx-month-name">${m.name||'Month '+(i+1)}</span>
+            ${m.icon?`<img class="cdx-month-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="cdx-page cdx-right" id="cdx-detail"></div>
+  </div></div>`;
+  ivRenderCodexDetail();
+}
+
+function ivRoman(n){
+  const map=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
+  let r='';for(const [v,s] of map){while(n>=v){r+=s;n-=v;}}return r;
+}
+
+function ivRenderCodexDetail(){
+  const d=document.getElementById('cdx-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="cdx-empty">Turn to a month…</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  const name=m.name||'Month '+(IV.selectedMonth+1);
+  const initial=(name.trim()[0]||'§').toUpperCase();
+  const rest=name.trim().slice(1);
+  d.innerHTML=`<div class="cdx-folio">
+    <div class="cdx-folio-head">
+      <div class="cdx-dropcap"${inheritStyle}>${initial}</div>
+      <div class="cdx-folio-titlewrap">
+        <div class="cdx-folio-name"${inheritStyle}>${rest}</div>
+        <div class="cdx-folio-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' observance'+(evs.length>1?'s':''):''}</div>
+      </div>
+    </div>
+    <div class="cdx-folio-rule"></div>
+    <div class="cdx-folio-body"${inheritStyle}>${curLore||'<span style="opacity:.5">No entry inscribed for this month.</span>'}</div>
+    ${evs.map(e=>`<div class="cdx-marginalia" style="${inheritStrong}"><span class="cdx-marginalia-mark">❧</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="cdx-folio-nav">
+        <button class="cdx-folio-arrow" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <span class="cdx-folio-folio">folio ${IV.lorePage+1} of ${totalPages}</span>
+        <button class="cdx-folio-arrow" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
       </div>`:''}
   </div>`;
 }
@@ -724,13 +847,16 @@ const IV=${JSON.stringify(exportData).replace(/<\/script>/g,'<\\/script>')};
 IV.selectedMonth=0;IV.lorePage=0;
 ${ivSplitLore.toString()}
 ${ivShowIconPop.toString()}
+${ivRoman.toString()}
 ${ivRenderExportNotebook.toString()}
 ${ivRenderExportHUD.toString()}
+${ivRenderExportCodex.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
+${ivRenderCodexDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -771,6 +897,23 @@ function ivRenderExportHUD(rootId){
     '<ul class="hud-month-list">'+IV.months.map(function(m,i){return '<li class="hud-month-row'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="hud-month-id">['+String(i+1).padStart(2,'0')+']</span><span class="hud-led"></span><span class="hud-month-name">'+(m.name||'Cycle '+(i+1))+'</span>'+(m.icon?'<img class="hud-month-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="hud-right" id="hud-detail"></div></div></div>';
   ivRenderHUDDetail();
+}
+
+/* Standalone Codex renderer for export (flat IV keys) */
+function ivRenderExportCodex(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',serif"'):'';
+  root.innerHTML='<div class="cdx-stage"><div class="cdx-book" '+fontStyle+'>'+
+    '<div class="cdx-page cdx-left"><div class="cdx-toc-label">Codex</div>'+
+    '<div class="cdx-world-name">'+w+'</div>'+
+    '<div class="cdx-rule"></div>'+
+    (era?'<div class="cdx-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="cdx-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="cdx-toc-heading">Table of Months</div>'+
+    '<ul class="cdx-month-list">'+IV.months.map(function(m,i){return '<li class="cdx-month-item'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="cdx-month-num">'+ivRoman(i+1)+'</span><span class="cdx-month-fleuron">❧</span><span class="cdx-month-name">'+(m.name||'Month '+(i+1))+'</span>'+(m.icon?'<img class="cdx-month-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="cdx-page cdx-right" id="cdx-detail"></div></div></div>';
+  ivRenderCodexDetail();
 }
 </script>
 
