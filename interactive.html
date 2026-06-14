@@ -177,14 +177,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 /* gold corner filigree on the folio */
 .cdx-right::before{content:'❧';position:absolute;top:.6rem;right:.9rem;color:rgba(212,160,64,.4);font-size:1.1rem;z-index:1}
 .cdx-toc-label{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(212,160,64,.55);margin-bottom:.5rem;text-align:center}
-.cdx-world-name{font-family:'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#e8b860;letter-spacing:.03em;line-height:1.3;margin-bottom:.25rem;text-align:center}
+.cdx-world-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#e8b860;letter-spacing:.03em;line-height:1.3;margin-bottom:.25rem;text-align:center}
 .cdx-rule{height:0;border-top:1px solid rgba(212,160,64,.5);border-bottom:1px solid rgba(212,160,64,.5);margin:.7rem auto;width:80%;position:relative}
 .cdx-rule::before{content:'❦';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#221b0e;padding:0 .5rem;color:rgba(212,160,64,.6);font-size:.8rem}
-.cdx-era{font-size:.72rem;color:rgba(196,176,136,.75);font-style:italic;text-align:center;margin-bottom:.9rem}
-.cdx-world-lore{font-family:'Cardo',serif;font-size:.82rem;line-height:1.7;color:#c4b088;font-style:italic;border-left:2px solid rgba(212,160,64,.5);padding:.4rem .7rem;margin-bottom:1rem;background:rgba(212,160,64,.04)}
+.cdx-era{font-family:var(--font-body),'Cardo',serif;font-size:.72rem;color:rgba(196,176,136,.75);font-style:italic;text-align:center;margin-bottom:.9rem}
+.cdx-world-lore{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;line-height:1.7;color:#c4b088;font-style:italic;border-left:2px solid rgba(212,160,64,.5);padding:.4rem .7rem;margin-bottom:1rem;background:rgba(212,160,64,.04)}
 .cdx-toc-heading{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(212,160,64,.5);text-align:center;margin-bottom:.7rem}
 .cdx-month-list{list-style:none;margin:0;padding:0}
-.cdx-month-item{display:flex;align-items:center;gap:.65rem;padding:.45rem .6rem;cursor:pointer;color:#c4b088;font-family:'Cardo',serif;font-size:.92rem;border-left:2px solid transparent;transition:all .15s;margin-bottom:1px}
+.cdx-month-item{display:flex;align-items:center;gap:.65rem;padding:.45rem .6rem;cursor:pointer;color:#c4b088;font-family:var(--font-body),'Cardo',serif;font-size:.92rem;border-left:2px solid transparent;transition:all .15s;margin-bottom:1px}
 .cdx-month-item:hover{background:rgba(212,160,64,.06);color:#f0e4c8}
 .cdx-month-item.active{background:rgba(212,160,64,.1);border-left-color:#d4a040;color:#e8b860}
 .cdx-month-num{font-family:'Cinzel',serif;font-size:.7rem;color:rgba(212,160,64,.6);min-width:1.8rem;text-align:right;font-weight:700}
@@ -199,13 +199,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .cdx-folio-head{display:flex;align-items:flex-start;gap:.9rem;margin-bottom:.4rem}
 .cdx-dropcap{flex-shrink:0;width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:2.2rem;font-weight:700;color:#e8b860;background:linear-gradient(135deg,rgba(212,160,64,.18),rgba(212,160,64,.04));border:2px solid rgba(212,160,64,.55);box-shadow:inset 0 0 12px rgba(212,160,64,.15);text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .cdx-folio-titlewrap{padding-top:.3rem}
-.cdx-folio-name{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;color:#e8b860;letter-spacing:.03em;line-height:1.1}
-.cdx-folio-meta{font-family:'Cardo',serif;font-size:.8rem;color:rgba(196,176,136,.8);font-style:italic;margin-top:.25rem}
+.cdx-folio-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.5rem;font-weight:700;color:#e8b860;letter-spacing:.03em;line-height:1.1}
+.cdx-folio-meta{font-family:var(--font-body),'Cardo',serif;font-size:.8rem;color:rgba(196,176,136,.8);font-style:italic;margin-top:.25rem}
 .cdx-folio-rule{height:0;border-top:1px solid rgba(212,160,64,.45);margin:1rem 0;position:relative}
 .cdx-folio-rule::before,.cdx-folio-rule::after{content:'';position:absolute;top:-1px;height:3px;background:rgba(212,160,64,.5);width:24px}
 .cdx-folio-rule::before{left:0}.cdx-folio-rule::after{right:0}
-.cdx-folio-body{font-family:'Cardo',serif;font-size:.96rem;line-height:1.85;color:#d8c8a0;text-align:justify;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
-.cdx-marginalia{margin-top:1rem;padding:.55rem .8rem;background:rgba(212,160,64,.05);border:1px solid rgba(212,160,64,.22);font-family:'Cardo',serif;font-size:.85rem;color:#e0d2ae;position:relative}
+.cdx-folio-body{font-family:var(--font-body),'Cardo',serif;font-size:.96rem;line-height:1.85;color:#d8c8a0;text-align:justify;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.cdx-marginalia{margin-top:1rem;padding:.55rem .8rem;background:rgba(212,160,64,.05);border:1px solid rgba(212,160,64,.22);font-family:var(--font-body),'Cardo',serif;font-size:.85rem;color:#e0d2ae;position:relative}
 .cdx-marginalia-mark{color:rgba(212,160,64,.7);margin-right:.4rem;font-weight:700}
 .cdx-folio-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:.9rem;border-top:1px solid rgba(212,160,64,.25)}
 .cdx-folio-arrow{background:none;border:1px solid rgba(212,160,64,.4);color:#e8b860;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;font-family:'Cinzel',serif;transition:all .15s}
