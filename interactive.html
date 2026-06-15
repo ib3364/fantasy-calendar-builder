@@ -261,6 +261,52 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .tac-nav-counter{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.72rem;color:rgba(42,180,232,.6);letter-spacing:.1em}
 .tac-empty{color:rgba(42,180,232,.4);text-align:center;margin-top:3rem;font-family:'Rajdhani',sans-serif;letter-spacing:.12em;text-transform:uppercase}
 
+/* ═══ LIVING TREE / BOTANICAL CODEX (Verdant Archive) ═══ */
+.grdn-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
+.grdn-book{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:linear-gradient(165deg,#0e2614 0%,#0a1c0f 100%);border:1px solid rgba(80,200,120,.3);border-radius:22px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(0,30,15,.5),inset 0 0 60px rgba(80,200,120,.04);font-family:var(--font-body),'Cardo',serif}
+/* soft leaf-light glow texture */
+.grdn-book::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 15%,rgba(80,200,120,.06) 0%,transparent 55%),radial-gradient(ellipse at 85% 80%,rgba(112,224,144,.05) 0%,transparent 55%);z-index:0}
+.grdn-left{border-right:1px solid rgba(80,200,120,.18);padding:1.6rem 1.4rem;overflow-y:auto;position:relative;z-index:2}
+.grdn-right{padding:1.8rem 1.9rem;overflow-y:auto;position:relative;z-index:2}
+.grdn-sys-label{font-size:.62rem;letter-spacing:.2em;color:rgba(80,200,120,.6);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.grdn-sys-label::before{content:'❧';color:rgba(80,200,120,.7)}
+.grdn-world-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#8fe8a8;letter-spacing:.02em;line-height:1.3;margin-bottom:.3rem;text-shadow:0 0 14px rgba(80,200,120,.25)}
+.grdn-era{font-size:.74rem;color:rgba(144,196,156,.8);font-style:italic;margin-bottom:.9rem}
+.grdn-world-lore{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;line-height:1.7;color:#a8d4b4;font-style:italic;border-radius:12px;border:1px solid rgba(80,200,120,.2);background:rgba(80,200,120,.05);padding:.7rem .8rem;margin-bottom:1.1rem;position:relative}
+.grdn-world-lore::before{content:'🌱';position:absolute;top:-9px;left:12px;font-size:.85rem;background:#0e2614;padding:0 .3rem}
+.grdn-index-label{font-size:.6rem;letter-spacing:.18em;color:rgba(80,200,120,.55);text-transform:uppercase;margin-bottom:.8rem}
+/* the vine + buds */
+.grdn-vine{list-style:none;margin:0;padding:0 0 0 .6rem;position:relative}
+.grdn-vine::before{content:'';position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,transparent,rgba(80,200,120,.35) 12%,rgba(80,200,120,.35) 88%,transparent);border-radius:2px}
+.grdn-bud{display:flex;align-items:center;gap:.7rem;padding:.5rem .55rem .5rem .2rem;cursor:pointer;color:#a8d4b4;font-family:var(--font-body),'Cardo',serif;font-size:.94rem;border-radius:10px;transition:all .25s ease;position:relative}
+.grdn-bud:hover{background:rgba(80,200,120,.06);color:#d8f0dc}
+.grdn-bud.active{background:rgba(80,200,120,.1);color:#8fe8a8}
+.grdn-bud-mark{width:14px;height:14px;flex-shrink:0;border-radius:50%;background:radial-gradient(circle,rgba(80,200,120,.5),rgba(80,200,120,.2));border:1px solid rgba(80,200,120,.5);transition:all .3s ease;position:relative;z-index:1}
+.grdn-bud:hover .grdn-bud-mark{background:radial-gradient(circle,rgba(80,200,120,.7),rgba(80,200,120,.3))}
+.grdn-bud.active .grdn-bud-mark{background:radial-gradient(circle,#aef0c0,#50c878);border-color:#8fe8a8;box-shadow:0 0 12px rgba(80,200,120,.6);transform:scale(1.25)}
+.grdn-bud.active .grdn-bud-mark::before{content:'✿';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:9px;color:#0a1c0f;line-height:1}
+.grdn-bud-name{flex:1}
+.grdn-bud-ico{width:17px;height:17px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 4px rgba(80,200,120,.5))}
+.grdn-bud:hover .grdn-bud-ico{opacity:1}
+/* specimen page */
+.grdn-specimen{position:relative}
+.grdn-specimen.unfurl{animation:grdn-unfurl .35s cubic-bezier(.22,1,.36,1)}
+@keyframes grdn-unfurl{0%{opacity:0;transform:scale(.96) translateY(6px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.grdn-spec-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.55rem;font-weight:700;color:#8fe8a8;letter-spacing:.02em;line-height:1.15;text-shadow:0 0 16px rgba(80,200,120,.3);display:inline-block;position:relative;padding-bottom:.3rem}
+.grdn-spec-name::after{content:'';position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,#50c878,rgba(80,200,120,.1));border-radius:2px}
+.grdn-spec-meta{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;color:rgba(144,196,156,.85);font-style:italic;margin-top:.5rem}
+.grdn-spec-divider{margin:1.1rem 0;height:14px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14'%3E%3Cpath d='M0 7 Q30 0 60 7 T120 7' stroke='%2350c878' stroke-opacity='0.4' fill='none' stroke-width='1'/%3E%3C/svg%3E");background-repeat:repeat-x;background-position:center}
+.grdn-spec-label{font-size:.58rem;letter-spacing:.18em;color:rgba(80,200,120,.5);text-transform:uppercase;margin-bottom:.45rem}
+.grdn-spec-body{font-family:var(--font-body),'Cardo',serif;font-size:.97rem;line-height:1.9;color:#c8e4cc;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.grdn-blossom{margin-top:1rem;padding:.6rem .85rem;background:rgba(80,200,120,.06);border:1px solid rgba(80,200,120,.22);border-radius:12px;font-family:var(--font-body),'Cardo',serif;font-size:.86rem;color:#d8f0dc}
+.grdn-blossom-mark{color:rgba(80,200,120,.8);margin-right:.4rem}
+.grdn-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(80,200,120,.18)}
+.grdn-nav-btn{background:rgba(80,200,120,.08);border:1px solid rgba(80,200,120,.3);color:#8fe8a8;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem;transition:all .2s ease}
+.grdn-nav-btn:hover:not(:disabled){background:rgba(80,200,120,.16);box-shadow:0 0 12px rgba(80,200,120,.3);transform:scale(1.08)}
+.grdn-nav-btn:disabled{opacity:.25;cursor:default}
+.grdn-nav-label{font-family:'Cardo',serif;font-style:italic;font-size:.78rem;color:rgba(144,196,156,.8)}
+.grdn-empty{color:rgba(80,200,120,.4);text-align:center;margin-top:3rem;font-family:'Cardo',serif;font-style:italic}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -429,6 +475,7 @@ function ivRenderMetaphor(canvasId){
   if(IV.theme==='expanse'){ ivRenderHUD(canvasId); }
   else if(IV.theme==='iron'){ ivRenderCodex(canvasId); }
   else if(IV.theme==='waypoint'){ ivRenderTactical(canvasId); }
+  else if(IV.theme==='verdant'){ ivRenderGarden(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -537,6 +584,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='waypoint'){
     document.querySelectorAll('.tac-wp').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderTacticalDetail();
+  } else if(IV.theme==='verdant'){
+    document.querySelectorAll('.grdn-bud').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderGardenDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -579,7 +629,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -766,6 +816,63 @@ function ivRenderTacticalDetail(){
         <button class="tac-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>◄ Prev Brief</button>
         <span class="tac-nav-counter">BRIEF ${IV.lorePage+1} / ${totalPages}</span>
         <button class="tac-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>Next Brief ►</button>
+      </div>`:''}
+  </div>`;
+}
+
+/* ═══ BOTANICAL GARDEN renderer ═══ */
+function ivRenderGarden(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif"`:'';
+  el.innerHTML=`<div class="grdn-stage"><div class="grdn-book" ${fontStyle}>
+    <div class="grdn-left">
+      <div class="grdn-sys-label">Root Note</div>
+      <div class="grdn-world-name">${w}</div>
+      ${era?`<div class="grdn-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="grdn-world-lore">${IV.data.wl}</div>`:''}
+      <div class="grdn-index-label">The Growing Index · ${IV.months.length} blooms</div>
+      <ul class="grdn-vine">
+        ${IV.months.map((m,i)=>`
+          <li class="grdn-bud ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="grdn-bud-mark"></span>
+            <span class="grdn-bud-name">${m.name||'Bloom '+(i+1)}</span>
+            ${m.icon?`<img class="grdn-bud-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="grdn-right" id="grdn-detail"></div>
+  </div></div>`;
+  ivRenderGardenDetail();
+}
+
+function ivRenderGardenDetail(){
+  const d=document.getElementById('grdn-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="grdn-empty">Select a bloom to unfurl…</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="grdn-specimen unfurl">
+    <div class="grdn-spec-name"${inheritStyle}>${m.name||'Bloom '+(IV.selectedMonth+1)}</div>
+    <div class="grdn-spec-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' bloom'+(evs.length>1?'s':''):''}</div>
+    <div class="grdn-spec-divider"></div>
+    <div class="grdn-spec-label"${inheritStyle}>❧ Specimen Notes${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="grdn-spec-body"${inheritStyle}>${curLore||'<span style="opacity:.5">— this bloom has not yet been described —</span>'}</div>
+    ${evs.map(e=>`<div class="grdn-blossom" style="${inheritStrong}"><span class="grdn-blossom-mark">✿</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="grdn-nav">
+        <button class="grdn-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <span class="grdn-nav-label">leaf ${IV.lorePage+1} of ${totalPages}</span>
+        <button class="grdn-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
       </div>`:''}
   </div>`;
 }
@@ -961,13 +1068,15 @@ ${ivRenderExportNotebook.toString()}
 ${ivRenderExportHUD.toString()}
 ${ivRenderExportCodex.toString()}
 ${ivRenderExportTactical.toString()}
+${ivRenderExportGarden.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
 ${ivRenderCodexDetail.toString()}
 ${ivRenderTacticalDetail.toString()}
+${ivRenderGardenDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -1041,6 +1150,22 @@ function ivRenderExportTactical(rootId){
     '<ul class="tac-month-list">'+IV.months.map(function(m,i){return '<li class="tac-wp'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="tac-diamond"></span><span class="tac-wp-id">WP-'+String(i+1).padStart(2,'0')+'</span><span class="tac-wp-name">'+(m.name||'Mark '+(i+1))+'</span>'+(m.icon?'<img class="tac-wp-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="tac-right" id="tac-detail"></div></div></div>';
   ivRenderTacticalDetail();
+}
+
+/* Standalone Garden renderer for export (flat IV keys) */
+function ivRenderExportGarden(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',serif"'):'';
+  root.innerHTML='<div class="grdn-stage"><div class="grdn-book" '+fontStyle+'>'+
+    '<div class="grdn-left"><div class="grdn-sys-label">Root Note</div>'+
+    '<div class="grdn-world-name">'+w+'</div>'+
+    (era?'<div class="grdn-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="grdn-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="grdn-index-label">The Growing Index · '+IV.months.length+' blooms</div>'+
+    '<ul class="grdn-vine">'+IV.months.map(function(m,i){return '<li class="grdn-bud'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="grdn-bud-mark"></span><span class="grdn-bud-name">'+(m.name||'Bloom '+(i+1))+'</span>'+(m.icon?'<img class="grdn-bud-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="grdn-right" id="grdn-detail"></div></div></div>';
+  ivRenderGardenDetail();
 }
 </script>
 
