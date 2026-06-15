@@ -501,6 +501,51 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .neon-nav-counter{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:#00e5ff;letter-spacing:.08em}
 .neon-empty{color:rgba(255,45,149,.4);text-align:center;margin-top:3rem;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
 
+/* ═══ CARVED STONE MONOLITH (Stone Tablet) ═══ */
+.stn-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
+.stn-monolith{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:linear-gradient(155deg,#54503f 0%,#403c30 50%,#33302686 100%),#3a382c;border:2px solid #2a2820;border-radius:5px;position:relative;overflow:hidden;box-shadow:0 16px 46px rgba(0,0,0,.6),inset 0 2px 6px rgba(180,170,140,.15),inset 0 -3px 8px rgba(0,0,0,.4);font-family:var(--font-body),'Cardo',serif}
+/* rough granite texture */
+.stn-monolith::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.08' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23s)' opacity='0.10'/%3E%3C/svg%3E")}
+.stn-left{border-right:2px solid rgba(0,0,0,.3);padding:1.6rem 1.3rem;overflow-y:auto;position:relative;z-index:2}
+.stn-right{padding:1.8rem 1.9rem;overflow-y:auto;position:relative;z-index:2}
+.stn-sys-label{font-size:.62rem;letter-spacing:.24em;color:rgba(154,140,112,.85);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.stn-sys-label::before{content:'ᚱ';color:rgba(154,140,112,.95)}
+.stn-world-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#cabfa0;letter-spacing:.05em;line-height:1.3;margin-bottom:.3rem;text-shadow:0 1px 0 rgba(255,250,235,.12),0 -1px 1px rgba(0,0,0,.6)}
+.stn-era{font-size:.74rem;color:rgba(180,170,140,.78);font-style:italic;margin-bottom:.9rem;text-shadow:0 -1px 1px rgba(0,0,0,.4)}
+.stn-world-lore{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;line-height:1.7;color:#b4aa8a;font-style:italic;border-left:3px solid rgba(154,140,112,.5);background:rgba(0,0,0,.18);padding:.6rem .75rem;margin-bottom:1.1rem;box-shadow:inset 0 1px 4px rgba(0,0,0,.4);text-shadow:0 -1px 1px rgba(0,0,0,.4)}
+.stn-index-label{font-size:.6rem;letter-spacing:.18em;color:rgba(154,140,112,.7);text-transform:uppercase;margin-bottom:.7rem;padding-bottom:.3rem;border-bottom:1px solid rgba(0,0,0,.3)}
+.stn-month-list{list-style:none;margin:0;padding:0}
+.stn-carve{display:flex;align-items:center;gap:.6rem;padding:.5rem .7rem;cursor:pointer;color:#a89e80;font-family:var(--font-body),'Cardo',serif;font-size:.93rem;transition:all .18s;position:relative;margin-bottom:3px;border-radius:3px;text-shadow:0 -1px 1px rgba(0,0,0,.4)}
+.stn-carve:hover{background:rgba(0,0,0,.12);color:#cabfa0}
+/* engraved/inset look on active */
+.stn-carve.active{background:rgba(0,0,0,.28);color:#d8cca8;box-shadow:inset 0 2px 5px rgba(0,0,0,.55),inset 0 -1px 0 rgba(180,170,140,.12);text-shadow:0 -1px 1px rgba(0,0,0,.6),0 0 8px rgba(140,160,110,.25)}
+.stn-rune{color:rgba(154,140,112,.6);font-size:.85rem;flex-shrink:0;transition:all .18s}
+.stn-carve:hover .stn-rune{color:rgba(154,140,112,.9)}
+.stn-carve.active .stn-rune{color:#9ab070;text-shadow:0 0 8px rgba(140,160,110,.5)}
+.stn-carve-num{font-family:'Cinzel',serif;font-size:.68rem;color:rgba(154,140,112,.6);min-width:1.6rem;font-weight:700}
+.stn-carve.active .stn-carve-num{color:#cabfa0}
+.stn-carve-name{flex:1}
+.stn-carve-ico{width:17px;height:17px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 4px rgba(154,140,112,.6))}
+.stn-carve:hover .stn-carve-ico{opacity:1}
+/* tablet face (detail) */
+.stn-face{position:relative}
+.stn-face.carve-in{animation:stn-chisel .3s ease-out}
+@keyframes stn-chisel{0%{opacity:0;transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}
+.stn-face-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.6rem;font-weight:700;color:#cabfa0;letter-spacing:.06em;line-height:1.12;text-shadow:0 2px 0 rgba(255,250,235,.1),0 -1px 2px rgba(0,0,0,.7),1px 1px 1px rgba(0,0,0,.5)}
+.stn-face-meta{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;color:rgba(180,170,140,.85);font-style:italic;margin-top:.45rem;text-shadow:0 -1px 1px rgba(0,0,0,.4)}
+/* carved-groove divider */
+.stn-groove{height:6px;margin:1.1rem 0;background:linear-gradient(180deg,rgba(0,0,0,.4),rgba(180,170,140,.1));border-radius:3px;box-shadow:inset 0 2px 4px rgba(0,0,0,.6);position:relative;display:flex;align-items:center;justify-content:space-around;color:rgba(154,140,112,.5);font-size:.55rem;letter-spacing:.5em}
+.stn-face-label{font-size:.58rem;letter-spacing:.2em;color:rgba(154,140,112,.7);text-transform:uppercase;margin-bottom:.45rem}
+.stn-face-body{font-family:var(--font-body),'Cardo',serif;font-size:.97rem;line-height:1.85;color:#c4ba9a;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px;text-shadow:0 -1px 1px rgba(0,0,0,.3)}
+.stn-mark{margin-top:1rem;padding:.6rem .85rem;background:rgba(0,0,0,.2);border:1px solid rgba(154,140,112,.25);border-left:3px solid rgba(154,140,112,.6);font-family:var(--font-body),'Cardo',serif;font-size:.86rem;color:#cabfa0;box-shadow:inset 0 1px 4px rgba(0,0,0,.4)}
+.stn-mark-rune{color:rgba(154,176,112,.85);margin-right:.4rem}
+.stn-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,.3)}
+.stn-nav-btn{background:rgba(0,0,0,.2);border:1px solid rgba(154,140,112,.4);color:#cabfa0;width:38px;height:38px;border-radius:3px;cursor:pointer;font-size:1.05rem;font-family:'Cinzel',serif;transition:all .18s;box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.stn-nav-btn:hover:not(:disabled){background:rgba(0,0,0,.32);box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}
+.stn-nav-btn:disabled{opacity:.25;cursor:default}
+.stn-nav-label{font-family:'Cinzel',serif;font-size:.74rem;color:rgba(154,140,112,.75);letter-spacing:.08em}
+.stn-empty{color:rgba(154,140,112,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -674,6 +719,7 @@ function ivRenderMetaphor(canvasId){
   else if(IV.theme==='void'){ ivRenderStars(canvasId); }
   else if(IV.theme==='desert'){ ivRenderScroll(canvasId); }
   else if(IV.theme==='neon'){ ivRenderNeon(canvasId); }
+  else if(IV.theme==='stone'){ ivRenderStone(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -797,6 +843,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='neon'){
     document.querySelectorAll('.neon-row').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderNeonDetail();
+  } else if(IV.theme==='stone'){
+    document.querySelectorAll('.stn-carve').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderStoneDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -839,7 +888,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else if(IV.theme==='desert'){ ivRenderScrollDetail(); } else if(IV.theme==='neon'){ ivRenderNeonDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else if(IV.theme==='desert'){ ivRenderScrollDetail(); } else if(IV.theme==='neon'){ ivRenderNeonDetail(); } else if(IV.theme==='stone'){ ivRenderStoneDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -1322,6 +1371,64 @@ function ivRenderNeonDetail(){
   </div>`;
 }
 
+/* ═══ CARVED STONE MONOLITH renderer ═══ */
+function ivRenderStone(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif"`:'';
+  el.innerHTML=`<div class="stn-stage"><div class="stn-monolith" ${fontStyle}>
+    <div class="stn-left">
+      <div class="stn-sys-label">The Elder Mark</div>
+      <div class="stn-world-name">${w}</div>
+      ${era?`<div class="stn-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="stn-world-lore">${IV.data.wl}</div>`:''}
+      <div class="stn-index-label">The Carvings · ${IV.months.length} marks</div>
+      <ul class="stn-month-list">
+        ${IV.months.map((m,i)=>`
+          <li class="stn-carve ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="stn-rune">ᚱ</span>
+            <span class="stn-carve-num">${String(i+1).padStart(2,'0')}</span>
+            <span class="stn-carve-name">${m.name||'Mark '+(i+1)}</span>
+            ${m.icon?`<img class="stn-carve-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="stn-right" id="stn-detail"></div>
+  </div></div>`;
+  ivRenderStoneDetail();
+}
+
+function ivRenderStoneDetail(){
+  const d=document.getElementById('stn-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="stn-empty">Choose a carving to read it…</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="stn-face carve-in">
+    <div class="stn-face-name"${inheritStyle}>${m.name||'Mark '+(IV.selectedMonth+1)}</div>
+    <div class="stn-face-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' mark'+(evs.length>1?'s':''):''}</div>
+    <div class="stn-groove">ᚦ ᚱ ᚠ ᛟ ᚦ ᚱ ᚠ</div>
+    <div class="stn-face-label"${inheritStyle}>Inscription${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="stn-face-body"${inheritStyle}>${curLore||'<span style="opacity:.5">— this stone bears no carving —</span>'}</div>
+    ${evs.map(e=>`<div class="stn-mark" style="${inheritStrong}"><span class="stn-mark-rune">ᛟ</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="stn-nav">
+        <button class="stn-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <span class="stn-nav-label">stone ${IV.lorePage+1} of ${totalPages}</span>
+        <button class="stn-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
+      </div>`:''}
+  </div>`;
+}
+
 /* ═══ EDIT TOOLS ═══ */
 function ivCompressImg(dataUrl, size, cb){
   const img=new Image();
@@ -1518,6 +1625,7 @@ ${ivRenderExportGrimoire.toString()}
 ${ivRenderExportStars.toString()}
 ${ivRenderExportScroll.toString()}
 ${ivRenderExportNeon.toString()}
+${ivRenderExportStone.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
@@ -1528,8 +1636,9 @@ ${ivRenderGrimoireDetail.toString()}
 ${ivRenderStarsDetail.toString()}
 ${ivRenderScrollDetail.toString()}
 ${ivRenderNeonDetail.toString()}
+${ivRenderStoneDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else if(IV.theme==='desert'){ivRenderExportScroll('iv-root');} else if(IV.theme==='neon'){ivRenderExportNeon('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else if(IV.theme==='desert'){ivRenderExportScroll('iv-root');} else if(IV.theme==='neon'){ivRenderExportNeon('iv-root');} else if(IV.theme==='stone'){ivRenderExportStone('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -1686,6 +1795,22 @@ function ivRenderExportNeon(rootId){
     '<ul class="neon-month-list">'+IV.months.map(function(m,i){return '<li class="neon-row'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="neon-cursor">'+(i===0?'›':'·')+'</span><span class="neon-row-id">#'+String(i+1).padStart(2,'0')+'</span><span class="neon-row-name">'+(m.name||'Node '+(i+1))+'</span>'+(m.icon?'<img class="neon-row-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="neon-right" id="neon-detail"></div></div></div>';
   ivRenderNeonDetail();
+}
+
+/* Standalone Stone renderer for export (flat IV keys) */
+function ivRenderExportStone(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',serif"'):'';
+  root.innerHTML='<div class="stn-stage"><div class="stn-monolith" '+fontStyle+'>'+
+    '<div class="stn-left"><div class="stn-sys-label">The Elder Mark</div>'+
+    '<div class="stn-world-name">'+w+'</div>'+
+    (era?'<div class="stn-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="stn-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="stn-index-label">The Carvings · '+IV.months.length+' marks</div>'+
+    '<ul class="stn-month-list">'+IV.months.map(function(m,i){return '<li class="stn-carve'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="stn-rune">ᚱ</span><span class="stn-carve-num">'+String(i+1).padStart(2,'0')+'</span><span class="stn-carve-name">'+(m.name||'Mark '+(i+1))+'</span>'+(m.icon?'<img class="stn-carve-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="stn-right" id="stn-detail"></div></div></div>';
+  ivRenderStoneDetail();
 }
 </script>
 
