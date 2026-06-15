@@ -457,6 +457,50 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .scrl-nav-label{font-family:'Cinzel',serif;font-size:.74rem;color:rgba(232,133,46,.65);letter-spacing:.08em}
 .scrl-empty{color:rgba(232,133,46,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
 
+/* ═══ ROTARY DIAL / CYBERTERMINAL (Neon Codex) ═══ */
+.neon-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.6rem 1.2rem}
+.neon-term{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:linear-gradient(165deg,#140a18 0%,#0a060e 100%);border:1px solid rgba(255,45,149,.5);border-radius:6px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,45,149,.12),inset 0 0 60px rgba(255,45,149,.03);font-family:var(--font-body),'Rajdhani',sans-serif}
+/* CRT scanline overlay */
+.neon-term::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(255,45,149,.03) 2px,rgba(255,45,149,.03) 3px)}
+.neon-term::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at 50% 0%,rgba(0,229,255,.05),transparent 60%)}
+.neon-left{border-right:1px solid rgba(0,229,255,.25);padding:1.3rem 1.1rem;overflow-y:auto;position:relative;z-index:2}
+.neon-right{padding:1.6rem 1.7rem;overflow-y:auto;position:relative;z-index:2}
+.neon-sys-label{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.18em;color:#00e5ff;text-transform:uppercase;margin-bottom:.5rem;text-shadow:0 0 8px rgba(0,229,255,.6)}
+.neon-world-name{font-family:var(--font-body),'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#ff2d95;letter-spacing:.04em;line-height:1.25;margin-bottom:.3rem;text-shadow:0 0 12px rgba(255,45,149,.7),0 0 24px rgba(255,45,149,.3)}
+.neon-era{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:rgba(0,229,255,.7);letter-spacing:.08em;margin-bottom:.9rem}
+.neon-world-lore{font-size:.8rem;line-height:1.6;color:#d8a8c8;border:1px solid rgba(255,45,149,.3);border-left:2px solid #ff2d95;background:rgba(255,45,149,.04);padding:.6rem .7rem;margin-bottom:1rem}
+.neon-index-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.16em;color:rgba(0,229,255,.6);text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px dashed rgba(0,229,255,.25)}
+.neon-month-list{list-style:none;margin:0;padding:0}
+.neon-row{display:flex;align-items:center;gap:.55rem;padding:.45rem .55rem;cursor:pointer;color:#c890b0;font-size:.88rem;letter-spacing:.02em;border:1px solid transparent;transition:all .15s;position:relative;margin-bottom:2px}
+.neon-row:hover{background:rgba(255,45,149,.06);color:#ffb0d8}
+.neon-row.active{background:rgba(255,45,149,.1);border-color:rgba(255,45,149,.5);color:#ff2d95;box-shadow:0 0 12px rgba(255,45,149,.2),inset 0 0 12px rgba(255,45,149,.05)}
+.neon-cursor{font-family:'Share Tech Mono',monospace;color:rgba(0,229,255,.5);font-size:.8rem;flex-shrink:0;transition:all .15s}
+.neon-row:hover .neon-cursor{color:#00e5ff}
+.neon-row.active .neon-cursor{color:#00e5ff;text-shadow:0 0 8px rgba(0,229,255,.7);animation:neon-blink 1.2s steps(2) infinite}
+@keyframes neon-blink{0%,100%{opacity:1}50%{opacity:.3}}
+.neon-row-id{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:rgba(0,229,255,.55);min-width:1.8rem}
+.neon-row.active .neon-row-id{color:#00e5ff}
+.neon-row-name{flex:1}
+.neon-row-ico{width:16px;height:16px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 4px rgba(255,45,149,.7))}
+.neon-row:hover .neon-row-ico{opacity:1}
+/* readout */
+.neon-readout{position:relative}
+.neon-readout.glitch{animation:neon-glitch .28s steps(3)}
+@keyframes neon-glitch{0%{opacity:.4;transform:translateX(-2px)}33%{opacity:.8;transform:translateX(2px)}66%{opacity:.6;transform:translateX(-1px)}100%{opacity:1;transform:translateX(0)}}
+.neon-data-name{font-family:var(--font-body),'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:#ff2d95;letter-spacing:.05em;line-height:1.1;text-shadow:0 0 14px rgba(255,45,149,.7),0 0 30px rgba(255,45,149,.3)}
+.neon-data-stat{font-family:'Share Tech Mono',monospace;font-size:.74rem;color:#00e5ff;letter-spacing:.1em;text-transform:uppercase;margin-top:.35rem;text-shadow:0 0 8px rgba(0,229,255,.5)}
+.neon-scanbar{height:3px;margin:1rem 0 1.1rem;background:linear-gradient(90deg,#ff2d95,#00e5ff 50%,transparent);box-shadow:0 0 10px rgba(255,45,149,.5);position:relative}
+.neon-data-label{font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:rgba(0,229,255,.6);text-transform:uppercase;margin-bottom:.45rem}
+.neon-data-body{font-size:.93rem;line-height:1.8;color:#e0c0d4;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.neon-entry{margin-top:.9rem;padding:.55rem .75rem;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.3);border-left:3px solid #00e5ff;font-size:.84rem;color:#c8eef4;letter-spacing:.02em}
+.neon-entry-tag{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#00e5ff;margin-right:.4rem;text-shadow:0 0 6px rgba(0,229,255,.5)}
+.neon-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.4rem;padding-top:.9rem;border-top:1px dashed rgba(255,45,149,.25)}
+.neon-nav-btn{background:rgba(255,45,149,.06);border:1px solid rgba(255,45,149,.4);color:#ff2d95;font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.06em;padding:.35rem .8rem;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.neon-nav-btn:hover:not(:disabled){background:rgba(255,45,149,.16);box-shadow:0 0 12px rgba(255,45,149,.4)}
+.neon-nav-btn:disabled{opacity:.25;cursor:default}
+.neon-nav-counter{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:#00e5ff;letter-spacing:.08em}
+.neon-empty{color:rgba(255,45,149,.4);text-align:center;margin-top:3rem;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -629,6 +673,7 @@ function ivRenderMetaphor(canvasId){
   else if(IV.theme==='blood'){ ivRenderGrimoire(canvasId); }
   else if(IV.theme==='void'){ ivRenderStars(canvasId); }
   else if(IV.theme==='desert'){ ivRenderScroll(canvasId); }
+  else if(IV.theme==='neon'){ ivRenderNeon(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -749,6 +794,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='desert'){
     document.querySelectorAll('.scrl-entry').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderScrollDetail();
+  } else if(IV.theme==='neon'){
+    document.querySelectorAll('.neon-row').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderNeonDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -791,7 +839,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else if(IV.theme==='desert'){ ivRenderScrollDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else if(IV.theme==='desert'){ ivRenderScrollDetail(); } else if(IV.theme==='neon'){ ivRenderNeonDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -1216,6 +1264,64 @@ function ivRenderScrollDetail(){
   </div>`;
 }
 
+/* ═══ CYBERTERMINAL renderer ═══ */
+function ivRenderNeon(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',sans-serif"`:'';
+  el.innerHTML=`<div class="neon-stage"><div class="neon-term" ${fontStyle}>
+    <div class="neon-left">
+      <div class="neon-sys-label">SYS // BRIEF</div>
+      <div class="neon-world-name">${w}</div>
+      ${era?`<div class="neon-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="neon-world-lore">${IV.data.wl}</div>`:''}
+      <div class="neon-index-label">INDEX // SELECT · ${IV.months.length}</div>
+      <ul class="neon-month-list">
+        ${IV.months.map((m,i)=>`
+          <li class="neon-row ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="neon-cursor">${i===IV.selectedMonth?'›':'·'}</span>
+            <span class="neon-row-id">#${String(i+1).padStart(2,'0')}</span>
+            <span class="neon-row-name">${m.name||'Node '+(i+1)}</span>
+            ${m.icon?`<img class="neon-row-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="neon-right" id="neon-detail"></div>
+  </div></div>`;
+  ivRenderNeonDetail();
+}
+
+function ivRenderNeonDetail(){
+  const d=document.getElementById('neon-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="neon-empty">▮ NO DATA // SELECT NODE</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="neon-readout glitch">
+    <div class="neon-data-name"${inheritStyle}>${m.name||'Node '+(IV.selectedMonth+1)}</div>
+    <div class="neon-data-stat"${inheritStyle}>${m.days||''} days${evs.length?' // '+evs.length+' entr'+(evs.length>1?'ies':'y'):''}</div>
+    <div class="neon-scanbar"></div>
+    <div class="neon-data-label"${inheritStyle}>▸ DATA LOG${totalPages>1?' // '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="neon-data-body"${inheritStyle}>${curLore||'<span style="opacity:.5">// no data on record</span>'}</div>
+    ${evs.map(e=>`<div class="neon-entry" style="${inheritStrong}"><span class="neon-entry-tag">▸ EVT</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="neon-nav">
+        <button class="neon-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>[&lt;] Prev</button>
+        <span class="neon-nav-counter">${IV.lorePage+1} / ${totalPages}</span>
+        <button class="neon-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>Next [&gt;]</button>
+      </div>`:''}
+  </div>`;
+}
+
 /* ═══ EDIT TOOLS ═══ */
 function ivCompressImg(dataUrl, size, cb){
   const img=new Image();
@@ -1411,6 +1517,7 @@ ${ivRenderExportGarden.toString()}
 ${ivRenderExportGrimoire.toString()}
 ${ivRenderExportStars.toString()}
 ${ivRenderExportScroll.toString()}
+${ivRenderExportNeon.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
@@ -1420,8 +1527,9 @@ ${ivRenderGardenDetail.toString()}
 ${ivRenderGrimoireDetail.toString()}
 ${ivRenderStarsDetail.toString()}
 ${ivRenderScrollDetail.toString()}
+${ivRenderNeonDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else if(IV.theme==='desert'){ivRenderExportScroll('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else if(IV.theme==='desert'){ivRenderExportScroll('iv-root');} else if(IV.theme==='neon'){ivRenderExportNeon('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -1562,6 +1670,22 @@ function ivRenderExportScroll(rootId){
     '<div class="scrl-dowel scrl-dowel-r"></div>'+
     '</div></div>';
   ivRenderScrollDetail();
+}
+
+/* Standalone Neon renderer for export (flat IV keys) */
+function ivRenderExportNeon(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',sans-serif"'):'';
+  root.innerHTML='<div class="neon-stage"><div class="neon-term" '+fontStyle+'>'+
+    '<div class="neon-left"><div class="neon-sys-label">SYS // BRIEF</div>'+
+    '<div class="neon-world-name">'+w+'</div>'+
+    (era?'<div class="neon-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="neon-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="neon-index-label">INDEX // SELECT · '+IV.months.length+'</div>'+
+    '<ul class="neon-month-list">'+IV.months.map(function(m,i){return '<li class="neon-row'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="neon-cursor">'+(i===0?'›':'·')+'</span><span class="neon-row-id">#'+String(i+1).padStart(2,'0')+'</span><span class="neon-row-name">'+(m.name||'Node '+(i+1))+'</span>'+(m.icon?'<img class="neon-row-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="neon-right" id="neon-detail"></div></div></div>';
+  ivRenderNeonDetail();
 }
 </script>
 
