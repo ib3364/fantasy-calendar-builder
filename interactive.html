@@ -360,6 +360,50 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .grim-nav-label{font-family:'Cinzel',serif;font-size:.74rem;color:rgba(192,57,43,.65);letter-spacing:.08em}
 .grim-empty{color:rgba(192,57,43,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
 
+/* ═══ CONSTELLATION STAR MAP (Void Chronicle) ═══ */
+.star-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
+.star-map{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:radial-gradient(ellipse at 30% 20%,#1a1030 0%,#0c0818 60%,#070510 100%);border:1px solid rgba(155,89,182,.35);border-radius:10px;position:relative;overflow:hidden;box-shadow:0 16px 50px rgba(0,0,0,.6),inset 0 0 80px rgba(155,89,182,.05);font-family:var(--font-body),'Cardo',serif}
+/* scattered starfield */
+.star-map::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(1px 1px at 12% 22%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 28% 64%,rgba(200,180,255,.6),transparent),radial-gradient(1px 1px at 44% 12%,rgba(255,255,255,.5),transparent),radial-gradient(1.5px 1.5px at 62% 78%,rgba(200,180,255,.7),transparent),radial-gradient(1px 1px at 78% 34%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 88% 60%,rgba(220,200,255,.5),transparent),radial-gradient(1px 1px at 52% 48%,rgba(255,255,255,.4),transparent),radial-gradient(1.5px 1.5px at 18% 88%,rgba(200,180,255,.5),transparent),radial-gradient(1px 1px at 70% 18%,rgba(255,255,255,.5),transparent);background-repeat:no-repeat}
+.star-left{border-right:1px solid rgba(155,89,182,.2);padding:1.6rem 1.4rem;overflow-y:auto;position:relative;z-index:2}
+.star-right{padding:1.8rem 1.9rem;overflow-y:auto;position:relative;z-index:2}
+.star-sys-label{font-size:.62rem;letter-spacing:.22em;color:rgba(178,128,200,.7);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.star-sys-label::before{content:'✦';color:rgba(178,128,200,.85)}
+.star-world-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#c89ae0;letter-spacing:.03em;line-height:1.3;margin-bottom:.3rem;text-shadow:0 0 18px rgba(155,89,182,.5)}
+.star-era{font-size:.74rem;color:rgba(168,148,196,.8);font-style:italic;margin-bottom:.9rem}
+.star-world-lore{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;line-height:1.7;color:#b0a0c8;font-style:italic;border-radius:8px;border:1px solid rgba(155,89,182,.22);border-left:2px solid rgba(155,89,182,.55);background:rgba(155,89,182,.05);padding:.6rem .75rem;margin-bottom:1.1rem}
+.star-index-label{font-size:.6rem;letter-spacing:.18em;color:rgba(178,128,200,.6);text-transform:uppercase;margin-bottom:.9rem}
+/* constellation list with connecting lines */
+.star-list{list-style:none;margin:0;padding:0 0 0 .4rem;position:relative}
+.star-list::before{content:'';position:absolute;left:9px;top:14px;bottom:14px;width:1px;background:linear-gradient(180deg,transparent,rgba(155,89,182,.4) 10%,rgba(155,89,182,.4) 90%,transparent);z-index:0}
+.star-node{display:flex;align-items:center;gap:.75rem;padding:.5rem .55rem .5rem .15rem;cursor:pointer;color:#a89ac0;font-family:var(--font-body),'Cardo',serif;font-size:.93rem;transition:all .25s ease;position:relative;z-index:1}
+.star-node:hover{color:#e0d0f0}
+.star-node.active{color:#c89ae0}
+.star-dot{width:11px;height:11px;flex-shrink:0;border-radius:50%;background:radial-gradient(circle,rgba(200,154,224,.6),rgba(155,89,182,.3));position:relative;z-index:1;transition:all .3s ease}
+.star-node:hover .star-dot{background:radial-gradient(circle,rgba(220,180,240,.8),rgba(155,89,182,.5))}
+.star-node.active .star-dot{background:radial-gradient(circle,#fff,#c89ae0 60%);box-shadow:0 0 16px rgba(200,154,224,.9),0 0 6px #fff;transform:scale(1.3);animation:star-twinkle 2s infinite}
+@keyframes star-twinkle{0%,100%{box-shadow:0 0 16px rgba(200,154,224,.9),0 0 6px #fff}50%{box-shadow:0 0 24px rgba(200,154,224,1),0 0 10px #fff}}
+.star-node-name{flex:1}
+.star-node-ico{width:17px;height:17px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 5px rgba(200,154,224,.7))}
+.star-node:hover .star-node-ico{opacity:1}
+/* celestial record (detail) */
+.star-record{position:relative}
+.star-record.appear{animation:star-emerge .35s ease-out}
+@keyframes star-emerge{0%{opacity:0;transform:scale(.97)}100%{opacity:1;transform:scale(1)}}
+.star-rec-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.58rem;font-weight:700;color:#c89ae0;letter-spacing:.03em;line-height:1.12;text-shadow:0 0 20px rgba(155,89,182,.55)}
+.star-rec-meta{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;color:rgba(168,148,196,.85);font-style:italic;margin-top:.45rem}
+.star-divider{height:12px;margin:1.1rem 0;position:relative;background-image:radial-gradient(1px 1px at 10% 50%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 30% 50%,rgba(200,180,255,.6),transparent),radial-gradient(1.5px 1.5px at 50% 50%,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 70% 50%,rgba(200,180,255,.6),transparent),radial-gradient(1px 1px at 90% 50%,rgba(255,255,255,.7),transparent);border-bottom:1px solid rgba(155,89,182,.3)}
+.star-rec-label{font-size:.58rem;letter-spacing:.2em;color:rgba(178,128,200,.6);text-transform:uppercase;margin-bottom:.45rem}
+.star-rec-body{font-family:var(--font-body),'Cardo',serif;font-size:.97rem;line-height:1.85;color:#cabfe0;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.star-omen{margin-top:1rem;padding:.6rem .85rem;background:rgba(155,89,182,.07);border:1px solid rgba(155,89,182,.25);border-radius:8px;font-family:var(--font-body),'Cardo',serif;font-size:.86rem;color:#e0d0f0}
+.star-omen-mark{color:rgba(200,154,224,.9);margin-right:.4rem}
+.star-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(155,89,182,.2)}
+.star-nav-btn{background:rgba(155,89,182,.08);border:1px solid rgba(155,89,182,.32);color:#c89ae0;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:1rem;transition:all .2s ease}
+.star-nav-btn:hover:not(:disabled){background:rgba(155,89,182,.18);box-shadow:0 0 14px rgba(155,89,182,.4);transform:scale(1.08)}
+.star-nav-btn:disabled{opacity:.25;cursor:default}
+.star-nav-label{font-family:'Cardo',serif;font-style:italic;font-size:.78rem;color:rgba(168,148,196,.8)}
+.star-empty{color:rgba(178,128,200,.4);text-align:center;margin-top:3rem;font-family:'Cardo',serif;font-style:italic}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -530,6 +574,7 @@ function ivRenderMetaphor(canvasId){
   else if(IV.theme==='waypoint'){ ivRenderTactical(canvasId); }
   else if(IV.theme==='verdant'){ ivRenderGarden(canvasId); }
   else if(IV.theme==='blood'){ ivRenderGrimoire(canvasId); }
+  else if(IV.theme==='void'){ ivRenderStars(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -644,6 +689,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='blood'){
     document.querySelectorAll('.grim-entry').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderGrimoireDetail();
+  } else if(IV.theme==='void'){
+    document.querySelectorAll('.star-node').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderStarsDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -686,7 +734,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -992,6 +1040,63 @@ function ivRenderGrimoireDetail(){
   </div>`;
 }
 
+/* ═══ CONSTELLATION STAR MAP renderer ═══ */
+function ivRenderStars(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif"`:'';
+  el.innerHTML=`<div class="star-stage"><div class="star-map" ${fontStyle}>
+    <div class="star-left">
+      <div class="star-sys-label">Star Chart Key</div>
+      <div class="star-world-name">${w}</div>
+      ${era?`<div class="star-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="star-world-lore">${IV.data.wl}</div>`:''}
+      <div class="star-index-label">The Constellation · ${IV.months.length} stars</div>
+      <ul class="star-list">
+        ${IV.months.map((m,i)=>`
+          <li class="star-node ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="star-dot"></span>
+            <span class="star-node-name">${m.name||'Star '+(i+1)}</span>
+            ${m.icon?`<img class="star-node-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="star-right" id="star-detail"></div>
+  </div></div>`;
+  ivRenderStarsDetail();
+}
+
+function ivRenderStarsDetail(){
+  const d=document.getElementById('star-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="star-empty">Choose a star to read its record…</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="star-record appear">
+    <div class="star-rec-name"${inheritStyle}>${m.name||'Star '+(IV.selectedMonth+1)}</div>
+    <div class="star-rec-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' omen'+(evs.length>1?'s':''):''}</div>
+    <div class="star-divider"></div>
+    <div class="star-rec-label"${inheritStyle}>✦ Observation Log${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="star-rec-body"${inheritStyle}>${curLore||'<span style="opacity:.5">— no observation recorded for this star —</span>'}</div>
+    ${evs.map(e=>`<div class="star-omen" style="${inheritStrong}"><span class="star-omen-mark">★</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="star-nav">
+        <button class="star-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <span class="star-nav-label">record ${IV.lorePage+1} of ${totalPages}</span>
+        <button class="star-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
+      </div>`:''}
+  </div>`;
+}
+
 /* ═══ EDIT TOOLS ═══ */
 function ivCompressImg(dataUrl, size, cb){
   const img=new Image();
@@ -1185,6 +1290,7 @@ ${ivRenderExportCodex.toString()}
 ${ivRenderExportTactical.toString()}
 ${ivRenderExportGarden.toString()}
 ${ivRenderExportGrimoire.toString()}
+${ivRenderExportStars.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
@@ -1192,8 +1298,9 @@ ${ivRenderCodexDetail.toString()}
 ${ivRenderTacticalDetail.toString()}
 ${ivRenderGardenDetail.toString()}
 ${ivRenderGrimoireDetail.toString()}
+${ivRenderStarsDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -1299,6 +1406,22 @@ function ivRenderExportGrimoire(rootId){
     '<ul class="grim-month-list">'+IV.months.map(function(m,i){return '<li class="grim-entry'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="grim-mark">❖</span><span class="grim-entry-num">'+String(i+1).padStart(2,'0')+'</span><span class="grim-entry-name">'+(m.name||'Leaf '+(i+1))+'</span>'+(m.icon?'<img class="grim-entry-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="grim-right" id="grim-detail"></div></div></div>';
   ivRenderGrimoireDetail();
+}
+
+/* Standalone Star Map renderer for export (flat IV keys) */
+function ivRenderExportStars(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',serif"'):'';
+  root.innerHTML='<div class="star-stage"><div class="star-map" '+fontStyle+'>'+
+    '<div class="star-left"><div class="star-sys-label">Star Chart Key</div>'+
+    '<div class="star-world-name">'+w+'</div>'+
+    (era?'<div class="star-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="star-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="star-index-label">The Constellation · '+IV.months.length+' stars</div>'+
+    '<ul class="star-list">'+IV.months.map(function(m,i){return '<li class="star-node'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="star-dot"></span><span class="star-node-name">'+(m.name||'Star '+(i+1))+'</span>'+(m.icon?'<img class="star-node-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="star-right" id="star-detail"></div></div></div>';
+  ivRenderStarsDetail();
 }
 </script>
 
