@@ -307,6 +307,59 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .grdn-nav-label{font-family:'Cardo',serif;font-style:italic;font-size:.78rem;color:rgba(144,196,156,.8)}
 .grdn-empty{color:rgba(80,200,120,.4);text-align:center;margin-top:3rem;font-family:'Cardo',serif;font-style:italic}
 
+/* ═══ GOTHIC GRIMOIRE / STAINED GLASS (Blood Court) ═══ */
+.grim-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
+.grim-book{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:linear-gradient(160deg,#1a0608 0%,#100405 100%);border:1px solid rgba(192,57,43,.4);border-radius:4px;position:relative;overflow:hidden;box-shadow:0 16px 50px rgba(0,0,0,.7),inset 0 0 0 4px rgba(10,2,3,.7),inset 0 0 0 5px rgba(192,57,43,.25),inset 0 0 70px rgba(192,57,43,.05);font-family:var(--font-body),'Cardo',serif}
+.grim-book::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23g)' opacity='0.06'/%3E%3C/svg%3E");z-index:0}
+.grim-left{border-right:1px solid rgba(192,57,43,.25);padding:1.6rem 1.3rem;overflow-y:auto;position:relative;z-index:2}
+.grim-right{padding:1.8rem 1.9rem;overflow-y:auto;position:relative;z-index:2}
+.grim-sys-label{font-size:.62rem;letter-spacing:.22em;color:rgba(192,57,43,.6);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.grim-sys-label::before{content:'✠';color:rgba(192,57,43,.8)}
+.grim-world-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#e05a48;letter-spacing:.03em;line-height:1.3;margin-bottom:.3rem;text-shadow:0 0 16px rgba(192,57,43,.4),0 2px 3px rgba(0,0,0,.6)}
+.grim-era{font-size:.74rem;color:rgba(196,140,136,.78);font-style:italic;margin-bottom:.9rem}
+.grim-world-lore{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;line-height:1.7;color:#c49490;font-style:italic;border-left:2px solid rgba(192,57,43,.6);background:rgba(192,57,43,.05);padding:.55rem .75rem;margin-bottom:1.1rem}
+.grim-index-label{font-size:.6rem;letter-spacing:.18em;color:rgba(192,57,43,.55);text-transform:uppercase;margin-bottom:.7rem;padding-bottom:.3rem;border-bottom:1px solid rgba(192,57,43,.2)}
+.grim-month-list{list-style:none;margin:0;padding:0}
+.grim-entry{display:flex;align-items:center;gap:.6rem;padding:.5rem .7rem;cursor:pointer;color:#bd8a86;font-family:var(--font-body),'Cardo',serif;font-size:.93rem;transition:all .18s;position:relative;margin-bottom:2px;border:1px solid transparent}
+.grim-entry:hover{background:rgba(192,57,43,.07);color:#f0c8c4}
+/* gothic pointed-arch highlight on active */
+.grim-entry.active{background:rgba(192,57,43,.12);color:#e05a48;border-color:rgba(192,57,43,.4);clip-path:polygon(0 35%,6% 0,94% 0,100% 35%,100% 100%,0 100%);box-shadow:0 0 14px rgba(192,57,43,.2)}
+.grim-mark{color:rgba(192,57,43,.5);font-size:.8rem;flex-shrink:0;transition:all .18s}
+.grim-entry:hover .grim-mark{color:rgba(192,57,43,.8)}
+.grim-entry.active .grim-mark{color:#e05a48;text-shadow:0 0 8px rgba(192,57,43,.6)}
+.grim-entry-num{font-family:'Cinzel',serif;font-size:.68rem;color:rgba(192,57,43,.55);min-width:1.6rem;font-weight:700}
+.grim-entry.active .grim-entry-num{color:#e05a48}
+.grim-entry-name{flex:1}
+.grim-entry-ico{width:17px;height:17px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 4px rgba(192,57,43,.6))}
+.grim-entry:hover .grim-entry-ico{opacity:1}
+/* grimoire leaf (detail) */
+.grim-leaf{position:relative}
+.grim-leaf.reveal{animation:grim-bleed .3s ease-out}
+@keyframes grim-bleed{0%{opacity:0;filter:blur(3px)}100%{opacity:1;filter:blur(0)}}
+.grim-leaf-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.6rem;font-weight:700;color:#e05a48;letter-spacing:.04em;line-height:1.1;text-shadow:0 0 18px rgba(192,57,43,.4),0 2px 4px rgba(0,0,0,.7)}
+.grim-leaf-meta{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;color:rgba(196,140,136,.85);font-style:italic;margin-top:.4rem}
+/* stained-glass divider */
+.grim-glass{display:flex;height:14px;margin:1.1rem 0;border-radius:2px;overflow:hidden;border:1px solid rgba(10,2,3,.8);box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.grim-glass span{flex:1;border-right:1px solid rgba(10,2,3,.7)}
+.grim-glass span:last-child{border-right:none}
+.grim-glass span:nth-child(1){background:linear-gradient(180deg,#8b1a12,#c0392b)}
+.grim-glass span:nth-child(2){background:linear-gradient(180deg,#5a0e2a,#a01840)}
+.grim-glass span:nth-child(3){background:linear-gradient(180deg,#c0392b,#e05a48)}
+.grim-glass span:nth-child(4){background:linear-gradient(180deg,#3a0810,#6a1020)}
+.grim-glass span:nth-child(5){background:linear-gradient(180deg,#a01840,#c0392b)}
+.grim-glass span:nth-child(6){background:linear-gradient(180deg,#c0392b,#8b1a12)}
+.grim-glass span:nth-child(7){background:linear-gradient(180deg,#6a1020,#a01840)}
+.grim-leaf-label{font-size:.58rem;letter-spacing:.2em;color:rgba(192,57,43,.5);text-transform:uppercase;margin-bottom:.45rem}
+.grim-leaf-body{font-family:var(--font-body),'Cardo',serif;font-size:.97rem;line-height:1.85;color:#d8b4b0;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.grim-sigil{margin-top:1rem;padding:.6rem .85rem;background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.25);border-left:3px solid #c0392b;font-family:var(--font-body),'Cardo',serif;font-size:.86rem;color:#f0c8c4}
+.grim-sigil-mark{color:rgba(224,90,72,.85);margin-right:.4rem;font-weight:700}
+.grim-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(192,57,43,.2)}
+.grim-nav-btn{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.35);color:#e05a48;width:38px;height:38px;border-radius:3px;cursor:pointer;font-size:1.05rem;font-family:'Cinzel',serif;transition:all .18s}
+.grim-nav-btn:hover:not(:disabled){background:rgba(192,57,43,.18);box-shadow:0 0 12px rgba(192,57,43,.3)}
+.grim-nav-btn:disabled{opacity:.25;cursor:default}
+.grim-nav-label{font-family:'Cinzel',serif;font-size:.74rem;color:rgba(192,57,43,.65);letter-spacing:.08em}
+.grim-empty{color:rgba(192,57,43,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -476,6 +529,7 @@ function ivRenderMetaphor(canvasId){
   else if(IV.theme==='iron'){ ivRenderCodex(canvasId); }
   else if(IV.theme==='waypoint'){ ivRenderTactical(canvasId); }
   else if(IV.theme==='verdant'){ ivRenderGarden(canvasId); }
+  else if(IV.theme==='blood'){ ivRenderGrimoire(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -587,6 +641,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='verdant'){
     document.querySelectorAll('.grdn-bud').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderGardenDetail();
+  } else if(IV.theme==='blood'){
+    document.querySelectorAll('.grim-entry').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderGrimoireDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -629,7 +686,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -877,6 +934,64 @@ function ivRenderGardenDetail(){
   </div>`;
 }
 
+/* ═══ GOTHIC GRIMOIRE renderer ═══ */
+function ivRenderGrimoire(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif"`:'';
+  el.innerHTML=`<div class="grim-stage"><div class="grim-book" ${fontStyle}>
+    <div class="grim-left">
+      <div class="grim-sys-label">Blood Oath</div>
+      <div class="grim-world-name">${w}</div>
+      ${era?`<div class="grim-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="grim-world-lore">${IV.data.wl}</div>`:''}
+      <div class="grim-index-label">Index of Days · ${IV.months.length} leaves</div>
+      <ul class="grim-month-list">
+        ${IV.months.map((m,i)=>`
+          <li class="grim-entry ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="grim-mark">❖</span>
+            <span class="grim-entry-num">${String(i+1).padStart(2,'0')}</span>
+            <span class="grim-entry-name">${m.name||'Leaf '+(i+1)}</span>
+            ${m.icon?`<img class="grim-entry-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="grim-right" id="grim-detail"></div>
+  </div></div>`;
+  ivRenderGrimoireDetail();
+}
+
+function ivRenderGrimoireDetail(){
+  const d=document.getElementById('grim-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="grim-empty">Open a leaf of the grimoire…</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="grim-leaf reveal">
+    <div class="grim-leaf-name"${inheritStyle}>${m.name||'Leaf '+(IV.selectedMonth+1)}</div>
+    <div class="grim-leaf-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' rite'+(evs.length>1?'s':''):''}</div>
+    <div class="grim-glass"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="grim-leaf-label"${inheritStyle}>✠ Incantation${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="grim-leaf-body"${inheritStyle}>${curLore||'<span style="opacity:.5">— this leaf bears no inscription —</span>'}</div>
+    ${evs.map(e=>`<div class="grim-sigil" style="${inheritStrong}"><span class="grim-sigil-mark">✠</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="grim-nav">
+        <button class="grim-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <span class="grim-nav-label">leaf ${IV.lorePage+1} of ${totalPages}</span>
+        <button class="grim-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
+      </div>`:''}
+  </div>`;
+}
+
 /* ═══ EDIT TOOLS ═══ */
 function ivCompressImg(dataUrl, size, cb){
   const img=new Image();
@@ -1069,14 +1184,16 @@ ${ivRenderExportHUD.toString()}
 ${ivRenderExportCodex.toString()}
 ${ivRenderExportTactical.toString()}
 ${ivRenderExportGarden.toString()}
+${ivRenderExportGrimoire.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
 ${ivRenderCodexDetail.toString()}
 ${ivRenderTacticalDetail.toString()}
 ${ivRenderGardenDetail.toString()}
+${ivRenderGrimoireDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -1166,6 +1283,22 @@ function ivRenderExportGarden(rootId){
     '<ul class="grdn-vine">'+IV.months.map(function(m,i){return '<li class="grdn-bud'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="grdn-bud-mark"></span><span class="grdn-bud-name">'+(m.name||'Bloom '+(i+1))+'</span>'+(m.icon?'<img class="grdn-bud-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="grdn-right" id="grdn-detail"></div></div></div>';
   ivRenderGardenDetail();
+}
+
+/* Standalone Grimoire renderer for export (flat IV keys) */
+function ivRenderExportGrimoire(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',serif"'):'';
+  root.innerHTML='<div class="grim-stage"><div class="grim-book" '+fontStyle+'>'+
+    '<div class="grim-left"><div class="grim-sys-label">Blood Oath</div>'+
+    '<div class="grim-world-name">'+w+'</div>'+
+    (era?'<div class="grim-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="grim-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="grim-index-label">Index of Days · '+IV.months.length+' leaves</div>'+
+    '<ul class="grim-month-list">'+IV.months.map(function(m,i){return '<li class="grim-entry'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="grim-mark">❖</span><span class="grim-entry-num">'+String(i+1).padStart(2,'0')+'</span><span class="grim-entry-name">'+(m.name||'Leaf '+(i+1))+'</span>'+(m.icon?'<img class="grim-entry-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="grim-right" id="grim-detail"></div></div></div>';
+  ivRenderGrimoireDetail();
 }
 </script>
 
