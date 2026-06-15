@@ -214,6 +214,53 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .cdx-folio-folio{font-family:'Cinzel',serif;font-size:.75rem;color:rgba(212,160,64,.65);letter-spacing:.1em}
 .cdx-empty{color:rgba(212,160,64,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
 
+/* ═══ TACTICAL MAP INTERFACE (Waypoint Protocol) ═══ */
+.tac-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.6rem 1.2rem}
+.tac-console{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:#0a1218;border:1px solid rgba(42,180,232,.4);position:relative;overflow:hidden;font-family:var(--font-body),'Rajdhani',sans-serif;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+/* tactical grid background */
+.tac-console::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(42,180,232,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(42,180,232,.05) 1px,transparent 1px);background-size:28px 28px;z-index:0}
+.tac-left{border-right:1px solid rgba(42,180,232,.25);padding:1.3rem 1.1rem;overflow-y:auto;position:relative;z-index:2}
+.tac-right{padding:1.6rem 1.7rem;overflow-y:auto;position:relative;z-index:2}
+.tac-sys-label{font-size:.6rem;letter-spacing:.24em;color:rgba(42,180,232,.6);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.tac-sys-label::before{content:'';width:8px;height:8px;background:#2ab4e8;transform:rotate(45deg);box-shadow:0 0 6px #2ab4e8}
+.tac-world-name{font-family:var(--font-body),'Rajdhani',sans-serif;font-size:1.15rem;font-weight:600;color:#5ac8f0;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;margin-bottom:.3rem}
+.tac-era{font-size:.7rem;color:rgba(136,176,196,.75);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.9rem}
+.tac-world-lore{font-size:.78rem;line-height:1.6;color:#88b0c4;border:1px solid rgba(42,180,232,.2);border-top:2px solid rgba(42,180,232,.5);background:rgba(42,180,232,.03);padding:.6rem .7rem;margin-bottom:1rem}
+.tac-index-label{font-size:.6rem;letter-spacing:.2em;color:rgba(42,180,232,.55);text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px dashed rgba(42,180,232,.25)}
+.tac-month-list{list-style:none;margin:0;padding:0}
+.tac-wp{display:flex;align-items:center;gap:.6rem;padding:.5rem .55rem;cursor:pointer;color:#88b0c4;font-size:.86rem;letter-spacing:.03em;border:1px solid transparent;transition:all .15s;position:relative;margin-bottom:3px}
+.tac-wp:hover{background:rgba(42,180,232,.06);color:#d0e8f4}
+.tac-wp.active{background:rgba(42,180,232,.1);border-color:rgba(42,180,232,.45);color:#5ac8f0}
+/* corner brackets on selected waypoint */
+.tac-wp.active::before,.tac-wp.active::after{content:'';position:absolute;width:7px;height:7px;border-color:#5ac8f0;border-style:solid}
+.tac-wp.active::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+.tac-wp.active::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+.tac-diamond{width:9px;height:9px;background:rgba(42,180,232,.35);transform:rotate(45deg);flex-shrink:0;transition:all .2s}
+.tac-wp:hover .tac-diamond{background:rgba(42,180,232,.7)}
+.tac-wp.active .tac-diamond{background:#5ac8f0;box-shadow:0 0 8px #5ac8f0}
+.tac-wp-id{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.68rem;color:rgba(42,180,232,.6);min-width:2.6rem;letter-spacing:.05em}
+.tac-wp.active .tac-wp-id{color:#5ac8f0}
+.tac-wp-name{flex:1}
+.tac-wp-ico{width:16px;height:16px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 3px rgba(42,180,232,.5))}
+.tac-wp:hover .tac-wp-ico{opacity:1}
+/* dossier */
+.tac-dossier{position:relative}
+.tac-dossier.locking{animation:tac-slide .25s ease-out}
+@keyframes tac-slide{0%{opacity:.3;transform:translateX(8px)}100%{opacity:1;transform:translateX(0)}}
+.tac-dossier-name{font-family:var(--font-body),'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;color:#5ac8f0;letter-spacing:.05em;text-transform:uppercase;line-height:1.1}
+.tac-dossier-class{font-family:'Rajdhani',sans-serif;font-size:.74rem;font-weight:600;color:rgba(42,180,232,.65);letter-spacing:.14em;text-transform:uppercase;margin-top:.3rem}
+.tac-measure{height:8px;margin:.9rem 0 1.1rem;position:relative;border-bottom:1px solid rgba(42,180,232,.4);background-image:repeating-linear-gradient(90deg,rgba(42,180,232,.4) 0,rgba(42,180,232,.4) 1px,transparent 1px,transparent 14px)}
+.tac-brief-label{font-size:.58rem;letter-spacing:.2em;color:rgba(42,180,232,.5);text-transform:uppercase;margin-bottom:.4rem}
+.tac-dossier-body{font-size:.92rem;line-height:1.75;color:#bcd8e4;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.tac-objective{margin-top:.9rem;padding:.55rem .75rem;background:rgba(42,180,232,.06);border:1px solid rgba(42,180,232,.25);border-left:3px solid #2ab4e8;font-size:.84rem;color:#d0e8f4;letter-spacing:.02em}
+.tac-objective-tag{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.68rem;color:rgba(42,180,232,.75);margin-right:.4rem;letter-spacing:.08em}
+.tac-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.4rem;padding-top:.9rem;border-top:1px dashed rgba(42,180,232,.25)}
+.tac-nav-btn{background:rgba(42,180,232,.06);border:1px solid rgba(42,180,232,.3);color:#5ac8f0;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.08em;padding:.35rem .8rem;cursor:pointer;text-transform:uppercase;clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+.tac-nav-btn:hover:not(:disabled){background:rgba(42,180,232,.15);box-shadow:0 0 10px rgba(42,180,232,.2)}
+.tac-nav-btn:disabled{opacity:.25;cursor:default}
+.tac-nav-counter{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.72rem;color:rgba(42,180,232,.6);letter-spacing:.1em}
+.tac-empty{color:rgba(42,180,232,.4);text-align:center;margin-top:3rem;font-family:'Rajdhani',sans-serif;letter-spacing:.12em;text-transform:uppercase}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -381,6 +428,7 @@ function ivRenderStage(){
 function ivRenderMetaphor(canvasId){
   if(IV.theme==='expanse'){ ivRenderHUD(canvasId); }
   else if(IV.theme==='iron'){ ivRenderCodex(canvasId); }
+  else if(IV.theme==='waypoint'){ ivRenderTactical(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -486,6 +534,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='iron'){
     document.querySelectorAll('.cdx-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderCodexDetail();
+  } else if(IV.theme==='waypoint'){
+    document.querySelectorAll('.tac-wp').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderTacticalDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -528,7 +579,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -657,6 +708,64 @@ function ivRenderCodexDetail(){
         <button class="cdx-folio-arrow" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
         <span class="cdx-folio-folio">folio ${IV.lorePage+1} of ${totalPages}</span>
         <button class="cdx-folio-arrow" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
+      </div>`:''}
+  </div>`;
+}
+
+/* ═══ TACTICAL MAP renderer ═══ */
+function ivRenderTactical(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',sans-serif"`:'';
+  el.innerHTML=`<div class="tac-stage"><div class="tac-console" ${fontStyle}>
+    <div class="tac-left">
+      <div class="tac-sys-label">Operation Overview</div>
+      <div class="tac-world-name">${w}</div>
+      ${era?`<div class="tac-era">${era}</div>`:''}
+      ${IV.data.wl?`<div class="tac-world-lore">${IV.data.wl}</div>`:''}
+      <div class="tac-index-label">Waypoint Index · ${IV.months.length} marks</div>
+      <ul class="tac-month-list">
+        ${IV.months.map((m,i)=>`
+          <li class="tac-wp ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+            <span class="tac-diamond"></span>
+            <span class="tac-wp-id">WP-${String(i+1).padStart(2,'0')}</span>
+            <span class="tac-wp-name">${m.name||'Mark '+(i+1)}</span>
+            ${m.icon?`<img class="tac-wp-ico" src="${m.icon}" alt=""/>`:''}
+          </li>`).join('')}
+      </ul>
+    </div>
+    <div class="tac-right" id="tac-detail"></div>
+  </div></div>`;
+  ivRenderTacticalDetail();
+}
+
+function ivRenderTacticalDetail(){
+  const d=document.getElementById('tac-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="tac-empty">◇ No waypoint selected</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="tac-dossier locking">
+    <div class="tac-dossier-name"${inheritStyle}>${m.name||'Mark '+(IV.selectedMonth+1)}</div>
+    <div class="tac-dossier-class"${inheritStyle}>${m.days||''} days${evs.length?' // '+evs.length+' objective'+(evs.length>1?'s':''):''}</div>
+    <div class="tac-measure"></div>
+    <div class="tac-brief-label"${inheritStyle}>▸ Mission Brief${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="tac-dossier-body"${inheritStyle}>${curLore||'<span style="opacity:.5">— no brief filed —</span>'}</div>
+    ${evs.map(e=>`<div class="tac-objective" style="${inheritStrong}"><span class="tac-objective-tag">◈ OBJ</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="tac-nav">
+        <button class="tac-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>◄ Prev Brief</button>
+        <span class="tac-nav-counter">BRIEF ${IV.lorePage+1} / ${totalPages}</span>
+        <button class="tac-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>Next Brief ►</button>
       </div>`:''}
   </div>`;
 }
@@ -851,12 +960,14 @@ ${ivRoman.toString()}
 ${ivRenderExportNotebook.toString()}
 ${ivRenderExportHUD.toString()}
 ${ivRenderExportCodex.toString()}
+${ivRenderExportTactical.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
 ${ivRenderCodexDetail.toString()}
+${ivRenderTacticalDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -914,6 +1025,22 @@ function ivRenderExportCodex(rootId){
     '<ul class="cdx-month-list">'+IV.months.map(function(m,i){return '<li class="cdx-month-item'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="cdx-month-num">'+ivRoman(i+1)+'</span><span class="cdx-month-fleuron">❧</span><span class="cdx-month-name">'+(m.name||'Month '+(i+1))+'</span>'+(m.icon?'<img class="cdx-month-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="cdx-page cdx-right" id="cdx-detail"></div></div></div>';
   ivRenderCodexDetail();
+}
+
+/* Standalone Tactical renderer for export (flat IV keys) */
+function ivRenderExportTactical(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',sans-serif"'):'';
+  root.innerHTML='<div class="tac-stage"><div class="tac-console" '+fontStyle+'>'+
+    '<div class="tac-left"><div class="tac-sys-label">Operation Overview</div>'+
+    '<div class="tac-world-name">'+w+'</div>'+
+    (era?'<div class="tac-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="tac-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="tac-index-label">Waypoint Index · '+IV.months.length+' marks</div>'+
+    '<ul class="tac-month-list">'+IV.months.map(function(m,i){return '<li class="tac-wp'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="tac-diamond"></span><span class="tac-wp-id">WP-'+String(i+1).padStart(2,'0')+'</span><span class="tac-wp-name">'+(m.name||'Mark '+(i+1))+'</span>'+(m.icon?'<img class="tac-wp-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="tac-right" id="tac-detail"></div></div></div>';
+  ivRenderTacticalDetail();
 }
 </script>
 
