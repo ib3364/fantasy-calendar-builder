@@ -1133,22 +1133,12 @@ function renderPreview(){
     }).join('');
     return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}</div>`;
   }).join('');
+  const loreCount=state.months.filter(m=>m.lore&&m.lore.trim()).length
+    +state.moons.filter(m=>m.lore&&m.lore.trim()).length
+    +state.events.filter(e=>e.lore&&e.lore.trim()).length
+    +((document.getElementById('world-lore')&&document.getElementById('world-lore').value.trim())?1:0);
   preview.innerHTML=`
     <div class="cal-world-header">${worldIcon}<div class="cal-world-name">${worldName}</div></div>
-    ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
-    <div class="cal-meta-row">
-      ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿','✠','◈','𓊖','[M]','ᛗ')}
-      ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦','☉','✦','𓇳','[D]','ᛋ')}
-      ${metaPill('🗓',`${state.daysWeek}-day week`,'[CYC]','☽','▣','◎','☽','☾','𓆄','[W]','ᚹ')}
-    </div>
-    ${moonPills?`<div class="cal-moons-row">${moonPills}</div>`:''}
-    <div class="cal-months-grid">${monthCards}</div>
-    <div class="cal-footer">
-      <span class="cal-footer-brand">${loreCount} lore entr${loreCount!==1?'ies':'y'}</span>
-      <span class="cal-footer-stats">${state.moons.filter(m=>m.name).length} moon${state.moons.filter(m=>m.name).length!==1?'s':''} · ${state.events.filter(e=>e.name).length} event${state.events.filter(e=>e.name).length!==1?'s':''}</span>
-    </div>`;
-  preview.innerHTML=`
-    <div class="cal-world-name">${worldName}</div>
     ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
     <div class="cal-meta-row">
       ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿','✠','◈','𓊖','[M]','ᛗ')}
