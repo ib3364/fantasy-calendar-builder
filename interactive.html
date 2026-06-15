@@ -404,6 +404,59 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .star-nav-label{font-family:'Cardo',serif;font-style:italic;font-size:.78rem;color:rgba(168,148,196,.8)}
 .star-empty{color:rgba(178,128,200,.4);text-align:center;margin-top:3rem;font-family:'Cardo',serif;font-style:italic}
 
+/* ═══ UNROLLING PAPYRUS SCROLL (Desert Scroll) ═══ */
+.scrl-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
+/* outer wrap holds the vertical dowels + the papyrus */
+.scrl-wrap{display:flex;align-items:stretch;width:min(1020px,100%);max-height:84vh;position:relative;filter:drop-shadow(0 16px 40px rgba(0,0,0,.55))}
+/* rolled dowel edges (left & right) */
+.scrl-dowel{width:22px;flex-shrink:0;background:linear-gradient(90deg,#2a1408 0%,#5a3216 30%,#8a5a2e 50%,#5a3216 70%,#2a1408 100%);position:relative;z-index:3}
+.scrl-dowel::before,.scrl-dowel::after{content:'';position:absolute;left:0;right:0;height:14px;background:radial-gradient(ellipse at center,#8a5a2e,#3a1e0e);border-radius:50%}
+.scrl-dowel::before{top:-7px}
+.scrl-dowel::after{bottom:-7px}
+.scrl-dowel-l{border-radius:6px 0 0 6px}
+.scrl-dowel-r{border-radius:0 6px 6px 0}
+.scrl-papyrus{display:grid;grid-template-columns:290px 1fr;flex:1;background:linear-gradient(160deg,#4a2912 0%,#3a1e0e 100%);position:relative;overflow:hidden;border-top:1px solid rgba(232,133,46,.25);border-bottom:1px solid rgba(232,133,46,.25);font-family:var(--font-body),'Cardo',serif}
+/* papyrus woven-fiber texture */
+.scrl-papyrus::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;background-image:repeating-linear-gradient(0deg,rgba(232,133,46,.03) 0,rgba(232,133,46,.03) 1px,transparent 1px,transparent 4px),repeating-linear-gradient(90deg,rgba(0,0,0,.04) 0,rgba(0,0,0,.04) 1px,transparent 1px,transparent 6px)}
+.scrl-left{border-right:1px solid rgba(232,133,46,.22);padding:1.6rem 1.3rem;overflow-y:auto;position:relative;z-index:2}
+.scrl-right{padding:1.8rem 1.9rem;overflow-y:auto;position:relative;z-index:2}
+.scrl-sys-label{font-size:.62rem;letter-spacing:.22em;color:rgba(232,133,46,.7);text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.scrl-sys-label::before{content:'☥';color:rgba(232,133,46,.85)}
+.scrl-world-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.15rem;font-weight:700;color:#f0a050;letter-spacing:.04em;line-height:1.3;margin-bottom:.3rem;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.scrl-era{font-size:.74rem;color:rgba(212,168,120,.82);font-style:italic;margin-bottom:.9rem}
+.scrl-world-lore{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;line-height:1.7;color:#d4a878;font-style:italic;border-left:2px solid rgba(232,133,46,.55);background:rgba(232,133,46,.05);padding:.55rem .75rem;margin-bottom:1.1rem}
+.scrl-index-label{font-size:.6rem;letter-spacing:.18em;color:rgba(232,133,46,.6);text-transform:uppercase;margin-bottom:.7rem;padding-bottom:.3rem;border-bottom:1px solid rgba(232,133,46,.2)}
+.scrl-month-list{list-style:none;margin:0;padding:0}
+.scrl-entry{display:flex;align-items:center;gap:.6rem;padding:.5rem .65rem;cursor:pointer;color:#c59868;font-family:var(--font-body),'Cardo',serif;font-size:.93rem;transition:all .18s;position:relative;margin-bottom:2px;border:1px solid transparent;border-radius:3px}
+.scrl-entry:hover{background:rgba(232,133,46,.07);color:#f4d0a0}
+.scrl-entry.active{background:rgba(232,133,46,.12);color:#f0a050;border-color:rgba(232,133,46,.4)}
+.scrl-glyph{color:rgba(232,133,46,.55);font-size:.85rem;flex-shrink:0;transition:all .18s}
+.scrl-entry:hover .scrl-glyph{color:rgba(232,133,46,.85)}
+.scrl-entry.active .scrl-glyph{color:#f0a050;text-shadow:0 0 8px rgba(232,133,46,.6)}
+.scrl-entry-num{font-family:'Cinzel',serif;font-size:.68rem;color:rgba(232,133,46,.55);min-width:1.6rem;font-weight:700}
+.scrl-entry.active .scrl-entry-num{color:#f0a050}
+.scrl-entry-name{flex:1}
+.scrl-entry-ico{width:17px;height:17px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 4px rgba(232,133,46,.6))}
+.scrl-entry:hover .scrl-entry-ico{opacity:1}
+/* inscription (detail) */
+.scrl-inscr{position:relative}
+.scrl-inscr.unroll{animation:scrl-open .35s cubic-bezier(.22,1,.36,1)}
+@keyframes scrl-open{0%{opacity:0;transform:scaleX(.94);transform-origin:left center}100%{opacity:1;transform:scaleX(1)}}
+.scrl-inscr-name{font-family:var(--font-body),'Cinzel',serif;font-size:1.58rem;font-weight:700;color:#f0a050;letter-spacing:.04em;line-height:1.12;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.scrl-inscr-meta{font-family:var(--font-body),'Cardo',serif;font-size:.82rem;color:rgba(212,168,120,.85);font-style:italic;margin-top:.45rem}
+/* hieroglyphic band divider */
+.scrl-band{height:16px;margin:1.1rem 0;display:flex;align-items:center;justify-content:space-around;border-top:1px solid rgba(232,133,46,.4);border-bottom:1px solid rgba(232,133,46,.4);padding:2px 0;color:rgba(232,133,46,.55);font-size:.7rem;letter-spacing:.3em;overflow:hidden}
+.scrl-rec-label{font-size:.58rem;letter-spacing:.2em;color:rgba(232,133,46,.6);text-transform:uppercase;margin-bottom:.45rem}
+.scrl-inscr-body{font-family:var(--font-body),'Cardo',serif;font-size:.97rem;line-height:1.85;color:#e0c4a0;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.scrl-cartouche{margin-top:1rem;padding:.6rem .9rem;background:rgba(232,133,46,.06);border:1px solid rgba(232,133,46,.3);border-radius:20px;font-family:var(--font-body),'Cardo',serif;font-size:.86rem;color:#f4d0a0}
+.scrl-cartouche-mark{color:rgba(232,133,46,.85);margin-right:.4rem}
+.scrl-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(232,133,46,.2)}
+.scrl-nav-btn{background:rgba(232,133,46,.08);border:1px solid rgba(232,133,46,.35);color:#f0a050;width:38px;height:38px;border-radius:3px;cursor:pointer;font-size:1.05rem;font-family:'Cinzel',serif;transition:all .18s}
+.scrl-nav-btn:hover:not(:disabled){background:rgba(232,133,46,.18);box-shadow:0 0 12px rgba(232,133,46,.3)}
+.scrl-nav-btn:disabled{opacity:.25;cursor:default}
+.scrl-nav-label{font-family:'Cinzel',serif;font-size:.74rem;color:rgba(232,133,46,.65);letter-spacing:.08em}
+.scrl-empty{color:rgba(232,133,46,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
+
 /* ── Interactive icon/font picker modals ── */
 .iv-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);padding:1rem}
 .iv-modal.open{display:flex}
@@ -575,6 +628,7 @@ function ivRenderMetaphor(canvasId){
   else if(IV.theme==='verdant'){ ivRenderGarden(canvasId); }
   else if(IV.theme==='blood'){ ivRenderGrimoire(canvasId); }
   else if(IV.theme==='void'){ ivRenderStars(canvasId); }
+  else if(IV.theme==='desert'){ ivRenderScroll(canvasId); }
   else { ivRenderNotebook(canvasId); }
 }
 
@@ -692,6 +746,9 @@ function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
   } else if(IV.theme==='void'){
     document.querySelectorAll('.star-node').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderStarsDetail();
+  } else if(IV.theme==='desert'){
+    document.querySelectorAll('.scrl-entry').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderScrollDetail();
   } else {
     document.querySelectorAll('.nb-month-item').forEach((el,idx)=>el.classList.toggle('active',idx===i));
     ivRenderDetail();
@@ -734,7 +791,7 @@ function ivLoreNav(dir){
   const m=IV.months[IV.selectedMonth];
   const total=Math.max(1,ivSplitLore(m.lore).length);
   IV.lorePage=Math.max(0,Math.min(total-1,IV.lorePage+dir));
-  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else { ivRenderDetail(); }
+  if(IV.theme==='expanse'){ ivRenderHUDDetail(); } else if(IV.theme==='iron'){ ivRenderCodexDetail(); } else if(IV.theme==='waypoint'){ ivRenderTacticalDetail(); } else if(IV.theme==='verdant'){ ivRenderGardenDetail(); } else if(IV.theme==='blood'){ ivRenderGrimoireDetail(); } else if(IV.theme==='void'){ ivRenderStarsDetail(); } else if(IV.theme==='desert'){ ivRenderScrollDetail(); } else { ivRenderDetail(); }
 }
 
 /* ═══ STARSHIP HUD renderer ═══ */
@@ -1097,6 +1154,68 @@ function ivRenderStarsDetail(){
   </div>`;
 }
 
+/* ═══ PAPYRUS SCROLL renderer ═══ */
+function ivRenderScroll(canvasId){
+  const el=document.getElementById(canvasId); if(!el)return;
+  const w=IV.data.w||'Your World', era=IV.data.e||'';
+  const fontStyle=IV.font?`style="--font-body:'${IV.font}',serif"`:'';
+  el.innerHTML=`<div class="scrl-stage"><div class="scrl-wrap" ${fontStyle}>
+    <div class="scrl-dowel scrl-dowel-l"></div>
+    <div class="scrl-papyrus">
+      <div class="scrl-left">
+        <div class="scrl-sys-label">Scribe of Days</div>
+        <div class="scrl-world-name">${w}</div>
+        ${era?`<div class="scrl-era">${era}</div>`:''}
+        ${IV.data.wl?`<div class="scrl-world-lore">${IV.data.wl}</div>`:''}
+        <div class="scrl-index-label">The Register · ${IV.months.length} columns</div>
+        <ul class="scrl-month-list">
+          ${IV.months.map((m,i)=>`
+            <li class="scrl-entry ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
+              <span class="scrl-glyph">☥</span>
+              <span class="scrl-entry-num">${String(i+1).padStart(2,'0')}</span>
+              <span class="scrl-entry-name">${m.name||'Column '+(i+1)}</span>
+              ${m.icon?`<img class="scrl-entry-ico" src="${m.icon}" alt=""/>`:''}
+            </li>`).join('')}
+        </ul>
+      </div>
+      <div class="scrl-right" id="scrl-detail"></div>
+    </div>
+    <div class="scrl-dowel scrl-dowel-r"></div>
+  </div></div>`;
+  ivRenderScrollDetail();
+}
+
+function ivRenderScrollDetail(){
+  const d=document.getElementById('scrl-detail'); if(!d)return;
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="scrl-empty">Unroll a column to read it…</div>';return;}
+  const loreEntries=ivSplitLore(m.lore);
+  const totalPages=Math.max(1,loreEntries.length);
+  if(IV.lorePage>=totalPages)IV.lorePage=0;
+  const curLore=loreEntries[IV.lorePage]||'';
+  const evs=IV.events.filter(e=>e.month===IV.selectedMonth+1&&e.name);
+  const bgKey=IV.selectedMonth+':'+IV.lorePage;
+  const bg=IV.perLoreBg[bgKey]||'';
+  const txtColor=IV.perLoreColor[bgKey]||'';
+  d.style.background=bg||'';
+  d.style.color=txtColor||'';
+  const inheritStyle=txtColor?' style="color:inherit"':'';
+  const inheritStrong=txtColor?'color:inherit;':'';
+  d.innerHTML=`<div class="scrl-inscr unroll">
+    <div class="scrl-inscr-name"${inheritStyle}>${m.name||'Column '+(IV.selectedMonth+1)}</div>
+    <div class="scrl-inscr-meta"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' rite'+(evs.length>1?'s':''):''}</div>
+    <div class="scrl-band">☥ 𓂀 ☥ 𓆸 ☥ 𓊃 ☥</div>
+    <div class="scrl-rec-label"${inheritStyle}>Inscription${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="scrl-inscr-body"${inheritStyle}>${curLore||'<span style="opacity:.5">— this column bears no inscription —</span>'}</div>
+    ${evs.map(e=>`<div class="scrl-cartouche" style="${inheritStrong}"><span class="scrl-cartouche-mark">𓆸</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    ${totalPages>1?`
+      <div class="scrl-nav">
+        <button class="scrl-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>‹</button>
+        <span class="scrl-nav-label">leaf ${IV.lorePage+1} of ${totalPages}</span>
+        <button class="scrl-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>›</button>
+      </div>`:''}
+  </div>`;
+}
+
 /* ═══ EDIT TOOLS ═══ */
 function ivCompressImg(dataUrl, size, cb){
   const img=new Image();
@@ -1291,6 +1410,7 @@ ${ivRenderExportTactical.toString()}
 ${ivRenderExportGarden.toString()}
 ${ivRenderExportGrimoire.toString()}
 ${ivRenderExportStars.toString()}
+${ivRenderExportScroll.toString()}
 ${ivSelectMonth.toString()}
 ${ivRenderDetail.toString()}
 ${ivRenderHUDDetail.toString()}
@@ -1299,8 +1419,9 @@ ${ivRenderTacticalDetail.toString()}
 ${ivRenderGardenDetail.toString()}
 ${ivRenderGrimoireDetail.toString()}
 ${ivRenderStarsDetail.toString()}
+${ivRenderScrollDetail.toString()}
 ${ivLoreNav.toString()}
-document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else {ivRenderExportNotebook('iv-root');} });
+document.addEventListener('DOMContentLoaded',()=>{ if(IV.theme==='expanse'){ivRenderExportHUD('iv-root');} else if(IV.theme==='iron'){ivRenderExportCodex('iv-root');} else if(IV.theme==='waypoint'){ivRenderExportTactical('iv-root');} else if(IV.theme==='verdant'){ivRenderExportGarden('iv-root');} else if(IV.theme==='blood'){ivRenderExportGrimoire('iv-root');} else if(IV.theme==='void'){ivRenderExportStars('iv-root');} else if(IV.theme==='desert'){ivRenderExportScroll('iv-root');} else {ivRenderExportNotebook('iv-root');} });
 <\/script>
 </body></html>`;
 
@@ -1422,6 +1543,25 @@ function ivRenderExportStars(rootId){
     '<ul class="star-list">'+IV.months.map(function(m,i){return '<li class="star-node'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="star-dot"></span><span class="star-node-name">'+(m.name||'Star '+(i+1))+'</span>'+(m.icon?'<img class="star-node-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="star-right" id="star-detail"></div></div></div>';
   ivRenderStarsDetail();
+}
+
+/* Standalone Scroll renderer for export (flat IV keys) */
+function ivRenderExportScroll(rootId){
+  const root=document.getElementById(rootId);
+  const w=IV.w||'Your World', era=IV.e||'';
+  const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',serif"'):'';
+  root.innerHTML='<div class="scrl-stage"><div class="scrl-wrap" '+fontStyle+'>'+
+    '<div class="scrl-dowel scrl-dowel-l"></div>'+
+    '<div class="scrl-papyrus"><div class="scrl-left"><div class="scrl-sys-label">Scribe of Days</div>'+
+    '<div class="scrl-world-name">'+w+'</div>'+
+    (era?'<div class="scrl-era">'+era+'</div>':'')+
+    (IV.wl?'<div class="scrl-world-lore">'+IV.wl+'</div>':'')+
+    '<div class="scrl-index-label">The Register · '+IV.months.length+' columns</div>'+
+    '<ul class="scrl-month-list">'+IV.months.map(function(m,i){return '<li class="scrl-entry'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="scrl-glyph">☥</span><span class="scrl-entry-num">'+String(i+1).padStart(2,'0')+'</span><span class="scrl-entry-name">'+(m.name||'Column '+(i+1))+'</span>'+(m.icon?'<img class="scrl-entry-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="scrl-right" id="scrl-detail"></div></div>'+
+    '<div class="scrl-dowel scrl-dowel-r"></div>'+
+    '</div></div>';
+  ivRenderScrollDetail();
 }
 </script>
 
