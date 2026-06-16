@@ -77,6 +77,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   .hud-detail-desig,.cdx-folio-name,.tac-dossier-name,.grdn-spec-name,.grim-leaf-name,.star-rec-name,.scrl-inscr-name,.neon-data-name,.stn-face-name,.nb-detail-name{
     font-size:1.25rem!important
   }
+  /* EDIT PHASE: stack the control sidebar above the preview instead of 300px side-column */
+  .iv-edit-wrap{grid-template-columns:1fr!important;display:flex!important;flex-direction:column!important;height:auto!important}
+  .iv-edit-sidebar{border-right:none!important;border-bottom:1px solid var(--border);max-height:38vh;flex:none}
+  .iv-edit-preview{min-height:55vh}
+  .iv-stage{position:static!important;inset:auto!important;height:auto!important}
 }
 .iv-choice{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem 1.5rem;cursor:pointer;transition:all .2s;text-align:center}
 .iv-choice:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
@@ -86,6 +91,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 /* ── Phase toolbar ── */
 .iv-toolbar{position:fixed;top:0;left:0;right:0;height:54px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.2rem;z-index:50}
+.iv-share-box{position:fixed;top:54px;left:0;right:0;background:var(--surface);border-bottom:1px solid var(--border);padding:.7rem 1.2rem;z-index:49}
+.iv-share-label{display:block;font-size:.74rem;color:var(--text-muted);margin-bottom:.4rem}
+.iv-share-row{display:flex;gap:.5rem;max-width:640px}
+.iv-share-url{flex:1;background:var(--input-bg,#fff);border:1px solid var(--border);padding:.5rem .7rem;color:var(--text);font-size:.78rem;border-radius:4px;outline:none}
+.iv-share-box+.iv-stage{top:120px}
+.iv-stage-shared{position:fixed!important;inset:0!important;top:0!important;overflow:auto;background:var(--bg)}
 .iv-toolbar-left{display:flex;align-items:center;gap:.8rem}
 .iv-toolbar-title{font-family:var(--font-display);font-size:1rem;color:var(--text)}
 .iv-tab-group{display:flex;gap:.4rem;background:var(--input-bg);border-radius:6px;padding:.2rem}
@@ -654,10 +665,78 @@ async function ivLoadFromLocker(id){
   if(!rows||!rows.length)throw new Error('not found');
   return rows[0].data;
 }
+function ivGenId(){
+  const chars='abcdefghijklmnopqrstuvwxyz0123456789';
+  let s='';for(let i=0;i<8;i++)s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+// Save the FULL customized interactive state (base calendar + all edit-phase
+// customizations) so a shared link reproduces exactly what was customized.
+async function ivShareLink(){
+  const bundle={
+    __iv:true,
+    data:IV.data, theme:IV.theme, font:IV.font, customFontFace:IV.customFontFace||'',
+    perLoreBg:IV.perLoreBg||{}, perLoreColor:IV.perLoreColor||{},
+    months:IV.months, moons:IV.moons, events:IV.events
+  };
+  const box=document.getElementById('iv-share-box');
+  const input=document.getElementById('iv-share-url');
+  if(box)box.style.display='block';
+  if(input)input.value='Saving your interactive world…';
+  try{
+    const id=ivGenId();
+    const res=await fetch(SB_URL+'/rest/v1/calendars',{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+      body:JSON.stringify({id:id,data:bundle})
+    });
+    if(!res.ok)throw new Error('save failed '+res.status);
+    const url=location.origin+'/interactive.html?iv='+id;
+    if(input)input.value=url;
+  }catch(e){
+    console.error('share save failed:',e);
+    if(input)input.value='Could not save — check connection and try again.';
+  }
+}
+function ivCopyShare(){
+  const input=document.getElementById('iv-share-url');
+  if(!input||!input.value.startsWith('http'))return;
+  input.select();input.setSelectionRange(0,99999);
+  try{navigator.clipboard.writeText(input.value);}catch(e){try{document.execCommand('copy');}catch(e2){}}
+  const btn=document.getElementById('iv-share-copy');
+  if(btn){const t=btn.textContent;btn.textContent='Copied!';setTimeout(()=>btn.textContent=t,1500);}
+}
 
 async function ivInit(){
   const params=new URLSearchParams(location.search);
+  const ivId=params.get('iv');
   const id=params.get('id');
+
+  // Shared INTERACTIVE link: load the full customized bundle, read-only
+  if(ivId){
+    try{
+      const bundle=await ivLoadFromLocker(ivId);
+      if(bundle&&bundle.__iv){
+        IV.data=bundle.data;
+        IV.theme=bundle.theme||'';
+        document.documentElement.setAttribute('data-theme',IV.theme);
+        IV.months=bundle.months||[];
+        IV.moons=bundle.moons||[];
+        IV.events=bundle.events||[];
+        IV.font=bundle.font||'';
+        IV.customFontFace=bundle.customFontFace||'';
+        IV.perLoreBg=bundle.perLoreBg||{};
+        IV.perLoreColor=bundle.perLoreColor||{};
+        if(IV.customFontFace){const st=document.createElement('style');st.textContent=IV.customFontFace;document.head.appendChild(st);}
+        else if(IV.font)ivLoadGFont(IV.font);
+        ivStartShared();   // read-only preview, no edit access
+        return;
+      }
+    }catch(e){ console.error('shared interactive load failed:',e); }
+    document.getElementById('iv-root').innerHTML='<div class="iv-loading"><div>This interactive link could not be loaded. <a href="builder.html" style="color:var(--accent)">Build one →</a></div></div>';
+    return;
+  }
+
   let data=null;
   if(id){
     try{ data=await ivLoadFromLocker(id); }
@@ -681,6 +760,14 @@ async function ivInit(){
   const mode=params.get('mode');
   if(mode==='interactive'){ ivStartInteractive(); }
   else { ivRenderChooser(); }
+}
+
+// Read-only shared view: render the metaphor in preview phase with no toolbar/edit
+function ivStartShared(){
+  ivPhase='preview';
+  const root=document.getElementById('iv-root');
+  root.innerHTML='<div class="iv-stage iv-stage-shared" id="iv-stage"></div>';
+  ivRenderMetaphor('iv-stage');
 }
 
 function ivLoadGFont(name){
@@ -733,7 +820,15 @@ function ivRenderShell(){
       </div>
       <div style="display:flex;gap:.6rem">
         <button class="iv-btn iv-btn-ghost" onclick="ivRenderChooser()">← Back</button>
+        <button class="iv-btn" onclick="ivShareLink()">🔗 Share link</button>
         <button class="iv-btn" onclick="ivExport()">⬇ Export HTML</button>
+      </div>
+    </div>
+    <div class="iv-share-box" id="iv-share-box" style="display:none">
+      <span class="iv-share-label">Read-only interactive link — anyone can open it:</span>
+      <div class="iv-share-row">
+        <input class="iv-share-url" id="iv-share-url" readonly/>
+        <button class="iv-btn" id="iv-share-copy" onclick="ivCopyShare()">Copy</button>
       </div>
     </div>
     <div class="iv-stage" id="iv-stage"></div>`;
