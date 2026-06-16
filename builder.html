@@ -1212,20 +1212,33 @@ async function downloadWithLayout(layoutId){
       if(expandLore)d.classList.add('open');
     });
 
-    const canvas=await html2canvas(preview,{
-      scale:2,
-      useCORS:true,
-      allowTaint:true,
-      backgroundColor:getComputedStyle(preview).backgroundColor||'#ffffff',
-      logging:false,
-      removeContainer:true,
-      imageTimeout:15000,
-      onclone:(doc)=>{
-        doc.documentElement.setAttribute('data-theme',
-          document.documentElement.getAttribute('data-theme')||'');
-        if(expandLore)doc.querySelectorAll('.lore-drawer').forEach(d=>d.classList.add('open'));
-      }
-    });
+    // Mobile browsers cap canvas size (~16M px total / ~4096px per side on iOS).
+    // A big calendar at scale:2 can exceed that and hang. Scale adaptively.
+    const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const monthTiles=preview.querySelectorAll('.cal-month-tile').length||12;
+    // Estimate render scale: smaller for mobile and for big calendars
+    let renderScale=2;
+    if(isMobile){
+      renderScale=monthTiles>16?1:1.5;
+    }
+
+    const canvas=await Promise.race([
+      html2canvas(preview,{
+        scale:renderScale,
+        useCORS:true,
+        allowTaint:true,
+        backgroundColor:getComputedStyle(preview).backgroundColor||'#ffffff',
+        logging:false,
+        removeContainer:true,
+        imageTimeout:15000,
+        onclone:(doc)=>{
+          doc.documentElement.setAttribute('data-theme',
+            document.documentElement.getAttribute('data-theme')||'');
+          if(expandLore)doc.querySelectorAll('.lore-drawer').forEach(d=>d.classList.add('open'));
+        }
+      }),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('render-timeout')),30000))
+    ]);
 
     // Restore drawer states, layout class, and banner grid style
     allDrawers.forEach((d,i)=>{if(!wasOpen[i])d.classList.remove('open');});
@@ -1237,25 +1250,64 @@ async function downloadWithLayout(layoutId){
 
     const worldName=(state.worldName||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     const layoutSuffix=layoutId&&layoutId!=='card'?'-'+layoutId:'';
-    const dataUrl=canvas.toDataURL('image/png');
+    const fileName=worldName+layoutSuffix+'-calendar.png';
 
-    try{
+    // Prefer async toBlob (mobile-safe, won't freeze the tab like toDataURL on big canvases)
+    const blob=await new Promise((resolve)=>{
+      let settled=false;
+      const done=(b)=>{if(!settled){settled=true;resolve(b);}};
+      // Safety timeout: if toBlob stalls, fall back to null so we try toDataURL
+      const t=setTimeout(()=>done(null),8000);
+      try{
+        canvas.toBlob((b)=>{clearTimeout(t);done(b);},'image/png');
+      }catch(e){clearTimeout(t);done(null);}
+    });
+
+    if(blob){
+      const url=URL.createObjectURL(blob);
       const link=document.createElement('a');
-      link.download=worldName+layoutSuffix+'-calendar.png';
-      link.href=dataUrl;
+      link.download=fileName;
+      link.href=url;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }catch(e){
-      const w=window.open('','_blank');
-      if(w){
-        w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap "Save Image" to download</p></body></html>');
+      // On some mobile browsers the anchor download is ignored — open the image so the user can long-press-save
+      if(isMobile){
+        const w=window.open(url,'_blank');
+        if(!w){ /* popup blocked; the download attribute may still have worked */ }
+      }
+      setTimeout(()=>URL.revokeObjectURL(url),60000);
+    }else{
+      // Fallback: open the rendered image in a new tab for long-press save
+      let dataUrl='';
+      try{dataUrl=canvas.toDataURL('image/png');}catch(e){dataUrl='';}
+      if(dataUrl){
+        const w=window.open('','_blank');
+        if(w){
+          w.document.write('<html><body style="margin:0;background:#000"><img src="'+dataUrl+'" style="max-width:100%;display:block"/><p style="color:#fff;font-family:sans-serif;padding:1rem;text-align:center">Long-press the image and tap "Save Image" to download</p></body></html>');
+        }else{
+          alert('Your browser blocked the download. Please allow pop-ups and try again.');
+        }
+      }else{
+        alert('Could not generate the image — the calendar may be too large for this browser. Try a desktop browser, or reduce the number of months.');
       }
     }
 
   }catch(err){
     console.error('Download failed:',err);
-    alert('Download failed. Please try again.\n\nOn mobile: try using a desktop browser for best results.');
+    // Make sure the preview isn't left in the expanded/layout state if we failed mid-render
+    try{
+      const preview=document.getElementById('cal-preview');
+      if(preview){
+        preview.className=preview.className.replace(/\bcal-layout-\S+/g,'').trim();
+        preview.querySelectorAll('.lore-drawer.open').forEach(d=>d.classList.remove('open'));
+      }
+    }catch(e){}
+    if(err&&err.message==='render-timeout'){
+      alert('The image took too long to generate — your calendar may be large for this device. Try fewer months, or use a desktop browser.');
+    }else{
+      alert('Download failed. Please try again.\n\nOn mobile: if it keeps failing, try a desktop browser.');
+    }
   }finally{
     if(btn){btn.textContent=origText;btn.disabled=false;}
   }
