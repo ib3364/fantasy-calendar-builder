@@ -1159,15 +1159,14 @@ async function downloadWithLayout(layoutId){
 
   const btn=document.querySelector('.btn-download');
   const origText=btn?btn.textContent:'';
-  if(btn){btn.textContent='⏳ Preparing...';btn.disabled=true;}
+  if(btn){btn.textContent='⏳ Loading…';btn.disabled=true;}
 
   try{
-    // Load html2canvas — try primary CDN, fallback to secondary.
-    // Each load has its own timeout: mobile Firefox (Enhanced Tracking Protection,
-    // content blockers, or a stalled connection) can otherwise leave the await
-    // pending forever, which is what caused the permanent "Preparing..." state.
+    // Load html2canvas. Local bundled copy first (instant, no CDN wait, not
+    // blocked by mobile tracking protection); CDNs only as a fallback.
     if(!window.html2canvas){
       const CDNS=[
+        'html2canvas.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
         'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
         'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
@@ -1178,7 +1177,7 @@ async function downloadWithLayout(layoutId){
             const s=document.createElement('script');
             let settled=false;
             const finish=(ok)=>{if(settled)return;settled=true;ok?res():rej(new Error('load-failed'));};
-            const timer=setTimeout(()=>finish(false),10000); // 10s cap per CDN
+            const timer=setTimeout(()=>finish(false),10000); // 10s cap per source
             s.src=url;
             s.onload=()=>{clearTimeout(timer);finish(true);};
             s.onerror=()=>{clearTimeout(timer);finish(false);};
@@ -1188,7 +1187,7 @@ async function downloadWithLayout(layoutId){
         }catch(e){continue;}
       }
       if(!window.html2canvas){
-        alert('Could not load the image library.\n\nOn Firefox mobile this is often Enhanced Tracking Protection blocking the script — tap the shield icon in the address bar and turn protection off for this site, then try again.\n\n(Or use the "Open full view" page and screenshot it.)');
+        alert('Could not load the image library. Please check your connection and try again.');
         return;
       }
     }
@@ -1231,6 +1230,7 @@ async function downloadWithLayout(layoutId){
       renderScale=monthTiles>16?1:1.5;
     }
 
+    if(btn)btn.textContent='⏳ Rendering…';
     const canvas=await Promise.race([
       html2canvas(preview,{
         scale:renderScale,
@@ -1261,6 +1261,7 @@ async function downloadWithLayout(layoutId){
     const layoutSuffix=layoutId&&layoutId!=='card'?'-'+layoutId:'';
     const fileName=worldName+layoutSuffix+'-calendar.png';
 
+    if(btn)btn.textContent='⏳ Saving…';
     // Prefer async toBlob (mobile-safe, won't freeze the tab like toDataURL on big canvases)
     const blob=await new Promise((resolve)=>{
       let settled=false;
