@@ -40,6 +40,44 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .iv-chooser p{color:var(--text-dim);margin-bottom:2rem;font-size:.95rem}
 .iv-choices{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
 @media(max-width:640px){.iv-choices{grid-template-columns:1fr}}
+
+/* ═══ MOBILE: stack all metaphor layouts vertically ═══ */
+@media(max-width:760px){
+  /* all stage wrappers: reduce padding, allow vertical scroll */
+  .nb-stage,.hud-stage,.cdx-stage,.tac-stage,.grdn-stage,.grim-stage,.star-stage,.scrl-stage,.neon-stage,.stn-stage{
+    padding:.6rem .5rem;align-items:flex-start;display:block;min-height:0
+  }
+  /* all 2-column grids -> single column, auto height */
+  .notebook,.hud-console,.cdx-book,.tac-console,.grdn-book,.grim-book,.star-map,.neon-term,.stn-monolith,.scrl-papyrus{
+    grid-template-columns:1fr!important;width:100%!important;max-height:none!important;aspect-ratio:auto!important
+  }
+  /* scroll: stack its flex wrapper, shrink the dowels */
+  .scrl-wrap{width:100%!important;max-height:none!important;flex-direction:column}
+  .scrl-dowel{width:auto!important;height:14px;border-radius:6px 6px 0 0}
+  .scrl-dowel-r{border-radius:0 0 6px 6px}
+  /* left (index) columns: cap height so the list doesn't eat the whole screen, give a divider */
+  .nb-page-left,.hud-left,.cdx-left,.tac-left,.grdn-left,.grim-left,.star-left,.neon-left,.stn-left,.scrl-left{
+    border-right:none!important;max-height:42vh;overflow-y:auto
+  }
+  .nb-page-left{border-bottom:1px solid rgba(var(--accent-rgb),.18)}
+  .hud-left{border-bottom:1px solid rgba(0,229,200,.2)}
+  .cdx-left{border-bottom:1px solid rgba(212,160,64,.25)}
+  .tac-left{border-bottom:1px solid rgba(42,180,232,.25)}
+  .grdn-left{border-bottom:1px solid rgba(80,200,120,.18)}
+  .grim-left{border-bottom:1px solid rgba(192,57,43,.25)}
+  .star-left{border-bottom:1px solid rgba(155,89,182,.2)}
+  .scrl-left{border-bottom:1px solid rgba(232,133,46,.22)}
+  .neon-left{border-bottom:1px solid rgba(0,229,255,.25)}
+  .stn-left{border-bottom:2px solid rgba(0,0,0,.3)}
+  /* trim heavy content padding on phones */
+  .nb-page,.hud-left,.hud-right,.cdx-page,.tac-left,.tac-right,.grdn-left,.grdn-right,.grim-left,.grim-right,.star-left,.star-right,.scrl-left,.scrl-right,.neon-left,.neon-right,.stn-left,.stn-right{
+    padding:1rem 1.1rem!important
+  }
+  /* detail headings a touch smaller so they don't overflow */
+  .hud-detail-desig,.cdx-folio-name,.tac-dossier-name,.grdn-spec-name,.grim-leaf-name,.star-rec-name,.scrl-inscr-name,.neon-data-name,.stn-face-name,.nb-detail-name{
+    font-size:1.25rem!important
+  }
+}
 .iv-choice{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem 1.5rem;cursor:pointer;transition:all .2s;text-align:center}
 .iv-choice:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
 .iv-choice-icon{font-size:2.4rem;margin-bottom:.8rem}
