@@ -1126,9 +1126,9 @@ function renderPreview(){
     const accentOrIcon=mIcon
       ?`<img class="cal-month-icon" src="${mIcon}" alt="${name}"/>`
       :`<div class="cal-month-accent" style="background:${color}"></div>`;
-    const eventsHere=state.events.filter(e=>e.month===i+1&&e.name);
-    const badges=eventsHere.map((e,ei)=>{
-      const eIcon=state.icons.events&&state.icons.events[ei]?`<img class="event-badge-icon" src="${state.icons.events[ei]}" alt=""/>`:'';
+    const eventsHere=state.events.map((e,idx)=>({e,idx})).filter(o=>o.e.month===i+1&&o.e.name);
+    const badges=eventsHere.map(({e,idx})=>{
+      const eIcon=state.icons.events&&state.icons.events[idx]?`<img class="event-badge-icon" src="${state.icons.events[idx]}" alt=""/>`:'';
       const dispEmoji=eIcon?'':e.emoji+' ';
       return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}</div>`;
     }).join('');
