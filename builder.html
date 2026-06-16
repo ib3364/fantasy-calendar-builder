@@ -33,7 +33,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="iron"] nav::after{content:'✦ ✦ ✦';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--accent);letter-spacing:.5em;background:var(--nav-bg);padding:0 .5rem}
 
 .progress-bar{display:flex;border-bottom:1px solid var(--border2)}
-.prog-step{flex:1;text-align:center;padding:.6rem;font-size:.72rem;color:var(--text-muted);border-bottom:2px solid transparent;transition:all .2s;font-family:var(--font-body)}
+.prog-step{flex:1;text-align:center;padding:.6rem;font-size:.72rem;color:var(--text-muted);border-bottom:2px solid transparent;transition:all .2s;font-family:var(--font-body);cursor:pointer}
+.prog-step:hover{color:var(--accent);background:rgba(var(--accent-rgb),0.06)}
 .prog-step.active{color:var(--accent);border-bottom-color:var(--accent)}
 .prog-step.done{color:var(--prog-done-color);border-bottom-color:var(--prog-done-color)}
 [data-theme="waypoint"] .prog-step.active::after{content:' ◈';font-size:.65em}
@@ -640,11 +641,11 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <span class="nav-step">Step <span id="current-step-num">1</span> of 5</span>
 </nav>
 <div class="progress-bar">
-  <div class="prog-step active" id="prog-1">① Basics</div>
-  <div class="prog-step" id="prog-2">② Months</div>
-  <div class="prog-step" id="prog-3">③ Moons</div>
-  <div class="prog-step" id="prog-4">④ Holidays</div>
-  <div class="prog-step" id="prog-5">⑤ Share</div>
+  <div class="prog-step active" id="prog-1" onclick="goStep(1)">① Basics</div>
+  <div class="prog-step" id="prog-2" onclick="goStep(2)">② Months</div>
+  <div class="prog-step" id="prog-3" onclick="goStep(3)">③ Moons</div>
+  <div class="prog-step" id="prog-4" onclick="goStep(4)">④ Holidays</div>
+  <div class="prog-step" id="prog-5" onclick="goStep(5)">⑤ Share</div>
 </div>
 <div class="builder-layout">
   <div class="form-panel">
