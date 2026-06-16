@@ -82,6 +82,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   .iv-edit-sidebar{border-right:none!important;border-bottom:1px solid var(--border);max-height:38vh;flex:none}
   .iv-edit-preview{min-height:55vh}
   .iv-stage{position:static!important;inset:auto!important;height:auto!important}
+  /* TOOLBAR: let it wrap and shrink on phones instead of overflowing a fixed 54px row */
+  .iv-toolbar{position:static!important;height:auto!important;flex-wrap:wrap;gap:.5rem .6rem;padding:.6rem .7rem}
+  .iv-toolbar-left{flex:1 1 100%;justify-content:space-between;gap:.5rem;min-width:0}
+  .iv-toolbar-title{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+  .iv-toolbar-left .iv-tab-group{flex:none}
+  .iv-toolbar>div:last-child{flex:1 1 100%;display:flex;gap:.5rem}
+  .iv-toolbar>div:last-child .iv-btn{flex:1;padding:.5rem .4rem;font-size:.76rem;white-space:nowrap}
+  .iv-tab{padding:.4rem .7rem;font-size:.78rem}
+  /* the share box / stage no longer need fixed offsets since the toolbar isn't fixed */
+  .iv-share-box{position:static!important;top:auto!important}
+  .iv-share-box+.iv-stage{top:auto!important}
 }
 .iv-choice{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem 1.5rem;cursor:pointer;transition:all .2s;text-align:center}
 .iv-choice:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:var(--shadow)}
