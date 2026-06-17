@@ -28,6 +28,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="iron"] nav::after{content:'✦ ✦ ✦';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--accent);letter-spacing:.5em;background:var(--nav-bg);padding:0 .5rem}
 .nav-actions{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
 .btn-edit{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.5rem 1rem;font-size:.85rem;cursor:pointer;text-decoration:none;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn)}
+.btn-interactive{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:.5rem 1rem;font-size:.85rem;cursor:pointer;text-decoration:none;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn);white-space:nowrap}
+.btn-interactive:hover{background:rgba(var(--accent-rgb),0.1)}
 .btn-edit:hover{border-color:var(--accent);color:var(--accent)}
 .btn-download{background:var(--accent2);color:var(--accent2-dark);border:none;padding:.5rem 1.1rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn)}
 :root .btn-download{color:#2a1f0e}[data-theme="expanse"] .btn-download{color:#000810}[data-theme="iron"] .btn-download{color:#1c1408}[data-theme="waypoint"] .btn-download{color:#060a0e}[data-theme="verdant"] .btn-download{color:#060e08}
@@ -502,6 +504,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <div class="nav-actions">
     <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
     <button class="btn-download" onclick="openLayoutPicker()">📥 Download PNG</button>
+    <a href="#" id="interactive-link" class="btn-interactive">📖 View interactive →</a>
     <a href="builder.html" class="btn-build">Build your own →</a>
   </div>
 </nav>
@@ -614,6 +617,12 @@ function renderCalendarData(data){
     const worldName=data.w||'Unnamed World',eraName=data.e||'',worldLore=data.wl||'',worldIcon=data.wi||'';
     const totalDays=months.reduce((s,m)=>s+parseInt(m.days||daysMonth),0)||numMonths*daysMonth;
     document.getElementById('edit-link').href='builder.html'+window.location.search;
+    // Switch to interactive view of the SAME calendar (carry ?id= or ?c=, force interactive mode)
+    const ilink=document.getElementById('interactive-link');
+    if(ilink){
+      const qs=window.location.search;
+      ilink.href='interactive.html'+qs+(qs?'&':'?')+'mode=interactive';
+    }
     document.title=worldName+' — Fantasy Calendar Builder';
     // Apply font from URL
     if(data.f){loadGFont(data.f).then(()=>applyCalFont(data.f));}
