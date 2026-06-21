@@ -35,6 +35,15 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .progress-bar{display:flex;border-bottom:1px solid var(--border2)}
 .prog-step{flex:1;text-align:center;padding:.6rem;font-size:.72rem;color:var(--text-muted);border-bottom:2px solid transparent;transition:all .2s;font-family:var(--font-body);cursor:pointer}
 .prog-step:hover{color:var(--accent);background:rgba(var(--accent-rgb),0.06)}
+/* Confirmation toast — shown when an icon/font is picked */
+#fcb-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--text,#222);color:var(--bg,#fff);padding:.7rem 1.1rem;border-radius:8px;font-size:.85rem;font-family:var(--font-body);font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:99999;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;display:flex;align-items:center;gap:.5rem;max-width:90vw}
+#fcb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#fcb-toast .fcb-toast-check{color:#4ade80;font-weight:800}
+.format-toggle-row{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.2rem;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.format-toggle-label{font-size:.78rem;color:var(--text-muted);font-weight:600}
+.format-opt{background:var(--input-bg2,transparent);border:1px solid var(--border);color:var(--text-muted);padding:.35rem .8rem;font-size:.78rem;font-weight:600;cursor:pointer;border-radius:5px;font-family:var(--font-body)}
+.format-opt.active{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.format-hint{font-weight:400;opacity:.75;font-size:.72rem}
 .prog-step.active{color:var(--accent);border-bottom-color:var(--accent)}
 .prog-step.done{color:var(--prog-done-color);border-bottom-color:var(--prog-done-color)}
 [data-theme="waypoint"] .prog-step.active::after{content:' ◈';font-size:.65em}
@@ -765,6 +774,22 @@ var _searchTimer = null;
 var _currentFont = '';
 var _shareId = null;
 var _shareSaving = false;
+var _downloadFormat = 'png';
+
+// Small confirmation toast — used so picking an icon/font gives clear feedback (esp. on mobile)
+var _toastTimer=null;
+function showFcbToast(msg){
+  let t=document.getElementById('fcb-toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='fcb-toast';
+    document.body.appendChild(t);
+  }
+  t.innerHTML='<span class="fcb-toast-check">✓</span><span>'+msg+'</span>';
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
 
 function goStep(n){
   document.querySelectorAll('.step-block').forEach(el=>el.classList.remove('active'));
@@ -1154,7 +1179,8 @@ function renderPreview(){
     </div>`;
 }
 
-async function downloadWithLayout(layoutId){
+async function downloadWithLayout(layoutId, format){
+  format = (format==='jpeg') ? 'jpeg' : 'png';
   if(!state.worldName&&state.months.every(m=>!m.name)){alert('Fill in your world name first!');return;}
 
   const btn=document.querySelector('.btn-download');
@@ -1231,12 +1257,17 @@ async function downloadWithLayout(layoutId){
     }
 
     if(btn)btn.textContent='⏳ Rendering…';
+    // JPEG has no transparency — make sure we always pass a solid background color
+    let bgColor=getComputedStyle(preview).backgroundColor||'';
+    if(!bgColor||bgColor==='rgba(0, 0, 0, 0)'||bgColor==='transparent'){
+      bgColor=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#ffffff';
+    }
     const canvas=await Promise.race([
       html2canvas(preview,{
         scale:renderScale,
         useCORS:true,
         allowTaint:true,
-        backgroundColor:getComputedStyle(preview).backgroundColor||'#ffffff',
+        backgroundColor:bgColor,
         logging:false,
         removeContainer:true,
         imageTimeout:15000,
@@ -1259,7 +1290,9 @@ async function downloadWithLayout(layoutId){
 
     const worldName=(state.worldName||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     const layoutSuffix=layoutId&&layoutId!=='card'?'-'+layoutId:'';
-    const fileName=worldName+layoutSuffix+'-calendar.png';
+    const ext=format==='jpeg'?'jpg':'png';
+    const mime=format==='jpeg'?'image/jpeg':'image/png';
+    const fileName=worldName+layoutSuffix+'-calendar.'+ext;
 
     if(btn)btn.textContent='⏳ Saving…';
     // Prefer async toBlob (mobile-safe, won't freeze the tab like toDataURL on big canvases)
@@ -1269,7 +1302,7 @@ async function downloadWithLayout(layoutId){
       // Safety timeout: if toBlob stalls, fall back to null so we try toDataURL
       const t=setTimeout(()=>done(null),8000);
       try{
-        canvas.toBlob((b)=>{clearTimeout(t);done(b);},'image/png');
+        canvas.toBlob((b)=>{clearTimeout(t);done(b);},mime,format==='jpeg'?0.92:undefined);
       }catch(e){clearTimeout(t);done(null);}
     });
 
@@ -1290,7 +1323,7 @@ async function downloadWithLayout(layoutId){
     }else{
       // Fallback: open the rendered image in a new tab for long-press save
       let dataUrl='';
-      try{dataUrl=canvas.toDataURL('image/png');}catch(e){dataUrl='';}
+      try{dataUrl=canvas.toDataURL(mime,format==='jpeg'?0.92:undefined);}catch(e){dataUrl='';}
       if(dataUrl){
         const w=window.open('','_blank');
         if(w){
@@ -1907,6 +1940,11 @@ function applyPickedIcon(dataUrl, key, previewId) {
     const thumb = wrap.querySelector('img');
     if (thumb) thumb.src = dataUrl;
   }
+  const label = key==='world' ? 'world icon'
+    : key.startsWith('month-') ? 'month icon'
+    : key.startsWith('moon-') ? 'moon icon'
+    : key.startsWith('event-') ? 'event icon' : 'icon';
+  showFcbToast('Icon set as ' + label);
   updatePreview();
 }
 
@@ -2053,7 +2091,11 @@ function renderLayoutPicker(){
 
 async function triggerDownload(layoutId){
   closeLayoutPicker();
-  await downloadWithLayout(layoutId);
+  await downloadWithLayout(layoutId, _downloadFormat);
+}
+function setDownloadFormat(fmt){
+  _downloadFormat=fmt;
+  document.querySelectorAll('.format-opt').forEach(b=>b.classList.toggle('active', b.dataset.fmt===fmt));
 }
 
 </script>
@@ -2066,6 +2108,11 @@ async function triggerDownload(layoutId){
       <button class="layout-picker-close" onclick="closeLayoutPicker()">&#x2715;</button>
     </div>
     <div class="layout-picker-subtitle">Each layout uses your active theme. The image is pixel-perfect — exactly what you see on screen.</div>
+    <div class="format-toggle-row">
+      <span class="format-toggle-label">Format:</span>
+      <button class="format-opt active" data-fmt="png" onclick="setDownloadFormat('png')">PNG</button>
+      <button class="format-opt" data-fmt="jpeg" onclick="setDownloadFormat('jpeg')">JPEG <span class="format-hint">(best for WhatsApp)</span></button>
+    </div>
     <div class="layout-options" id="layout-options-grid"></div>
     <div class="layout-picker-note">⚡ Tip: the lore sheet layout forces all lore open — great for sharing your worldbuilding notes.</div>
   </div>
@@ -2183,11 +2230,13 @@ async function selectFont(name) {
   document.querySelectorAll('.font-option').forEach(b => {
     b.classList.toggle('active', b.dataset.font === name);
   });
+  showFcbToast('Font set to ' + name);
 }
 
 function resetFont() {
   applyCalFont('');
   document.querySelectorAll('.font-option').forEach(b => b.classList.remove('active'));
+  showFcbToast('Font reset to default');
 }
 
 // Override applyCalFont to update the label in builder
@@ -2247,6 +2296,7 @@ async function handleFontUpload(e) {
     }
     applyCalFont(fontName);
     closeFontPicker();
+    showFcbToast('Custom font applied: ' + rawName);
   } catch (err) {
     alert('Could not load that font file. Please try a different .ttf, .otf, .woff, or .woff2 file.');
   }
