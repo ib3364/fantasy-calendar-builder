@@ -1152,7 +1152,8 @@ function renderPreview(){
   const totalDays=monthsToShow.reduce((s,m)=>s+parseInt(m.days||state.daysMonth),0);
   const moonPills=state.moons.filter(m=>m.name).map((m,i)=>{
     const mIcon=state.icons.moons&&state.icons.moons[i]?`<img class="moon-pill-icon" src="${state.icons.moons[i]}" alt=""/>`:'';
-    return`<span class="moon-pill">${mIcon}${m.name} · ${m.cycle}d</span>`;
+    const mLore=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
+    return`<span class="moon-pill">${mIcon}${m.name} · ${m.cycle}d${mLore}</span>`;
   }).join('');
   const monthCards=monthsToShow.map((m,i)=>{
     const name=m.name||`Month ${i+1}`;const days=m.days||state.daysMonth;
@@ -1165,7 +1166,8 @@ function renderPreview(){
     const badges=eventsHere.map(({e,idx})=>{
       const eIcon=state.icons.events&&state.icons.events[idx]?`<img class="event-badge-icon" src="${state.icons.events[idx]}" alt=""/>`:'';
       const dispEmoji=eIcon?'':e.emoji+' ';
-      return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}</div>`;
+      const evLore=e.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${e.lore}</div>`:'';
+      return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}${evLore}</div>`;
     }).join('');
     const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
     return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}${lorePart}</div>`;
@@ -1174,9 +1176,12 @@ function renderPreview(){
     +state.moons.filter(m=>m.lore&&m.lore.trim()).length
     +state.events.filter(e=>e.lore&&e.lore.trim()).length
     +((document.getElementById('world-lore')&&document.getElementById('world-lore').value.trim())?1:0);
+  const worldLoreText=(document.getElementById('world-lore')&&document.getElementById('world-lore').value.trim())||'';
+  const worldLorePart=worldLoreText?`<span class="lore-pill" onclick="toggleDrawer(this)">world lore ▾</span><div class="lore-drawer">${worldLoreText}</div>`:'';
   preview.innerHTML=`
     <div class="cal-world-header">${worldIcon}<div class="cal-world-name">${worldName}</div></div>
     ${state.eraName?`<div class="cal-era">${state.eraName}</div>`:''}
+    ${worldLorePart}
     <div class="cal-meta-row">
       ${metaPill('📅',`${state.numMonths} months`,'[CAL]','⊕','◈','🌿','✠','◈','𓊖','[M]','ᛗ')}
       ${metaPill('☀',`${totalDays} days/year`,'[SOL]','☀','◉','✦','☉','✦','𓇳','[D]','ᛋ')}
