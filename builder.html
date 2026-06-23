@@ -267,6 +267,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="iron"] .lore-textarea{font-style:italic}
 [data-theme="expanse"] .lore-textarea{font-family:'Share Tech Mono','Courier New',monospace;font-size:.78rem}
 .lore-char-count{font-size:.68rem;color:var(--text-dim);text-align:right;margin-top:.2rem;font-family:var(--font-body)}
+.lore-pill{display:inline-block;margin-top:.4rem;font-size:.62rem;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.2);color:var(--accent);padding:2px 7px;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-pill);clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px)}
+.lore-drawer{display:none;margin-top:.5rem;padding:.7rem .9rem;background:rgba(var(--accent-rgb),.04);border:1px solid rgba(var(--accent-rgb),.15);font-size:.84rem;color:var(--text-muted);line-height:1.7;font-style:italic;font-family:var(--font-body);border-radius:var(--radius-card);overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap}
+.lore-drawer.open{display:block}
 .world-lore-field{margin-top:1rem}
 .world-lore-field label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500;font-family:var(--font-body)}
 [data-theme="expanse"] .world-lore-field label::before{content:'_ ';color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:.85em}
@@ -1057,6 +1060,13 @@ function toggleLore(btn){
   if(area.classList.contains('open'))area.querySelector('textarea').focus();
 }
 
+function toggleDrawer(pill){
+  const drawer=pill.nextElementSibling;
+  if(!drawer)return;
+  const open=drawer.classList.toggle('open');
+  pill.textContent=open?'lore ▴':'lore ▾';
+}
+
 function onLoreInput(el,countId){
   const c=document.getElementById(countId);
   if(c)c.textContent=el.value.length+(el.value.length===1?' character':' characters');
@@ -1157,7 +1167,8 @@ function renderPreview(){
       const dispEmoji=eIcon?'':e.emoji+' ';
       return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}</div>`;
     }).join('');
-    return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}</div>`;
+    const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
+    return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}${lorePart}</div>`;
   }).join('');
   const loreCount=state.months.filter(m=>m.lore&&m.lore.trim()).length
     +state.moons.filter(m=>m.lore&&m.lore.trim()).length
