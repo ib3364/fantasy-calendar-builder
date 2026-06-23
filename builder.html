@@ -270,6 +270,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .lore-pill{display:inline-block;margin-top:.4rem;font-size:.62rem;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.2);color:var(--accent);padding:2px 7px;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-pill);clip-path:polygon(4px 0%,100% 0%,100% calc(100% - 4px),calc(100% - 4px) 100%,0% 100%,0% 4px)}
 .lore-drawer{display:none;margin-top:.5rem;padding:.7rem .9rem;background:rgba(var(--accent-rgb),.04);border:1px solid rgba(var(--accent-rgb),.15);font-size:.84rem;color:var(--text-muted);line-height:1.7;font-style:italic;font-family:var(--font-body);border-radius:var(--radius-card);overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap}
 .lore-drawer.open{display:block}
+/* Wrappers so lore pill+drawer sit OUTSIDE the badge/pill as siblings, not inside them */
+.cal-event-item{display:block;margin-top:.4rem}
+.cal-event-item .cal-event-badge{margin-top:0}
+.cal-moon-wrap{display:inline-flex;flex-direction:column;align-items:flex-start}
 .world-lore-field{margin-top:1rem}
 .world-lore-field label{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;font-weight:500;font-family:var(--font-body)}
 [data-theme="expanse"] .world-lore-field label::before{content:'_ ';color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:.85em}
@@ -1153,7 +1157,7 @@ function renderPreview(){
   const moonPills=state.moons.filter(m=>m.name).map((m,i)=>{
     const mIcon=state.icons.moons&&state.icons.moons[i]?`<img class="moon-pill-icon" src="${state.icons.moons[i]}" alt=""/>`:'';
     const mLore=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
-    return`<span class="moon-pill">${mIcon}${m.name} · ${m.cycle}d${mLore}</span>`;
+    return`<span class="cal-moon-wrap"><span class="moon-pill">${mIcon}${m.name} · ${m.cycle}d</span>${mLore}</span>`;
   }).join('');
   const monthCards=monthsToShow.map((m,i)=>{
     const name=m.name||`Month ${i+1}`;const days=m.days||state.daysMonth;
@@ -1167,7 +1171,7 @@ function renderPreview(){
       const eIcon=state.icons.events&&state.icons.events[idx]?`<img class="event-badge-icon" src="${state.icons.events[idx]}" alt=""/>`:'';
       const dispEmoji=eIcon?'':e.emoji+' ';
       const evLore=e.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${e.lore}</div>`:'';
-      return`<div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}${evLore}</div>`;
+      return`<div class="cal-event-item"><div class="cal-event-badge">${eIcon}${dispEmoji}${e.name}</div>${evLore}</div>`;
     }).join('');
     const lorePart=m.lore?`<span class="lore-pill" onclick="toggleDrawer(this)">lore ▾</span><div class="lore-drawer">${m.lore}</div>`:'';
     return`<div class="cal-month-tile">${accentOrIcon}<div class="cal-month-name">${name}</div><div class="cal-month-days">${days} days</div>${badges}${lorePart}</div>`;
