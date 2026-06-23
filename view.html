@@ -30,6 +30,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .btn-edit{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.5rem 1rem;font-size:.85rem;cursor:pointer;text-decoration:none;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn)}
 .btn-interactive{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:.5rem 1rem;font-size:.85rem;cursor:pointer;text-decoration:none;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn);white-space:nowrap}
 .btn-interactive:hover{background:rgba(var(--accent-rgb),0.1)}
+#fcb-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--text,#222);color:var(--bg,#fff);padding:.7rem 1.1rem;border-radius:8px;font-size:.85rem;font-family:var(--font-body);font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:99999;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;display:flex;align-items:center;gap:.5rem;max-width:90vw}
+#fcb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#fcb-toast .fcb-toast-check{color:#4ade80;font-weight:800}
 .btn-edit:hover{border-color:var(--accent);color:var(--accent)}
 .btn-download{background:var(--accent2);color:var(--accent2-dark);border:none;padding:.5rem 1.1rem;font-weight:700;font-size:.85rem;cursor:pointer;font-family:var(--font-body);clip-path:var(--btn-clip);border-radius:var(--radius-btn)}
 :root .btn-download{color:#2a1f0e}[data-theme="expanse"] .btn-download{color:#000810}[data-theme="iron"] .btn-download{color:#1c1408}[data-theme="waypoint"] .btn-download{color:#060a0e}[data-theme="verdant"] .btn-download{color:#060e08}
@@ -1049,18 +1052,29 @@ function renderFontPicker() {
   FONT_CATEGORIES.forEach(cat => cat.fonts.forEach(f => loadGFont(f)));
 }
 
+var _toastTimer=null;
+function showFcbToast(msg){
+  let t=document.getElementById('fcb-toast');
+  if(!t){t=document.createElement('div');t.id='fcb-toast';document.body.appendChild(t);}
+  t.innerHTML='<span class="fcb-toast-check">✓</span><span>'+msg+'</span>';
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
 async function selectFont(name) {
   await loadGFont(name);
   applyCalFont(name);
-  // Update active state in picker
   document.querySelectorAll('.font-option').forEach(b => {
     b.classList.toggle('active', b.dataset.font === name);
   });
+  showFcbToast('Font set to ' + name);
 }
 
 function resetFont() {
   applyCalFont('');
   document.querySelectorAll('.font-option').forEach(b => b.classList.remove('active'));
+  showFcbToast('Font reset to default');
 }
 
 
