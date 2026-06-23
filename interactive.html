@@ -40,6 +40,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .iv-chooser p{color:var(--text-dim);margin-bottom:2rem;font-size:.95rem}
 .iv-choices{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
 @media(max-width:640px){.iv-choices{grid-template-columns:1fr}}
+#fcb-toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--text,#222);color:var(--bg,#fff);padding:.7rem 1.1rem;border-radius:8px;font-size:.85rem;font-family:var(--font-body);font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:99999;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;display:flex;align-items:center;gap:.5rem;max-width:90vw}
+#fcb-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#fcb-toast .fcb-toast-check{color:#4ade80;font-weight:800}
 
 /* ═══ MOBILE: stack all metaphor layouts vertically ═══ */
 @media(max-width:760px){
@@ -781,6 +784,15 @@ function ivStartShared(){
   ivRenderMetaphor('iv-stage');
 }
 
+var _ivToastTimer=null;
+function showFcbToast(msg){
+  let t=document.getElementById('fcb-toast');
+  if(!t){t=document.createElement('div');t.id='fcb-toast';document.body.appendChild(t);}
+  t.innerHTML='<span class="fcb-toast-check">✓</span><span>'+msg+'</span>';
+  t.classList.add('show');
+  clearTimeout(_ivToastTimer);
+  _ivToastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
 function ivLoadGFont(name){
   if(!name||name.startsWith('Custom-'))return;
   const id='gf-'+name.replace(/\s+/g,'-').toLowerCase();
@@ -1639,6 +1651,7 @@ function ivUploadFont(){
     let st=document.getElementById('iv-custom-font');if(!st){st=document.createElement('style');st.id='iv-custom-font';document.head.appendChild(st);}
     st.textContent=`@font-face{font-family:"${nm}";src:url("${url}");font-display:swap}`;
     IV.font=nm;IV.customFontFace=st.textContent;
+    showFcbToast('Custom font applied: '+f.name.replace(/\.[^.]+$/,''));
     if(document.fonts&&document.fonts.load){document.fonts.load(`16px "${nm}"`).then(()=>ivRenderStage());}else ivRenderStage();
   });
 }
@@ -1675,6 +1688,7 @@ function ivCloseFontLib(){document.getElementById('iv-fontlib-modal').classList.
 function ivSelectFontLib(name){
   IV.font=name;IV.customFontFace='';ivLoadGFont(name);
   document.querySelectorAll('.iv-font-opt').forEach(b=>b.classList.toggle('active',b.textContent===name));
+  showFcbToast('Font set to '+name);
   setTimeout(ivRenderStage,250);
 }
 
@@ -1725,7 +1739,11 @@ function ivSelectIconLib(id){
   const svgUrl='https://api.iconify.design/'+id.replace(':','/')+'.svg?color='+encodeURIComponent(accent);
   fetch(svgUrl).then(r=>r.text()).then(svg=>{
     const burl='data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg)));
-    ivCompressImg(burl,32,(small)=>{IV.months[mi].icon=small;ivCloseIconLib();ivRenderStage();ivRestoreSelect('iv-icon-month',mi);});
+    ivCompressImg(burl,32,(small)=>{
+      IV.months[mi].icon=small;
+      showFcbToast('Icon set for '+(IV.months[mi].name||'Month '+(mi+1)));
+      ivCloseIconLib();ivRenderStage();ivRestoreSelect('iv-icon-month',mi);
+    });
   }).catch(()=>alert('Could not load that icon.'));
 }
 </script>
