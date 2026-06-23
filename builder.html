@@ -2169,13 +2169,14 @@ function applyCalFont(name) {
   _currentFont = name || '';
   // Apply to cal-card (view) or cal-preview (builder)
   const el = document.getElementById('cal-card') || document.getElementById('cal-preview');
-  if (!el) return;
-  if (name) {
-    el.style.setProperty('--font-body', `"${name}", serif`);
-    el.style.setProperty('--font-display', `"${name}", serif`);
-  } else {
-    el.style.removeProperty('--font-body');
-    el.style.removeProperty('--font-display');
+  if (el) {
+    if (name) {
+      el.style.setProperty('--font-body', `"${name}", serif`);
+      el.style.setProperty('--font-display', `"${name}", serif`);
+    } else {
+      el.style.removeProperty('--font-body');
+      el.style.removeProperty('--font-display');
+    }
   }
   // Save to state if builder
   if (typeof state !== 'undefined') {
@@ -2185,6 +2186,9 @@ function applyCalFont(name) {
   // Save to localStorage for view page
   if (name) localStorage.setItem('fcb-font', name);
   else localStorage.removeItem('fcb-font');
+  // Update the "current font" label shown in Step 1 (Basics)
+  const lbl = document.getElementById('font-current-label');
+  if (lbl) lbl.textContent = name ? name : 'Default theme font';
 }
 
 function openFontPicker() {
@@ -2237,14 +2241,6 @@ function resetFont() {
   applyCalFont('');
   document.querySelectorAll('.font-option').forEach(b => b.classList.remove('active'));
   showFcbToast('Font reset to default');
-}
-
-// Override applyCalFont to update the label in builder
-const _origApplyCalFont = applyCalFont;
-function applyCalFont(name) {
-  _origApplyCalFont(name);
-  const lbl = document.getElementById('font-current-label');
-  if (lbl) lbl.textContent = name ? name : 'Default theme font';
 }
 
 
