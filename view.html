@@ -497,8 +497,16 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="stone"] .cal-month-accent{height:3px!important;opacity:.6;box-shadow:inset 0 -1px 2px rgba(0,0,0,.4)}
 [data-theme="stone"] .btn-download{color:#2a2826}
 
-</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
+/* ── FORMAT TOGGLE (PNG / JPEG) inside layout picker ── */
+.fmt-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.7rem 1.2rem .5rem;border-bottom:1px solid var(--border2)}
+.fmt-label{font-size:.72rem;color:var(--text-dim);font-family:var(--font-body);letter-spacing:.05em;text-transform:uppercase}
+.fmt-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.3rem .85rem;font-size:.8rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);clip-path:var(--btn-clip);transition:none}
+.fmt-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
+.fmt-btn:not(.active):hover{border-color:var(--accent);color:var(--accent)}
+.fmt-hint{font-size:.68rem;color:var(--text-dim);font-family:var(--font-body);font-style:italic;margin-left:.2rem}
+
+</style>:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
+<script src="html2canvas.min.js"></script>
 </head>
 <body>
 <div class="scan-line"></div>
@@ -506,7 +514,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-actions">
     <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
-    <button class="btn-download" onclick="openLayoutPicker()">📥 Download PNG</button>
+    <button class="btn-download" onclick="openLayoutPicker()">📥 Download Image</button>
     <a href="#" id="interactive-link" class="btn-interactive">📖 View interactive →</a>
     <a href="builder.html" class="btn-build">Build your own →</a>
   </div>
@@ -689,8 +697,9 @@ function toggleDrawer(pill){
   pill.textContent=open?'lore ▴':'lore ▾';
 }
 
-async function downloadWithLayout(layoutId){
+async function downloadWithLayout(layoutId, format){
   if(!calData){alert('No calendar to download.');return;}
+  const isJpeg=(format==='jpeg');
 
   const btn=document.querySelector('.btn-download');
   const origText=btn?btn.textContent:'';
@@ -776,12 +785,14 @@ async function downloadWithLayout(layoutId){
 
     const worldName=(calData.w||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     const layoutSuffix=layoutId&&layoutId!=='card'?'-'+layoutId:'';
-    const dataUrl=canvas.toDataURL('image/png');
+    const ext=isJpeg?'jpg':'png';
+    const mimeType=isJpeg?'image/jpeg':'image/png';
+    const dataUrl=isJpeg?canvas.toDataURL('image/jpeg',0.92):canvas.toDataURL('image/png');
 
     // Mobile-safe download: try anchor click, fallback to open in new tab
     try{
       const link=document.createElement('a');
-      link.download=worldName+layoutSuffix+'-calendar.png';
+      link.download=worldName+layoutSuffix+'-calendar.'+ext;
       link.href=dataUrl;
       document.body.appendChild(link);
       link.click();
@@ -933,9 +944,16 @@ function renderLayoutPicker(){
   `).join('');
 }
 
+function setFmt(fmt, btn){
+  document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 async function triggerDownload(layoutId){
+  const activeFmtBtn=document.querySelector('.fmt-btn.active');
+  const fmt=(activeFmtBtn&&activeFmtBtn.dataset.fmt)||'png';
   closeLayoutPicker();
-  await downloadWithLayout(layoutId);
+  await downloadWithLayout(layoutId, fmt);
 }
 
 </script>
@@ -948,6 +966,12 @@ async function triggerDownload(layoutId){
       <button class="layout-picker-close" onclick="closeLayoutPicker()">&#x2715;</button>
     </div>
     <div class="layout-picker-subtitle">Each layout uses your active theme. The image is pixel-perfect — exactly what you see on screen.</div>
+    <div class="fmt-row">
+      <span class="fmt-label">Format:</span>
+      <button class="fmt-btn active" data-fmt="png" onclick="setFmt('png',this)">PNG</button>
+      <button class="fmt-btn" data-fmt="jpeg" onclick="setFmt('jpeg',this)">JPEG</button>
+      <span class="fmt-hint">JPEG = smaller file, great for WhatsApp &amp; social</span>
+    </div>
     <div class="layout-options" id="layout-options-grid"></div>
     <div class="layout-picker-note">⚡ Tip: the lore sheet layout forces all lore open — great for sharing your worldbuilding notes.</div>
   </div>
