@@ -503,7 +503,6 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .fmt-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.3rem .85rem;font-size:.8rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);clip-path:var(--btn-clip);transition:none}
 .fmt-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
 .fmt-btn:not(.active):hover{border-color:var(--accent);color:var(--accent)}
-.fmt-hint{font-size:.68rem;color:var(--text-dim);font-family:var(--font-body);font-style:italic;margin-left:.2rem}
 
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
@@ -971,7 +970,6 @@ async function triggerDownload(layoutId){
       <span class="fmt-label">Format:</span>
       <button class="fmt-btn active" data-fmt="png" onclick="setFmt('png',this)">PNG</button>
       <button class="fmt-btn" data-fmt="jpeg" onclick="setFmt('jpeg',this)">JPEG</button>
-      <span class="fmt-hint">JPEG = smaller file, great for WhatsApp &amp; social</span>
     </div>
     <div class="layout-options" id="layout-options-grid"></div>
     <div class="layout-picker-note">⚡ Tip: the lore sheet layout forces all lore open — great for sharing your worldbuilding notes.</div>
