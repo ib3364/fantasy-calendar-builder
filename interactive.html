@@ -931,7 +931,6 @@ function ivEditHTML(){
       <div class="iv-edit-section">
         <div class="iv-edit-label">Lore-page background</div>
         <select class="iv-slot-select" id="iv-bg-month"><option value="">Select a month…</option>${monthOpts}</select>
-        <select class="iv-slot-select" id="iv-bg-lore"><option value="">Select lore entry…</option></select>
         <div class="iv-edit-row">
           <button class="iv-mini-btn" onclick="ivUploadBg()">⬆ Image</button>
           <button class="iv-mini-btn" onclick="ivOpenColorPicker('bg')" title="Background colour">🎨 Colour</button>
@@ -949,18 +948,6 @@ function ivEditHTML(){
   </div>`;
 }
 
-/* Populate lore-entry dropdown when a month is chosen for bg */
-document.addEventListener('change',e=>{
-  if(e.target&&e.target.id==='iv-bg-month'){
-    const mi=parseInt(e.target.value);
-    const sel=document.getElementById('iv-bg-lore');
-    if(isNaN(mi)){sel.innerHTML='<option value="">Select lore entry…</option>';return;}
-    const entries=ivSplitLore(IV.months[mi].lore);
-    sel.innerHTML='<option value="">Select lore entry…</option>'+
-      (entries.length?entries.map((_,i)=>`<option value="${i}">Lore page ${i+1}</option>`).join('')
-       :'<option value="">(no lore)</option>');
-  }
-});
 </script>
 <script>
 /* ═══ CARTOGRAPHER NOTEBOOK renderer ═══ */
@@ -1648,26 +1635,26 @@ function ivUploadBg(){
 }
 function ivSetBgColor(color){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  const li=parseInt(document.getElementById('iv-bg-lore').value);
-  if(isNaN(mi)||isNaN(li)){alert('Pick a month and lore entry first.');return;}
+  if(isNaN(mi)){alert('Pick a month first.');return;}
+  const li=0;
   IV.perLoreBg[mi+':'+li]=color;IV.selectedMonth=mi;IV.lorePage=li;ivRenderStage();
 }
 function ivClearBg(){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  const li=parseInt(document.getElementById('iv-bg-lore').value);
-  if(isNaN(mi)||isNaN(li))return;
+  if(isNaN(mi))return;
+  const li=0;
   delete IV.perLoreBg[mi+':'+li];ivRenderStage();
 }
 function ivSetTextColor(color){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  const li=parseInt(document.getElementById('iv-bg-lore').value);
-  if(isNaN(mi)||isNaN(li)){alert('Pick a month and lore entry first.');return;}
+  if(isNaN(mi)){alert('Pick a month first.');return;}
+  const li=0;
   IV.perLoreColor[mi+':'+li]=color;IV.selectedMonth=mi;IV.lorePage=li;ivRenderStage();
 }
 function ivClearTextColor(){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  const li=parseInt(document.getElementById('iv-bg-lore').value);
-  if(isNaN(mi)||isNaN(li))return;
+  if(isNaN(mi))return;
+  const li=0;
   delete IV.perLoreColor[mi+':'+li];ivRenderStage();
 }
 
