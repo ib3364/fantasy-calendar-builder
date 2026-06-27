@@ -289,16 +289,26 @@ window.authEmailAction=async function(){
   var email=document.getElementById('fcb-email').value.trim();
   var pass=document.getElementById('fcb-password').value;
   if(!email||!pass){ setMsg('fcb-main-msg','Please enter your email and password.','error'); return; }
-  if(_authMode==='signup'){
-    if(pass.length<6){ setMsg('fcb-main-msg','Password must be at least 6 characters.','error'); return; }
-    setMsg('fcb-main-msg','Creating account…','info');
-    var sr=await window.FCB_AUTH.db.auth.signUp({email:email,password:pass});
-    if(sr.error){ setMsg('fcb-main-msg',sr.error.message,'error'); return; }
-    setMsg('fcb-main-msg','✓ Check your email to confirm your account!','success');
-  } else {
-    setMsg('fcb-main-msg','Signing in…','info');
-    var sr=await window.FCB_AUTH.db.auth.signInWithPassword({email:email,password:pass});
-    if(sr.error){ setMsg('fcb-main-msg',sr.error.message,'error'); return; }
+  try{
+    if(_authMode==='signup'){
+      if(pass.length<6){ setMsg('fcb-main-msg','Password must be at least 6 characters.','error'); return; }
+      setMsg('fcb-main-msg','Creating account…','info');
+      var sr=await window.FCB_AUTH.db.auth.signUp({email:email,password:pass});
+      if(sr.error){ setMsg('fcb-main-msg',sr.error.message,'error'); return; }
+      setMsg('fcb-main-msg','✓ Account created! You can now sign in.','success');
+    } else {
+      setMsg('fcb-main-msg','Signing in…','info');
+      var sr=await window.FCB_AUTH.db.auth.signInWithPassword({email:email,password:pass});
+      if(sr.error){
+        var msg=sr.error.message;
+        if(msg.indexOf('Invalid')>-1) msg='Wrong email or password — please try again.';
+        if(msg.indexOf('confirmed')>-1) msg='Please confirm your email first, or contact support.';
+        setMsg('fcb-main-msg',msg,'error');
+        return;
+      }
+    }
+  } catch(e){
+    setMsg('fcb-main-msg','Something went wrong — please try again.','error');
   }
 };
 
