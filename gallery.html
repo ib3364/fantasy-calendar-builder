@@ -251,6 +251,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-links">
     <a href="gallery.html" style="color:var(--accent)">Gallery</a>
+    <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false">Sign In</a>
     <a href="builder.html" class="nav-cta">Build free →</a>
   </div>
 </nav>
@@ -686,5 +687,6 @@ renderGallery();
   updateActive();
 })();
 </script>
+<script src="auth.js"></script>
 </body>
 </html>
