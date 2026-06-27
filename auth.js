@@ -148,8 +148,8 @@ function injectHTML(){
 
       <!-- ── View: sign in / sign up ── -->
       <div id="fcb-view-main">
-        <div class="fcb-auth-logo">🌙 Fantasy Calendar Builder</div>
-        <div class="fcb-auth-sub">Sign in to save calendars, download images and unlock all themes.</div>
+        <div class="fcb-auth-logo" id="fcb-main-title">🌙 Sign In</div>
+        <div class="fcb-auth-sub" id="fcb-main-sub">Sign in to save calendars, download images and unlock all themes.</div>
 
         <button class="fcb-oauth-btn" onclick="authOAuth('google')">
           <span class="fcb-oauth-icon">🔵</span>Continue with Google
@@ -269,12 +269,18 @@ window.authToggleMode=function(){
   _authMode=(_authMode==='signin')?'signup':'signin';
   var btn=document.getElementById('fcb-main-action-btn');
   var row=document.getElementById('fcb-switch-row');
+  var title=document.getElementById('fcb-main-title');
+  var sub=document.getElementById('fcb-main-sub');
   if(_authMode==='signup'){
     if(btn) btn.textContent='Create Account';
     if(row) row.innerHTML='Already have an account? <a onclick="authToggleMode()">Sign in</a>';
+    if(title) title.textContent='🌙 Create Account';
+    if(sub) sub.textContent='Join free to save calendars, download images and unlock all themes.';
   } else {
     if(btn) btn.textContent='Sign In';
     if(row) row.innerHTML='New here? <a onclick="authToggleMode()">Create an account</a>';
+    if(title) title.textContent='🌙 Sign In';
+    if(sub) sub.textContent='Sign in to save calendars, download images and unlock all themes.';
   }
   setMsg('fcb-main-msg','','');
 };
