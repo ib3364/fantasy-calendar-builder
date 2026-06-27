@@ -378,16 +378,28 @@ async function authInit(){
   }
   window.FCB_AUTH.db=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 
-  /* Restore existing session */
-  var sessionResult=await window.FCB_AUTH.db.auth.getSession();
-  if(sessionResult.data&&sessionResult.data.session){
-    await handleSession(sessionResult.data.session);
-  }
-
-  /* Listen for auth state changes (OAuth redirects, signout, etc.) */
+  /* Single source of truth — onAuthStateChange handles everything including page load */
   window.FCB_AUTH.db.auth.onAuthStateChange(async function(event,session){
-    if((event==='SIGNED_IN'||event==='TOKEN_REFRESHED')&&session){
-      await handleSession(session);
+    if(event==='INITIAL_SESSION'){
+      /* Page load with existing session — restore quietly, no popup */
+      if(session){
+        window.FCB_AUTH.user=session.user;
+        var result=await window.FCB_AUTH.db
+          .from('profiles').select('*').eq('id',session.user.id).single();
+        if(result.data){
+          window.FCB_AUTH.profile=result.data;
+          updateNav();
+        } else {
+          /* Has session but no username yet — show username modal */
+          updateNav();
+          showView('username');
+          authShowModal();
+        }
+      }
+    }
+    if(event==='SIGNED_IN'){
+      /* Fresh sign-in or OAuth redirect */
+      if(session) await handleSession(session);
     }
     if(event==='SIGNED_OUT'){
       window.FCB_AUTH.user=null;
