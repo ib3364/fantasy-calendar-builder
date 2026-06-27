@@ -655,6 +655,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 <nav>
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <span class="nav-step">Step <span id="current-step-num">1</span> of 5</span>
+  <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.85rem;color:var(--text-muted);text-decoration:none">Sign In</a>
 </nav>
 <div class="progress-bar">
   <div class="prog-step active" id="prog-1" onclick="goStep(1)">① Basics</div>
@@ -2361,5 +2362,6 @@ async function handleFontUpload(e) {
     </div>
   </div>
 </div>
+<script src="auth.js"></script>
 </body>
 </html>
