@@ -204,15 +204,17 @@ function injectHTML(){
 /* ─────────────────────────────────────────
    3. MODAL CONTROLS
 ───────────────────────────────────────── */
+function openOverlay(){
+  var overlay=document.getElementById('fcb-auth-overlay');
+  if(overlay) overlay.classList.add('open');
+}
 function authShowModal(){
-  const overlay=document.getElementById('fcb-auth-overlay');
-  if(!overlay) return;
-  overlay.classList.add('open');
   if(window.FCB_AUTH.profile) showView('signedin');
   else showView('main');
+  openOverlay();
 }
 window.authCloseModal=function(){
-  const overlay=document.getElementById('fcb-auth-overlay');
+  var overlay=document.getElementById('fcb-auth-overlay');
   if(overlay) overlay.classList.remove('open');
 };
 function showView(v){
@@ -351,15 +353,13 @@ window.authSignOut=async function(){
 async function handleSession(session){
   window.FCB_AUTH.user=session.user;
   var result=await window.FCB_AUTH.db
-    .from('profiles').select('*').eq('id',session.user.id).single();
+    .from('profiles').select('*').eq('id',session.user.id).maybeSingle();
   if(!result.data){
-    /* New user — ask for username */
     showView('username');
-    authShowModal();
+    openOverlay();
   } else {
     window.FCB_AUTH.profile=result.data;
     updateNav();
-    /* Close modal if it was open for sign-in purposes */
     var overlay=document.getElementById('fcb-auth-overlay');
     if(overlay&&overlay.classList.contains('open')) authCloseModal();
   }
@@ -394,21 +394,19 @@ async function authInit(){
       /* Page load with existing session — restore quietly, no popup */
       if(session){
         window.FCB_AUTH.user=session.user;
-        var result=await window.FCB_AUTH.db
-          .from('profiles').select('*').eq('id',session.user.id).single();
-        if(result.data){
-          window.FCB_AUTH.profile=result.data;
+        var r1=await window.FCB_AUTH.db
+          .from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+        if(r1.data){
+          window.FCB_AUTH.profile=r1.data;
           updateNav();
         } else {
-          /* Has session but no username yet — show username modal */
           updateNav();
           showView('username');
-          authShowModal();
+          openOverlay();
         }
       }
     }
     if(event==='SIGNED_IN'){
-      /* Fresh sign-in or OAuth redirect */
       if(session) await handleSession(session);
     }
     if(event==='SIGNED_OUT'){
