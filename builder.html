@@ -738,6 +738,23 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
         <div class="copy-confirm" id="copy-confirm">✓ Copied! Share this link anywhere.</div>
         <div class="hint" style="margin-top:.8rem">Anyone with this link sees your exact calendar.</div>
       </div>
+      <!-- Save to My Creations (signed-in users only) -->
+      <div class="share-box" id="save-to-account-box" style="margin-top:1rem">
+        <div class="share-box-title">SAVE TO MY CREATIONS</div>
+        <div id="save-auth-prompt" style="display:none">
+          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem">Sign in to save this calendar to your account and access it anytime.</div>
+          <button class="btn-secondary" onclick="FCB_AUTH.openModal()" style="width:100%">Sign In / Create Account</button>
+        </div>
+        <div id="save-form" style="display:none">
+          <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem">
+            <label style="font-size:.8rem;color:var(--text-muted);font-family:var(--font-body)">Visibility:</label>
+            <button class="btn-secondary" id="visibility-toggle" onclick="toggleVisibility()" style="font-size:.78rem;padding:.3rem .8rem">🔒 Private</button>
+            <span id="visibility-hint" style="font-size:.73rem;color:var(--text-dim)">Only you can see this</span>
+          </div>
+          <button class="btn-primary" id="save-btn" onclick="saveToAccount()" style="width:100%">💾 Save to My Creations</button>
+          <div id="save-msg" style="font-size:.78rem;margin-top:.5rem;display:none"></div>
+        </div>
+      </div>
       <div class="btn-row">
         <button class="btn-secondary" onclick="goStep(4)">← Edit holidays</button>
         <button class="btn-primary" onclick="startFresh()" style="background:var(--accent2)">Start a new world</button>
@@ -1383,6 +1400,73 @@ function startFresh(){
   document.getElementById('num-months').value=10;document.getElementById('days-week').value=7;document.getElementById('days-month').value=30;
   goStep(1);
 }
+
+/* ── Save to My Creations ── */
+var _saveIsPublic=false;
+var _savedAccountId=null;
+
+function updateSaveUI(){
+  var prompt=document.getElementById('save-auth-prompt');
+  var form=document.getElementById('save-form');
+  if(!prompt||!form)return;
+  var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
+  prompt.style.display=signedIn?'none':'block';
+  form.style.display=signedIn?'block':'none';
+  /* reset save state if user changed */
+  if(!signedIn){_savedAccountId=null;}
+}
+
+function toggleVisibility(){
+  _saveIsPublic=!_saveIsPublic;
+  var btn=document.getElementById('visibility-toggle');
+  var hint=document.getElementById('visibility-hint');
+  if(btn) btn.textContent=_saveIsPublic?'🌐 Public':'🔒 Private';
+  if(hint) hint.textContent=_saveIsPublic?'Anyone can browse this calendar':'Only you can see this';
+}
+
+async function saveToAccount(){
+  if(!window.FCB_AUTH||!window.FCB_AUTH.isSignedIn()){FCB_AUTH.openModal();return;}
+  var btn=document.getElementById('save-btn');
+  var msg=document.getElementById('save-msg');
+  if(btn){btn.disabled=true;btn.textContent='Saving…';}
+  if(msg){msg.style.display='none';}
+  try{
+    var dataObj=buildDataObject();
+    var user=window.FCB_AUTH.user;
+    var title=dataObj.w||'Untitled Calendar';
+    var id=_savedAccountId||sbGenId();
+    var payload={id:id,data:dataObj,owner_id:user.id,is_public:_saveIsPublic,title:title};
+    var method=_savedAccountId?'PATCH':'POST';
+    var url=SB_URL+'/rest/v1/calendars'+(method==='PATCH'?'?id=eq.'+id:'');
+    var res=await fetch(url,{
+      method:method,
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok)throw new Error('save failed '+res.status);
+    _savedAccountId=id;
+    _shareId=id;
+    if(btn){btn.disabled=false;btn.textContent='✓ Saved!';}
+    if(msg){msg.style.display='block';msg.style.color='var(--accent)';msg.textContent=_saveIsPublic?'Saved as public — visible in the gallery.':'Saved privately to your account.';}
+    setTimeout(function(){if(btn)btn.textContent='💾 Save to My Creations';},3000);
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent='💾 Save to My Creations';}
+    if(msg){msg.style.display='block';msg.style.color='#ff9090';msg.textContent='Save failed — please try again.';}
+  }
+}
+
+/* Watch for auth state changes to update the save UI */
+document.addEventListener('DOMContentLoaded',function(){
+  var _authPoll=setInterval(function(){
+    if(window.FCB_AUTH){
+      updateSaveUI();
+      clearInterval(_authPoll);
+      /* Re-check whenever nav updates (sign-in/out) */
+      var origUpdateNav=window.FCB_AUTH.updateNav;
+      setInterval(updateSaveUI,2000);
+    }
+  },200);
+});
 
 /* Load an image from a data-url, returns Promise<HTMLImageElement|null> */
 function loadImg(src){
