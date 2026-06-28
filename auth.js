@@ -245,12 +245,27 @@ function updateNav(){
     var lbl=document.getElementById('fcb-signedin-label');
     if(lbl) lbl.textContent='Signed in as '+p.username;
   } else {
-    localStorage.removeItem('fcb-username');
     btn.textContent='Sign In';
     btn.classList.remove('signed-in');
     btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
   }
 }
+
+/* Show cached username instantly — only clears when session is confirmed null */
+(function(){
+  var cached=localStorage.getItem('fcb-username');
+  if(!cached) return;
+  var t=setInterval(function(){
+    var btn=document.getElementById('fcb-nav-auth');
+    if(btn){
+      btn.textContent='👤 '+cached;
+      btn.classList.add('signed-in');
+      /* clicking while auth still loading opens modal — will show correct view once resolved */
+      btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
+      clearInterval(t);
+    }
+  },30);
+})();
 
 /* ─────────────────────────────────────────
    5. OAUTH
@@ -399,15 +414,20 @@ async function authInit(){
         var r1=await window.FCB_AUTH.db
           .from('profiles').select('*').eq('id',session.user.id).maybeSingle();
         if(r1.data){
+          /* Profile found */
           window.FCB_AUTH.profile=r1.data;
           updateNav();
+        } else if(r1.error){
+          /* DB error (Supabase paused?) — user IS signed in, keep cached name showing */
+          console.warn('FCB Auth: profile fetch error',r1.error.message);
         } else {
+          /* No profile yet — new user needs username */
           updateNav();
           showView('username');
           openOverlay();
         }
       } else {
-        /* Signed out — clear any stale cached username */
+        /* No session — clear cache and show Sign In */
         localStorage.removeItem('fcb-username');
         updateNav();
       }
@@ -418,6 +438,7 @@ async function authInit(){
     if(event==='SIGNED_OUT'){
       window.FCB_AUTH.user=null;
       window.FCB_AUTH.profile=null;
+      localStorage.removeItem('fcb-username');
       updateNav();
     }
   });
