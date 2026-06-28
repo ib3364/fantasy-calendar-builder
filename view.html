@@ -514,9 +514,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-actions">
     <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
-    <button class="btn-download" onclick="openLayoutPicker()">📥 Download Image</button>
+    <button class="btn-download" onclick="authGatedDownload()">📥 Download Image</button>
     <a href="#" id="interactive-link" class="btn-interactive">📖 View interactive →</a>
     <a href="builder.html" class="btn-build">Build your own →</a>
+    <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.82rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);white-space:nowrap">Sign In</a>
   </div>
 </nav>
 <div class="page">
@@ -1171,5 +1172,29 @@ async function handleFontUpload(e) {
     <div id="font-picker-grid"></div>
   </div>
 </div>
+<script>
+/* ── Auth-gated download ── */
+function authGatedDownload(){
+  if(window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()){
+    openLayoutPicker();
+  } else {
+    /* Show a friendly prompt instead of silently blocking */
+    var overlay=document.createElement('div');
+    overlay.id='dl-auth-prompt';
+    overlay.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;padding:1rem';
+    overlay.innerHTML=`
+      <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:2rem;max-width:360px;width:100%;text-align:center;font-family:var(--font-body);color:var(--text)">
+        <div style="font-size:2rem;margin-bottom:.8rem">📥</div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:.5rem">Sign in to download</div>
+        <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.3rem;line-height:1.5">Create a free account to download your calendar as PNG or JPEG — takes 30 seconds.</div>
+        <button onclick="document.getElementById('dl-auth-prompt').remove();FCB_AUTH.openModal()" style="width:100%;background:var(--accent);color:var(--bg);border:none;padding:.65rem;border-radius:6px;font-family:var(--font-display);font-weight:700;font-size:.9rem;cursor:pointer;margin-bottom:.5rem">Sign In / Create Account</button>
+        <button onclick="document.getElementById('dl-auth-prompt').remove()" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.55rem;border-radius:6px;font-family:var(--font-body);font-size:.82rem;cursor:pointer">Maybe later</button>
+      </div>`;
+    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+    document.body.appendChild(overlay);
+  }
+}
+</script>
+<script src="auth.js"></script>
 </body>
 </html>
