@@ -209,8 +209,17 @@ function openOverlay(){
   if(overlay) overlay.classList.add('open');
 }
 function authShowModal(){
-  if(window.FCB_AUTH.profile) showView('signedin');
+  /* Check profile, FCB_AUTH.user, or cached username — any means signed in */
+  var signedIn=window.FCB_AUTH.isSignedIn()||!!localStorage.getItem('fcb-username');
+  if(signedIn) showView('signedin');
   else showView('main');
+  /* Update signed-in label with best available name */
+  var lbl=document.getElementById('fcb-signedin-label');
+  if(lbl){
+    var p=window.FCB_AUTH.profile;
+    var name=p?p.username:localStorage.getItem('fcb-username')||'…';
+    lbl.textContent='Signed in as '+name;
+  }
   openOverlay();
 }
 window.authCloseModal=function(){
