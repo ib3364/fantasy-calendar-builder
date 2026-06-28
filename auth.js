@@ -252,22 +252,6 @@ function updateNav(){
   }
 }
 
-/* Show cached username instantly before SDK loads */
-(function(){
-  var cached=localStorage.getItem('fcb-username');
-  if(cached){
-    /* Poll until the nav element exists */
-    var t=setInterval(function(){
-      var btn=document.getElementById('fcb-nav-auth');
-      if(btn){
-        btn.textContent='👤 '+cached;
-        btn.classList.add('signed-in');
-        clearInterval(t);
-      }
-    },50);
-  }
-})();
-
 /* ─────────────────────────────────────────
    5. OAUTH
 ───────────────────────────────────────── */
