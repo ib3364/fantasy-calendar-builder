@@ -406,7 +406,7 @@ async function authInit(){
   }
   window.FCB_AUTH.db=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 
-  /* Single source of truth — onAuthStateChange handles everything including page load */
+  /* onAuthStateChange with INITIAL_SESSION handles everything on load */
   window.FCB_AUTH.db.auth.onAuthStateChange(async function(event,session){
     if(event==='INITIAL_SESSION'){
       /* Page load with existing session — restore quietly, no popup */
@@ -434,7 +434,7 @@ async function authInit(){
     }
   });
 
-  updateNav();
+  /* Nav will be updated by INITIAL_SESSION event above */
 }
 
 /* Wait for DOM ready */
