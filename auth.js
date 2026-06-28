@@ -422,6 +422,10 @@ async function authInit(){
           showView('username');
           openOverlay();
         }
+      } else {
+        /* Signed out — clear any stale cached username */
+        localStorage.removeItem('fcb-username');
+        updateNav();
       }
     }
     if(event==='SIGNED_IN'){
