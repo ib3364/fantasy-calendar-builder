@@ -871,7 +871,8 @@ function ivRenderShell(){
       <div style="display:flex;gap:.6rem">
         <button class="iv-btn iv-btn-ghost" onclick="ivRenderChooser()">← Back</button>
         <button class="iv-btn" onclick="ivShareLink()">🔗 Share link</button>
-        <button class="iv-btn" onclick="ivExport()">⬇ Export HTML</button>
+        <button class="iv-btn" onclick="ivAuthGatedExport()">⬇ Export HTML</button>
+        <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.78rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);padding:.3rem .5rem">Sign In</a>
       </div>
     </div>
     <div class="iv-share-box" id="iv-share-box" style="display:none">
@@ -2091,5 +2092,28 @@ function ivRenderExportStone(rootId){
 </div>
 
 <script>ivInit();</script>
+<script>
+/* ── Auth-gated Export HTML ── */
+function ivAuthGatedExport(){
+  if(window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()){
+    ivExport();
+  } else {
+    var overlay=document.createElement('div');
+    overlay.id='iv-export-auth-prompt';
+    overlay.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;padding:1rem';
+    overlay.innerHTML=`
+      <div style="background:#1a1205;border:1px solid #c8a04a;border-radius:12px;padding:2rem;max-width:360px;width:100%;text-align:center;font-family:Georgia,serif;color:#e8d8a8">
+        <div style="font-size:2rem;margin-bottom:.8rem">⬇</div>
+        <div style="font-family:'Cinzel',Georgia,serif;font-size:1.1rem;color:#c8a04a;margin-bottom:.5rem">Sign in to export</div>
+        <div style="font-size:.82rem;color:#8a7040;margin-bottom:1.3rem;line-height:1.5">Create a free account to export your interactive calendar as a standalone HTML file.</div>
+        <button onclick="document.getElementById('iv-export-auth-prompt').remove();FCB_AUTH.openModal()" style="width:100%;background:#c8a04a;color:#1a1005;border:none;padding:.65rem;border-radius:6px;font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:.9rem;cursor:pointer;margin-bottom:.5rem">Sign In / Create Account</button>
+        <button onclick="document.getElementById('iv-export-auth-prompt').remove()" style="width:100%;background:transparent;border:1px solid #4a3818;color:#8a7040;padding:.55rem;border-radius:6px;font-family:Georgia,serif;font-size:.82rem;cursor:pointer">Maybe later</button>
+      </div>`;
+    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+    document.body.appendChild(overlay);
+  }
+}
+</script>
+<script src="auth.js"></script>
 </body>
 </html>
