@@ -238,18 +238,35 @@ function updateNav(){
   if(!btn) return;
   var p=window.FCB_AUTH.profile;
   if(p){
+    localStorage.setItem('fcb-username',p.username);
     btn.textContent='👤 '+p.username;
     btn.classList.add('signed-in');
     btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
-    /* update signed-in view label */
     var lbl=document.getElementById('fcb-signedin-label');
     if(lbl) lbl.textContent='Signed in as '+p.username;
   } else {
+    localStorage.removeItem('fcb-username');
     btn.textContent='Sign In';
     btn.classList.remove('signed-in');
     btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
   }
 }
+
+/* Show cached username instantly before SDK loads */
+(function(){
+  var cached=localStorage.getItem('fcb-username');
+  if(cached){
+    /* Poll until the nav element exists */
+    var t=setInterval(function(){
+      var btn=document.getElementById('fcb-nav-auth');
+      if(btn){
+        btn.textContent='👤 '+cached;
+        btn.classList.add('signed-in');
+        clearInterval(t);
+      }
+    },50);
+  }
+})();
 
 /* ─────────────────────────────────────────
    5. OAUTH
@@ -343,6 +360,7 @@ window.authSignOut=async function(){
   await window.FCB_AUTH.db.auth.signOut();
   window.FCB_AUTH.user=null;
   window.FCB_AUTH.profile=null;
+  localStorage.removeItem('fcb-username');
   updateNav();
   authCloseModal();
 };
