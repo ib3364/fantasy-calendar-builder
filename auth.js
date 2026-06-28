@@ -365,12 +365,17 @@ window.authSaveUsername=async function(){
    8. SIGN OUT
 ───────────────────────────────────────── */
 window.authSignOut=async function(){
-  await window.FCB_AUTH.db.auth.signOut();
+  /* Clear local state immediately regardless of DB availability */
+  localStorage.removeItem('fcb-username');
   window.FCB_AUTH.user=null;
   window.FCB_AUTH.profile=null;
-  localStorage.removeItem('fcb-username');
   updateNav();
   authCloseModal();
+  /* Then sign out from Supabase if client is ready */
+  if(window.FCB_AUTH.db){
+    try{ await window.FCB_AUTH.db.auth.signOut(); }
+    catch(e){ console.warn('FCB Auth: signOut error',e); }
+  }
 };
 
 /* ─────────────────────────────────────────
