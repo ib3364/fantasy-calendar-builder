@@ -281,11 +281,20 @@ function updateNav(){
 ───────────────────────────────────────── */
 window.authOAuth=async function(provider){
   setMsg('fcb-main-msg','Redirecting to '+provider+'…','info');
+  /* Save current page URL so we can return here after OAuth */
+  localStorage.setItem('fcb-return-url',window.location.href);
+  /* Let the current page save any state before the redirect */
+  try{ document.dispatchEvent(new CustomEvent('fcb-before-oauth')); }catch(e){}
+  /* Small delay so event handlers can run */
+  await new Promise(function(r){ setTimeout(r,120); });
   var result=await window.FCB_AUTH.db.auth.signInWithOAuth({
     provider:provider,
     options:{ redirectTo: SITE_URL }
   });
-  if(result.error) setMsg('fcb-main-msg',result.error.message,'error');
+  if(result.error){
+    localStorage.removeItem('fcb-return-url');
+    setMsg('fcb-main-msg',result.error.message,'error');
+  }
 };
 
 /* ─────────────────────────────────────────
@@ -358,7 +367,13 @@ window.authSaveUsername=async function(){
   }
   window.FCB_AUTH.profile={id:id,username:raw};
   updateNav();
-  authCloseModal();
+  var returnUrl=localStorage.getItem('fcb-return-url');
+  if(returnUrl&&returnUrl!==window.location.href){
+    localStorage.removeItem('fcb-return-url');
+    window.location.href=returnUrl;
+  } else {
+    authCloseModal();
+  }
 };
 
 /* ─────────────────────────────────────────
@@ -391,8 +406,14 @@ async function handleSession(session){
   } else {
     window.FCB_AUTH.profile=result.data;
     updateNav();
-    var overlay=document.getElementById('fcb-auth-overlay');
-    if(overlay&&overlay.classList.contains('open')) authCloseModal();
+    var returnUrl=localStorage.getItem('fcb-return-url');
+    if(returnUrl&&returnUrl!==window.location.href){
+      localStorage.removeItem('fcb-return-url');
+      window.location.href=returnUrl;
+    } else {
+      var overlay=document.getElementById('fcb-auth-overlay');
+      if(overlay&&overlay.classList.contains('open')) authCloseModal();
+    }
   }
 }
 
