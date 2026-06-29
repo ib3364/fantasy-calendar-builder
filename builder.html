@@ -1472,12 +1472,50 @@ document.addEventListener('DOMContentLoaded',function(){
     if(window.FCB_AUTH){
       updateSaveUI();
       clearInterval(_authPoll);
-      /* Re-check whenever nav updates (sign-in/out) */
-      var origUpdateNav=window.FCB_AUTH.updateNav;
       setInterval(updateSaveUI,2000);
     }
   },200);
 });
+
+/* ── OAuth state preservation ── */
+/* Save full builder state before Google OAuth redirect */
+document.addEventListener('fcb-before-oauth',function(){
+  try{
+    var snap={
+      s:JSON.parse(JSON.stringify(state)),
+      wl:(document.getElementById('world-lore')||{}).value||''
+    };
+    localStorage.setItem('fcb-builder-snap',JSON.stringify(snap));
+  }catch(e){ console.warn('FCB: could not save builder state',e); }
+});
+
+/* Restore builder state when returning from OAuth redirect */
+(function(){
+  var raw=localStorage.getItem('fcb-builder-snap');
+  if(!raw) return;
+  try{
+    localStorage.removeItem('fcb-builder-snap');
+    var saved=JSON.parse(raw);
+    var s=saved.s;
+    state.worldName=s.worldName||'';
+    state.eraName=s.eraName||'';
+    state.numMonths=s.numMonths||10;
+    state.daysWeek=s.daysWeek||7;
+    state.daysMonth=s.daysMonth||30;
+    state.months=s.months||[];
+    state.moons=s.moons||[];
+    state.events=s.events||[];
+    state.icons=s.icons||{world:'',months:[],moons:[],events:[]};
+    document.getElementById('world-name').value=state.worldName;
+    document.getElementById('era-name').value=state.eraName;
+    document.getElementById('num-months').value=state.numMonths;
+    document.getElementById('days-week').value=state.daysWeek;
+    document.getElementById('days-month').value=state.daysMonth;
+    var wlEl=document.getElementById('world-lore');
+    if(wlEl) wlEl.value=saved.wl||'';
+    updatePreview();
+  }catch(e){ console.warn('FCB: could not restore builder state',e); }
+})();
 
 /* Load an image from a data-url, returns Promise<HTMLImageElement|null> */
 function loadImg(src){
