@@ -439,6 +439,20 @@ async function authInit(){
   }
   window.FCB_AUTH.db=window.supabase.createClient(SUPA_URL,SUPA_KEY);
 
+  /* Re-check auth when browser restores page from back/forward cache */
+  window.addEventListener('pageshow',async function(e){
+    if(!e.persisted) return; /* normal load already handled below */
+    var sess=await window.FCB_AUTH.db.auth.getSession();
+    if(sess.data&&sess.data.session){
+      await handleSession(sess.data.session);
+    } else {
+      window.FCB_AUTH.user=null;
+      window.FCB_AUTH.profile=null;
+      localStorage.removeItem('fcb-username');
+      updateNav();
+    }
+  });
+
   /* onAuthStateChange with INITIAL_SESSION handles everything on load */
   window.FCB_AUTH.db.auth.onAuthStateChange(async function(event,session){
     if(event==='INITIAL_SESSION'){
