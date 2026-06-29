@@ -734,16 +734,20 @@ function switchTab(tab){
 async function loadMyCreations(){
   var panel=document.getElementById('my-creations-panel');
   if(!panel) return;
-  /* Not signed in */
-  if(!window.FCB_AUTH||!window.FCB_AUTH.isSignedIn()){
+  /* Re-check auth state — FCB_AUTH.isSignedIn() checks FCB_AUTH.user */
+  var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
+  if(!signedIn){
     panel.innerHTML='<div class="my-creations-empty"><div class="icon">🔒</div><p>Sign in to see your saved calendars.</p><button class="btn-primary" onclick="FCB_AUTH.openModal()">Sign In / Create Account</button></div>';
     return;
   }
   panel.innerHTML='<div class="my-creations-empty"><div class="icon">⏳</div><p>Loading your calendars…</p></div>';
   try{
     var uid=window.FCB_AUTH.user.id;
+    /* Use user JWT token so RLS correctly scopes to their own calendars */
+    var sessionRes=await window.FCB_AUTH.db.auth.getSession();
+    var token=(sessionRes.data&&sessionRes.data.session)?sessionRes.data.session.access_token:SB_KEY_G;
     var res=await fetch(SB_URL_G+'/rest/v1/calendars?owner_id=eq.'+uid+'&order=created_at.desc&select=id,title,is_public,data,created_at',{
-      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+SB_KEY_G}
+      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+token}
     });
     if(!res.ok) throw new Error('fetch failed');
     var rows=await res.json();
@@ -773,6 +777,11 @@ async function loadMyCreations(){
     panel.innerHTML='<div class="my-creations-empty"><div class="icon">⚠️</div><p>Could not load your calendars. Try again later.</p></div>';
   }
 }
+
+/* Refresh My Creations when page is restored from back/forward cache */
+window.addEventListener('pageshow',function(e){
+  if(e.persisted&&_currentTab==='my') loadMyCreations();
+});
 
 async function deleteCalendar(id, btn){
   if(!confirm('Delete this calendar? This cannot be undone.')) return;
