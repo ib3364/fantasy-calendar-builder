@@ -441,16 +441,25 @@ async function authInit(){
 
   /* Re-check auth when browser restores page from back/forward cache */
   window.addEventListener('pageshow',async function(e){
-    if(!e.persisted) return; /* normal load already handled below */
-    var sess=await window.FCB_AUTH.db.auth.getSession();
-    if(sess.data&&sess.data.session){
-      await handleSession(sess.data.session);
-    } else {
-      window.FCB_AUTH.user=null;
-      window.FCB_AUTH.profile=null;
-      localStorage.removeItem('fcb-username');
+    if(!e.persisted) return;
+    /* Immediately restore profile from cache so modal shows correct state */
+    var cached=localStorage.getItem('fcb-username');
+    if(cached&&!window.FCB_AUTH.profile){
+      window.FCB_AUTH.profile={username:cached};
       updateNav();
     }
+    /* Then verify with Supabase in background */
+    try{
+      var sess=await window.FCB_AUTH.db.auth.getSession();
+      if(sess.data&&sess.data.session){
+        await handleSession(sess.data.session);
+      } else {
+        window.FCB_AUTH.user=null;
+        window.FCB_AUTH.profile=null;
+        localStorage.removeItem('fcb-username');
+        updateNav();
+      }
+    }catch(e){ console.warn('FCB Auth: pageshow check failed',e); }
   });
 
   /* onAuthStateChange with INITIAL_SESSION handles everything on load */
