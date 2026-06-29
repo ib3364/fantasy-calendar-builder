@@ -209,10 +209,13 @@ function openOverlay(){
   if(overlay) overlay.classList.add('open');
 }
 function authShowModal(){
-  if(window.FCB_AUTH.profile){
+  var profile=window.FCB_AUTH.profile;
+  var cachedName=localStorage.getItem('fcb-username');
+  var name=profile?profile.username:cachedName;
+  if(name){
     showView('signedin');
     var lbl=document.getElementById('fcb-signedin-label');
-    if(lbl) lbl.textContent='Signed in as '+window.FCB_AUTH.profile.username;
+    if(lbl) lbl.textContent='Signed in as '+name;
   } else {
     showView('main');
   }
