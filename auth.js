@@ -209,16 +209,12 @@ function openOverlay(){
   if(overlay) overlay.classList.add('open');
 }
 function authShowModal(){
-  /* Check profile, FCB_AUTH.user, or cached username — any means signed in */
-  var signedIn=window.FCB_AUTH.isSignedIn()||!!localStorage.getItem('fcb-username');
-  if(signedIn) showView('signedin');
-  else showView('main');
-  /* Update signed-in label with best available name */
-  var lbl=document.getElementById('fcb-signedin-label');
-  if(lbl){
-    var p=window.FCB_AUTH.profile;
-    var name=p?p.username:localStorage.getItem('fcb-username')||'…';
-    lbl.textContent='Signed in as '+name;
+  if(window.FCB_AUTH.profile){
+    showView('signedin');
+    var lbl=document.getElementById('fcb-signedin-label');
+    if(lbl) lbl.textContent='Signed in as '+window.FCB_AUTH.profile.username;
+  } else {
+    showView('main');
   }
   openOverlay();
 }
@@ -380,16 +376,19 @@ window.authSaveUsername=async function(){
    8. SIGN OUT
 ───────────────────────────────────────── */
 window.authSignOut=async function(){
-  /* Clear local state immediately regardless of DB availability */
+  /* Clear ALL Supabase session tokens from localStorage directly */
+  Object.keys(localStorage)
+    .filter(function(k){ return k.startsWith('sb-')&&k.indexOf('-auth-token')>-1; })
+    .forEach(function(k){ localStorage.removeItem(k); });
+  /* Clear FCB state */
   localStorage.removeItem('fcb-username');
   window.FCB_AUTH.user=null;
   window.FCB_AUTH.profile=null;
   updateNav();
   authCloseModal();
-  /* Then sign out from Supabase if client is ready */
+  /* Also call Supabase signOut if client is ready (invalidates server-side token) */
   if(window.FCB_AUTH.db){
-    try{ await window.FCB_AUTH.db.auth.signOut(); }
-    catch(e){ console.warn('FCB Auth: signOut error',e); }
+    try{ await window.FCB_AUTH.db.auth.signOut(); }catch(e){}
   }
 };
 
