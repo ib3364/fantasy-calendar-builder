@@ -734,25 +734,21 @@ function switchTab(tab){
 async function loadMyCreations(){
   var panel=document.getElementById('my-creations-panel');
   if(!panel) return;
-  panel.innerHTML='<div class="my-creations-empty"><div class="icon">⏳</div><p>Loading your calendars…</p></div>';
 
-  /* Wait up to 4 seconds for auth to initialise */
-  var waited=0;
-  while((!window.FCB_AUTH||!window.FCB_AUTH.db)&&waited<4000){
-    await new Promise(function(r){setTimeout(r,150);});
-    waited+=150;
-  }
-
-  /* Re-check sign-in state after waiting */
-  var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
-  if(!signedIn){
+  /* If auth not ready or user not signed in, show lock screen immediately */
+  if(!window.FCB_AUTH||!window.FCB_AUTH.isSignedIn()){
     panel.innerHTML='<div class="my-creations-empty"><div class="icon">🔒</div><p>Sign in to see your saved calendars.</p><button class="btn-primary" onclick="FCB_AUTH.openModal()">Sign In / Create Account</button></div>';
     return;
   }
+
+  panel.innerHTML='<div class="my-creations-empty"><div class="icon">⏳</div><p>Loading your calendars…</p></div>';
   try{
     var uid=window.FCB_AUTH.user.id;
-    var sessionRes=await window.FCB_AUTH.db.auth.getSession();
-    var token=(sessionRes.data&&sessionRes.data.session)?sessionRes.data.session.access_token:SB_KEY_G;
+    var token=SB_KEY_G;
+    try{
+      var sessionRes=await window.FCB_AUTH.db.auth.getSession();
+      if(sessionRes.data&&sessionRes.data.session) token=sessionRes.data.session.access_token;
+    }catch(e){}
     var res=await fetch(SB_URL_G+'/rest/v1/calendars?owner_id=eq.'+uid+'&order=created_at.desc&select=id,title,is_public,data,created_at',{
       headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+token}
     });
@@ -802,13 +798,14 @@ async function deleteCalendar(id, btn){
   }catch(e){btn.textContent='🗑';}
 }
 
-/* Re-check auth on tab switch */
+/* Re-check auth on tab — handles case where auth resolves after tab was clicked */
 setInterval(function(){
-  if(_currentTab==='my'&&window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()){
-    var panel=document.getElementById('my-creations-panel');
-    if(panel&&panel.innerHTML.indexOf('Sign in')>-1) loadMyCreations();
-  }
-},1500);
+  if(_currentTab!=='my') return;
+  var panel=document.getElementById('my-creations-panel');
+  if(!panel) return;
+  var needsReload=panel.innerHTML.indexOf('Sign in')>-1||panel.innerHTML.indexOf('sign in')>-1;
+  if(needsReload&&window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()) loadMyCreations();
+},800);
 </script>
 </body>
 </html>
