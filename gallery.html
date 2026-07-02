@@ -749,9 +749,13 @@ async function loadMyCreations(){
       var sessionRes=await window.FCB_AUTH.db.auth.getSession();
       if(sessionRes.data&&sessionRes.data.session) token=sessionRes.data.session.access_token;
     }catch(e){}
+    var controller=new AbortController();
+    var fetchTimeout=setTimeout(function(){controller.abort();},8000);
     var res=await fetch(SB_URL_G+'/rest/v1/calendars?owner_id=eq.'+uid+'&order=created_at.desc&select=id,title,is_public,data,created_at',{
-      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+token}
+      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+token},
+      signal:controller.signal
     });
+    clearTimeout(fetchTimeout);
     if(!res.ok) throw new Error('fetch failed');
     var rows=await res.json();
     if(!rows.length){
