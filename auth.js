@@ -381,20 +381,18 @@ window.authSaveUsername=async function(){
    8. SIGN OUT
 ───────────────────────────────────────── */
 window.authSignOut=async function(){
-  /* Clear ALL Supabase session tokens from localStorage directly */
+  /* Clear ALL Supabase keys from localStorage */
   Object.keys(localStorage)
-    .filter(function(k){ return k.startsWith('sb-')&&k.indexOf('-auth-token')>-1; })
+    .filter(function(k){ return k.startsWith('sb-')||k==='fcb-username'; })
     .forEach(function(k){ localStorage.removeItem(k); });
-  /* Clear FCB state */
-  localStorage.removeItem('fcb-username');
-  window.FCB_AUTH.user=null;
-  window.FCB_AUTH.profile=null;
-  updateNav();
-  authCloseModal();
-  /* Also call Supabase signOut if client is ready (invalidates server-side token) */
+  /* Also clear sessionStorage */
+  try{ sessionStorage.clear(); }catch(e){}
+  /* Try Supabase signOut */
   if(window.FCB_AUTH.db){
     try{ await window.FCB_AUTH.db.auth.signOut(); }catch(e){}
   }
+  /* Force full page reload — kills all in-memory session state */
+  window.location.reload();
 };
 
 /* ─────────────────────────────────────────
