@@ -503,6 +503,11 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 .fmt-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.3rem .85rem;font-size:.8rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);clip-path:var(--btn-clip);transition:none}
 .fmt-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
 .fmt-btn:not(.active):hover{border-color:var(--accent);color:var(--accent)}
+/* Locked theme options for guests */
+.theme-opt:disabled{opacity:.45;cursor:not-allowed}
+.theme-opt:disabled::after{content:' 🔒';font-size:.65rem}
+#theme-lock-notice{padding:.5rem .9rem;font-size:.73rem;color:var(--text-dim);font-family:var(--font-body);border-top:1px solid var(--border2);text-align:center}
+#theme-lock-notice a{color:var(--accent);cursor:pointer;text-decoration:underline}
 
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
@@ -543,15 +548,16 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <div id="theme-menu">
     <div class="theme-label-hdr">CHOOSE THEME</div>
     <button class="theme-opt" data-theme="">🗺 Cartographer's Ink</button>
-    <button class="theme-opt" data-theme="expanse">🌌 The Outer Expanse</button>
-    <button class="theme-opt" data-theme="iron">⚔️ Iron &amp; Vellum</button>
-    <button class="theme-opt" data-theme="waypoint">🔷 Waypoint Protocol</button>
-    <button class="theme-opt" data-theme="verdant">🌿 Verdant Archive</button>
-    <button class="theme-opt" data-theme="blood">🩸 Blood Court</button>
-    <button class="theme-opt" data-theme="void">🌌 Void Chronicle</button>
-    <button class="theme-opt" data-theme="desert">🏜️ Desert Scroll</button>
-    <button class="theme-opt" data-theme="neon">⚡ Neon Codex</button>
-    <button class="theme-opt" data-theme="stone">🪨 Stone Tablet</button>
+    <button class="theme-opt" data-theme="expanse" disabled>🌌 The Outer Expanse</button>
+    <button class="theme-opt" data-theme="iron" disabled>⚔️ Iron &amp; Vellum</button>
+    <button class="theme-opt" data-theme="waypoint" disabled>🔷 Waypoint Protocol</button>
+    <button class="theme-opt" data-theme="verdant" disabled>🌿 Verdant Archive</button>
+    <button class="theme-opt" data-theme="blood" disabled>🩸 Blood Court</button>
+    <button class="theme-opt" data-theme="void" disabled>🌌 Void Chronicle</button>
+    <button class="theme-opt" data-theme="desert" disabled>🏜️ Desert Scroll</button>
+    <button class="theme-opt" data-theme="neon" disabled>⚡ Neon Codex</button>
+    <button class="theme-opt" data-theme="stone" disabled>🪨 Stone Tablet</button>
+    <div id="theme-lock-notice">🔒 <a onclick="FCB_AUTH.openModal()">Sign in</a> to unlock all themes</div>
   </div>
 </div>
 
@@ -847,23 +853,6 @@ function drawImg(ctx,img,x,y,w,h){if(!img)return;const scale=Math.min(w/img.widt
   document.querySelectorAll('.theme-opt').forEach(o=>{
     o.addEventListener('click',e=>{
       e.stopPropagation();
-      /* Gate: BOTH checks must confirm signed in */
-      var attrOk=document.body.getAttribute('data-fcb-auth')==='in';
-      var authOk=!!(window.FCB_AUTH&&window.FCB_AUTH.profile);
-      var signedIn=attrOk&&authOk;
-      if(!signedIn){
-        menu.style.display='none';
-        /* Show nudge */
-        var existing=document.getElementById('theme-auth-nudge');
-        if(existing) existing.remove();
-        var nudge=document.createElement('div');
-        nudge.id='theme-auth-nudge';
-        nudge.style.cssText='position:fixed;bottom:4.5rem;right:1.2rem;z-index:99999;background:var(--surface);border:1px solid var(--accent);border-radius:8px;padding:.9rem 1.1rem;max-width:240px;font-family:var(--font-body);font-size:.78rem;color:var(--text-muted);box-shadow:0 8px 30px rgba(0,0,0,0.5)';
-        nudge.innerHTML='<div style="color:var(--accent);font-weight:700;margin-bottom:.4rem">🎨 Sign in to change themes</div>Create a free account to unlock all 10 visual themes.<br><br><button onclick="FCB_AUTH.openModal();document.getElementById(\'theme-auth-nudge\').remove()" style="width:100%;background:var(--accent);color:var(--bg);border:none;padding:.45rem;border-radius:5px;font-family:var(--font-body);font-weight:700;cursor:pointer;font-size:.8rem">Sign In / Create Account</button><button onclick="this.parentElement.remove()" style="width:100%;background:transparent;border:none;color:var(--text-dim);padding:.3rem;cursor:pointer;font-size:.75rem;margin-top:.3rem">Maybe later</button>';
-        document.body.appendChild(nudge);
-        setTimeout(function(){if(document.getElementById('theme-auth-nudge'))document.getElementById('theme-auth-nudge').remove();},5000);
-        return;
-      }
       html.setAttribute('data-theme',o.dataset.theme);
       localStorage.setItem('fcb-theme',o.dataset.theme);
       menu.style.display='none';
