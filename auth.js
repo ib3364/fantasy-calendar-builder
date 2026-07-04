@@ -246,6 +246,11 @@ function updateNav(){
   var p=window.FCB_AUTH.profile;
   /* Set body attribute — reliable sync signal for gates across all pages */
   document.body.setAttribute('data-fcb-auth', p ? 'in' : 'out');
+  /* Enable/disable theme buttons based on auth state */
+  var themeOpts=document.querySelectorAll('.theme-opt:not([data-theme=""])');
+  var lockNotice=document.getElementById('theme-lock-notice');
+  themeOpts.forEach(function(o){ o.disabled=!p; });
+  if(lockNotice) lockNotice.style.display=p?'none':'block';
   if(!btn) return;
   if(p){
     localStorage.setItem('fcb-username',p.username);
