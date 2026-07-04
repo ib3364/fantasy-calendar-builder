@@ -657,6 +657,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <span class="nav-step">Step <span id="current-step-num">1</span> of 5</span>
   <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.85rem;color:var(--text-muted);text-decoration:none">Sign In</a>
 </nav>
+<div id="fork-banner" style="display:none;background:rgba(var(--accent-rgb),.1);border-bottom:1px solid rgba(var(--accent-rgb),.25);padding:.55rem 1.2rem;font-size:.78rem;color:var(--text-muted);font-family:var(--font-body);text-align:center">
+  🍴 You're editing a shared calendar — <strong style="color:var(--accent)">saving will create your own copy</strong> in My Creations. The original won't be changed.
+</div>
 <div class="progress-bar">
   <div class="prog-step active" id="prog-1" onclick="goStep(1)">① Basics</div>
   <div class="prog-step" id="prog-2" onclick="goStep(2)">② Months</div>
@@ -1141,6 +1144,9 @@ function updatePreview(){
 (function loadFromUrl(){
   const params=new URLSearchParams(window.location.search);
   const c=params.get('c');if(!c)return;
+  /* Show fork banner — this is someone else's calendar being edited */
+  var banner=document.getElementById('fork-banner');
+  if(banner) banner.style.display='block';
   try{
     const data=JSON.parse(decodeURIComponent(atob(c)));
     document.getElementById('world-name').value=data.w||'';
