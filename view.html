@@ -847,8 +847,8 @@ function drawImg(ctx,img,x,y,w,h){if(!img)return;const scale=Math.min(w/img.widt
   document.querySelectorAll('.theme-opt').forEach(o=>{
     o.addEventListener('click',e=>{
       e.stopPropagation();
-      /* Gate: only signed-in users can change themes — never use localStorage here */
-      var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
+      /* Gate: check body attribute set by auth.js after every state change */
+      var signedIn=document.body.getAttribute('data-fcb-auth')==='in';
       if(!signedIn){
         menu.style.display='none';
         /* Show nudge */
