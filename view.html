@@ -847,8 +847,9 @@ function drawImg(ctx,img,x,y,w,h){if(!img)return;const scale=Math.min(w/img.widt
   document.querySelectorAll('.theme-opt').forEach(o=>{
     o.addEventListener('click',e=>{
       e.stopPropagation();
-      /* Gate: only signed-in users can change themes */
-      if(!window.FCB_AUTH||!window.FCB_AUTH.isSignedIn()){
+      /* Gate: only signed-in users can change themes — never use localStorage here */
+      var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
+      if(!signedIn){
         menu.style.display='none';
         /* Show nudge */
         var existing=document.getElementById('theme-auth-nudge');
