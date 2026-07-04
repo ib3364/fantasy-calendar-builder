@@ -243,8 +243,10 @@ function setMsg(elId, txt, type){
 ───────────────────────────────────────── */
 function updateNav(){
   var btn=document.getElementById('fcb-nav-auth');
-  if(!btn) return;
   var p=window.FCB_AUTH.profile;
+  /* Set body attribute — reliable sync signal for gates across all pages */
+  document.body.setAttribute('data-fcb-auth', p ? 'in' : 'out');
+  if(!btn) return;
   if(p){
     localStorage.setItem('fcb-username',p.username);
     btn.textContent='👤 '+p.username;
