@@ -447,13 +447,16 @@ async function authInit(){
   /* Re-check auth when browser restores page from back/forward cache */
   window.addEventListener('pageshow',async function(e){
     if(!e.persisted) return;
-    /* Immediately restore profile from cache so modal shows correct state */
+    /* Update nav display text from cache (cosmetic only — does NOT set data-fcb-auth) */
     var cached=localStorage.getItem('fcb-username');
-    if(cached&&!window.FCB_AUTH.profile){
-      window.FCB_AUTH.profile={username:cached};
-      updateNav();
+    if(cached){
+      var btn=document.getElementById('fcb-nav-auth');
+      if(btn&&!window.FCB_AUTH.profile){
+        btn.textContent='👤 '+cached;
+        btn.classList.add('signed-in');
+      }
     }
-    /* Then verify with Supabase in background */
+    /* Verify with Supabase — this is the authoritative check that sets data-fcb-auth */
     try{
       var sess=await window.FCB_AUTH.db.auth.getSession();
       if(sess.data&&sess.data.session){
