@@ -252,6 +252,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 .vis-badge{display:inline-block;font-size:.65rem;padding:.15rem .5rem;border-radius:3px;margin-left:.4rem;vertical-align:middle}
 .vis-badge.public{background:rgba(var(--accent-rgb),.15);color:var(--accent)}
 .vis-badge.private{background:var(--surface2);color:var(--text-dim)}
+/* Fav button */
+.btn-fav{background:transparent;border:none;cursor:pointer;font-size:1.1rem;padding:.2rem .4rem;line-height:1;opacity:.4;transition:opacity .15s,transform .15s;position:absolute;top:.7rem;right:.7rem}
+.btn-fav:hover{opacity:.8;transform:scale(1.2)}
+.btn-fav.active{opacity:1}
 
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
@@ -273,9 +277,11 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 </div>
 <div class="gallery-tabs">
   <button class="gallery-tab active" id="tab-franchise" onclick="switchTab('franchise')">📚 Popular Franchises</button>
+  <button class="gallery-tab" id="tab-favs" onclick="switchTab('favs')" style="display:none">❤️ Favorites</button>
   <button class="gallery-tab" id="tab-my" onclick="switchTab('my')" style="display:none">⭐ My Creations</button>
 </div>
 <div class="gallery" id="gallery"></div>
+<div id="favs-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div id="my-creations-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div class="cta-strip">
   <div class="cta-inner">
@@ -674,6 +680,7 @@ function renderGallery(){
     const iconCount=[ex.worldIcon||'',...ex.months.map(m=>m.icon||''),...ex.moons.map(m=>m.icon||''),...ex.events.map(e=>e.icon||'')].filter(Boolean).length;
 
     card.innerHTML=`
+      <button class="btn-fav" data-favid="franchise-${ex.world.replace(/[^a-z0-9]/gi,'')}" onclick="toggleFav(this)" title="Add to Favorites">❤️</button>
       <div class="cal-world-name" style="display:flex;align-items:center">${worldIconEl}${ex.world}</div>
       ${ex.era?`<div class="cal-era">${ex.era}</div>`:''}
       <div class="cal-meta-row">
@@ -708,13 +715,103 @@ renderGallery();
 var SB_URL_G='https://rqrqxrngqtaywmhkdoal.supabase.co';
 var SB_KEY_G='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
 var _currentTab='franchise';
+
+/* ── Favorites helpers ── */
+function getFavKey(){
+  var uid=window.FCB_AUTH?window.FCB_AUTH.getUid():null;
+  return uid?'fcb-favs-'+uid:null;
+}
+function getFavs(){
+  var key=getFavKey(); if(!key) return [];
+  try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ return []; }
+}
+function saveFavs(arr){
+  var key=getFavKey(); if(!key) return;
+  localStorage.setItem(key,JSON.stringify(arr));
+}
+function toggleFav(btn){
+  var uid=window.FCB_AUTH?window.FCB_AUTH.getUid():null;
+  if(!uid){ FCB_AUTH.openModal(); return; }
+  var id=btn.dataset.favid;
+  var favs=getFavs();
+  var idx=favs.indexOf(id);
+  if(idx>-1){ favs.splice(idx,1); btn.classList.remove('active'); }
+  else { favs.push(id); btn.classList.add('active'); }
+  saveFavs(favs);
+  /* Refresh favs tab if open */
+  if(_currentTab==='favs') loadFavs();
+}
+function updateFavButtons(){
+  var favs=getFavs();
+  document.querySelectorAll('.btn-fav').forEach(function(btn){
+    btn.classList.toggle('active',favs.indexOf(btn.dataset.favid)>-1);
+  });
+}
+
 function switchTab(tab){
   _currentTab=tab;
   document.querySelectorAll('.gallery-tab').forEach(function(b){b.classList.remove('active');});
-  var ab=document.getElementById('tab-'+tab);if(ab)ab.classList.add('active');
-  var gallery=document.getElementById('gallery');var myPanel=document.getElementById('my-creations-panel');
-  if(tab==='franchise'){if(gallery)gallery.style.display='';if(myPanel)myPanel.style.display='none';}
-  else{if(gallery)gallery.style.display='none';if(myPanel)myPanel.style.display='';loadMyCreations();}
+  var ab=document.getElementById('tab-'+tab); if(ab) ab.classList.add('active');
+  var gallery=document.getElementById('gallery');
+  var favsPanel=document.getElementById('favs-panel');
+  var myPanel=document.getElementById('my-creations-panel');
+  gallery.style.display=tab==='franchise'?'':'none';
+  favsPanel.style.display=tab==='favs'?'':'none';
+  myPanel.style.display=tab==='my'?'':'none';
+  if(tab==='favs') loadFavs();
+  if(tab==='my') loadMyCreations();
+}
+
+function loadFavs(){
+  var panel=document.getElementById('favs-panel'); if(!panel) return;
+  var uid=window.FCB_AUTH?window.FCB_AUTH.getUid():null;
+  if(!uid){
+    panel.innerHTML='<div class="my-creations-empty"><div class="icon">🔒</div><p>Set a username to save favorites.</p><button class="btn-primary" onclick="FCB_AUTH.openModal()">Set username</button></div>';
+    return;
+  }
+  var favs=getFavs();
+  if(!favs.length){
+    panel.innerHTML='<div class="my-creations-empty"><div class="icon">❤️</div><p>No favorites yet — click the ❤️ on any calendar to save it here.</p></div>';
+    return;
+  }
+  /* Render franchise favorites */
+  var franchiseFavs=EXAMPLES.filter(function(ex){
+    return favs.indexOf('franchise-'+ex.world.replace(/[^a-z0-9]/gi,''))>-1;
+  });
+  /* Render My Creations favorites (Supabase IDs) */
+  var supaFavIds=favs.filter(function(id){ return !id.startsWith('franchise-'); });
+  var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem">';
+  franchiseFavs.forEach(function(ex){
+    var encoded=encodeCalendar(ex);
+    var favId='franchise-'+ex.world.replace(/[^a-z0-9]/gi,'');
+    html+='<div class="cal-card" style="position:relative">';
+    html+='<button class="btn-fav active" data-favid="'+favId+'" onclick="toggleFav(this)" title="Remove from Favorites">❤️</button>';
+    html+='<div class="cal-world-name">'+ex.world+'</div>';
+    html+=(ex.era?'<div class="cal-era">'+ex.era+'</div>':'');
+    html+='<div style="font-size:.78rem;color:var(--text-dim);margin:.5rem 0">'+ex.months.length+' months · '+ex.events.length+' events</div>';
+    html+='<a href="view.html?c='+encoded+'" class="btn-view">View full →</a>';
+    html+='</div>';
+  });
+  if(supaFavIds.length){
+    /* Fetch Supabase favorites */
+    var ids=supaFavIds.map(function(id){return 'id=eq.'+id;}).join(',');
+    fetch(SB_URL_G+'/rest/v1/calendars?or=('+ids+')&select=id,title,data',{
+      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+SB_KEY_G}
+    }).then(function(r){return r.json();}).then(function(rows){
+      rows.forEach(function(row){
+        var d=row.data||{};var title=row.title||d.w||'Untitled';
+        html+='<div class="cal-card" style="position:relative">';
+        html+='<button class="btn-fav active" data-favid="'+row.id+'" onclick="toggleFav(this)" title="Remove from Favorites">❤️</button>';
+        html+='<div class="cal-world-name">'+title+'</div>';
+        html+='<div style="font-size:.78rem;color:var(--text-dim);margin:.5rem 0">'+((d.months||[]).length||'?')+' months</div>';
+        html+='<a href="view.html?id='+row.id+'" class="btn-view">View full →</a>';
+        html+='</div>';
+      });
+      panel.innerHTML=html+'</div>';
+    }).catch(function(){ panel.innerHTML=html+'</div>'; });
+  } else {
+    panel.innerHTML=html+'</div>';
+  }
 }
 async function loadMyCreations(){
   var panel=document.getElementById('my-creations-panel');if(!panel)return;
@@ -751,6 +848,14 @@ async function delCal(btn){deleteCalendar(btn.dataset.del,btn);}async function d
 }
 </script>
 <script src="auth.js"></script>
+<script>
+/* Update fav buttons once auth is ready */
+(function(){
+  var t=setInterval(function(){
+    if(window.FCB_AUTH){ updateFavButtons(); clearInterval(t); }
+  },100);
+})();
+</script>
 
 </body>
 </html>
