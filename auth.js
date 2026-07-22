@@ -144,7 +144,7 @@ window.fcbSaveUsername=async function(){
 
 /* ── Export all calendar data as JSON file ── */
 window.fcbExportData=async function(){
-  var uid=localStorage.getItem('fcb-uid');
+  var uid=window.FCB_AUTH.getUid();
   var username=localStorage.getItem('fcb-username');
   if(!uid||!username){ alert('No data to export.'); return; }
   try{
