@@ -718,7 +718,8 @@ function switchTab(tab){
 }
 async function loadMyCreations(){
   var panel=document.getElementById('my-creations-panel');if(!panel)return;
-  var uid=localStorage.getItem('fcb-uid');var name=localStorage.getItem('fcb-username');
+  var name=localStorage.getItem('fcb-username');
+  var uid=window.FCB_AUTH?window.FCB_AUTH.getUid():null;
   if(!uid||!name){panel.innerHTML='<div class="my-creations-empty"><div class="icon">🌙</div><p>Set a username to save and view your calendars here.</p><button class="btn-primary" onclick="FCB_AUTH.openModal()">Set username</button></div>';return;}
   panel.innerHTML='<div class="my-creations-empty"><div class="icon">⏳</div><p>Loading your calendars…</p></div>';
   try{
