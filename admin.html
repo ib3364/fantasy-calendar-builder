@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FCB Admin Panel</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#e0e0e0;min-height:100vh}
+/* Login */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:2.5rem;width:100%;max-width:360px;text-align:center}
+.login-box h1{font-size:1.4rem;margin-bottom:.4rem;color:#fff}
+.login-box p{font-size:.82rem;color:#777;margin-bottom:1.5rem}
+/* Layout */
+#admin-app{display:none;min-height:100vh}
+.admin-nav{background:#111;border-bottom:1px solid #222;padding:.8rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.admin-nav h1{font-size:1rem;color:#fff;font-weight:700;margin-right:auto}
+.admin-tab{background:transparent;border:1px solid #333;color:#aaa;padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.82rem}
+.admin-tab:hover{border-color:#555;color:#fff}
+.admin-tab.active{background:#fff;color:#000;border-color:#fff;font-weight:700}
+.admin-logout{background:transparent;border:1px solid #c00;color:#f66;padding:.4rem .8rem;border-radius:6px;cursor:pointer;font-size:.78rem}
+.admin-main{padding:2rem 1.5rem;max-width:1200px;margin:0 auto}
+/* Panels */
+.admin-panel{display:none}
+.admin-panel.active{display:block}
+.panel-title{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:1.5rem;padding-bottom:.7rem;border-bottom:1px solid #222}
+/* Cards grid */
+.cal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
+.cal-item{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:1rem}
+.cal-item-title{font-weight:700;color:#fff;margin-bottom:.3rem;font-size:.95rem}
+.cal-item-meta{font-size:.73rem;color:#666;margin-bottom:.8rem;line-height:1.6}
+.cal-item-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+/* Buttons */
+.btn{padding:.4rem .9rem;border-radius:5px;border:none;cursor:pointer;font-size:.78rem;font-weight:600}
+.btn-danger{background:#c00;color:#fff}
+.btn-danger:hover{background:#e00}
+.btn-warning{background:#c80;color:#000}
+.btn-warning:hover{background:#ea0}
+.btn-success{background:#060;color:#fff}
+.btn-success:hover{background:#080}
+.btn-primary{background:#0066cc;color:#fff}
+.btn-primary:hover{background:#0080ff}
+.btn-gray{background:#333;color:#ccc}
+.btn-gray:hover{background:#444}
+/* Forms */
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:.78rem;color:#888;margin-bottom:.4rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:#1a1a1a;border:1px solid #333;color:#e0e0e0;padding:.55rem .8rem;border-radius:5px;font-size:.88rem;outline:none}
+.form-group input:focus,.form-group textarea:focus{border-color:#555}
+.form-group textarea{resize:vertical;min-height:80px;font-family:inherit}
+.form-section{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:1.2rem;margin-bottom:1.2rem}
+.form-section h3{font-size:.9rem;color:#aaa;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em}
+/* Status */
+.status-msg{font-size:.78rem;padding:.4rem .7rem;border-radius:4px;margin-top:.5rem;display:none}
+.status-msg.ok{background:#051505;color:#4c4;border:1px solid #1a4a1a;display:block}
+.status-msg.err{background:#150505;color:#f66;border:1px solid #4a1a1a;display:block}
+/* Input + button */
+.input-group{display:flex;gap:.5rem}
+.input-group input{flex:1}
+/* Badge */
+.badge{display:inline-block;font-size:.65rem;padding:.15rem .45rem;border-radius:3px;font-weight:700}
+.badge-pub{background:#063;color:#4f4}
+.badge-prv{background:#333;color:#888}
+/* Search */
+.search-bar{display:flex;gap:.6rem;margin-bottom:1.2rem}
+.search-bar input{flex:1;background:#1a1a1a;border:1px solid #333;color:#e0e0e0;padding:.5rem .8rem;border-radius:5px;font-size:.85rem;outline:none}
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-box{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:1rem;text-align:center}
+.stat-num{font-size:2rem;font-weight:700;color:#fff}
+.stat-label{font-size:.72rem;color:#666;margin-top:.3rem;text-transform:uppercase;letter-spacing:.05em}
+/* Login form */
+.admin-input{width:100%;background:#111;border:1px solid #333;color:#e0e0e0;padding:.6rem .9rem;border-radius:6px;font-size:.9rem;outline:none;margin-bottom:.8rem}
+.admin-input:focus{border-color:#555}
+.admin-btn-full{width:100%;background:#fff;color:#000;border:none;padding:.65rem;border-radius:6px;font-weight:700;cursor:pointer;font-size:.9rem}
+.admin-btn-full:hover{background:#ddd}
+.err-msg{color:#f66;font-size:.78rem;margin-top:.5rem;display:none}
+</style>
+</head>
+<body>
+
+<!-- ── Login ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <h1>🔐 FCB Admin</h1>
+    <p>Fantasy Calendar Builder — Admin Panel</p>
+    <input class="admin-input" id="admin-pw" type="password" placeholder="Admin password" autocomplete="current-password"/>
+    <button class="admin-btn-full" onclick="adminLogin()">Sign In</button>
+    <div class="err-msg" id="login-err">Wrong password</div>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<div id="admin-app">
+  <nav class="admin-nav">
+    <h1>🌙 FCB Admin</h1>
+    <button class="admin-tab active" onclick="showPanel('calendars')">🗓 Calendars</button>
+    <button class="admin-tab" onclick="showPanel('seo')">🔍 SEO</button>
+    <button class="admin-tab" onclick="showPanel('ads')">📢 Ads</button>
+    <button class="admin-tab" onclick="showPanel('users')">👤 Users</button>
+    <button class="admin-tab" onclick="showPanel('settings')">⚙️ Settings</button>
+    <button class="admin-logout" onclick="adminLogout()">Sign out</button>
+  </nav>
+  <div class="admin-main">
+
+    <!-- ── Calendars ── -->
+    <div class="admin-panel active" id="panel-calendars">
+      <div class="panel-title">🗓 Calendar Management</div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-public">—</div><div class="stat-label">Public</div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-private">—</div><div class="stat-label">Private</div></div>
+      </div>
+      <div class="search-bar">
+        <input id="cal-search" type="text" placeholder="Search by title or world name…" oninput="filterCals()"/>
+        <select id="cal-filter" onchange="filterCals()" style="background:#1a1a1a;border:1px solid #333;color:#e0e0e0;padding:.5rem .8rem;border-radius:5px;font-size:.82rem">
+          <option value="all">All</option>
+          <option value="public">Public only</option>
+          <option value="private">Private only</option>
+        </select>
+      </div>
+      <div id="cal-status" class="status-msg"></div>
+      <div class="cal-grid" id="cal-grid"><div style="color:#555;padding:2rem">Loading…</div></div>
+    </div>
+
+    <!-- ── SEO ── -->
+    <div class="admin-panel" id="panel-seo">
+      <div class="panel-title">🔍 SEO Settings</div>
+      <div class="form-section">
+        <h3>Homepage (index.html)</h3>
+        <div class="form-group"><label>Page Title</label><input id="seo-index-title" type="text" placeholder="Fantasy Calendar Builder — Build your world's calendar in 10 minutes"/></div>
+        <div class="form-group"><label>Meta Description</label><textarea id="seo-index-desc" placeholder="Create custom fantasy calendars with months, moon phases, holidays and seasons…"></textarea></div>
+        <div class="form-group"><label>OG Image URL</label><input id="seo-index-og" type="text" placeholder="https://…"/></div>
+        <div class="form-group"><label>Keywords (comma-separated)</label><input id="seo-index-kw" type="text" placeholder="fantasy calendar, world building, D&D calendar…"/></div>
+      </div>
+      <div class="form-section">
+        <h3>Gallery (gallery.html)</h3>
+        <div class="form-group"><label>Page Title</label><input id="seo-gallery-title" type="text" placeholder="Fantasy Calendars — Browse fictional world calendars"/></div>
+        <div class="form-group"><label>Meta Description</label><textarea id="seo-gallery-desc" placeholder="Explore calendars from Middle-earth, Tamriel, Faerûn and more…"></textarea></div>
+      </div>
+      <button class="btn btn-primary" onclick="saveSEO()">💾 Save SEO Settings</button>
+      <div id="seo-status" class="status-msg"></div>
+      <div style="margin-top:1.5rem;font-size:.78rem;color:#555">⚠️ SEO settings are saved here for reference. To apply them, copy the values into the &lt;head&gt; of each HTML file on GitHub.</div>
+    </div>
+
+    <!-- ── Ads ── -->
+    <div class="admin-panel" id="panel-ads">
+      <div class="panel-title">📢 Ad Management</div>
+      <div class="form-section">
+        <h3>Ad Mode</h3>
+        <div class="form-group">
+          <label>Current Mode</label>
+          <select id="ad-mode-select" style="background:#1a1a1a;border:1px solid #333;color:#e0e0e0;padding:.55rem .8rem;border-radius:5px;font-size:.88rem;width:100%">
+            <option value="off">Off — no ads shown</option>
+            <option value="adsense">Google AdSense</option>
+            <option value="custom">Custom HTML banners</option>
+          </select>
+        </div>
+        <div class="form-group"><label>AdSense Publisher ID</label><input id="ad-client-id" type="text" placeholder="ca-pub-XXXXXXXXXXXXXXXX"/></div>
+      </div>
+      <div class="form-section">
+        <h3>Custom Ad HTML (when mode = custom)</h3>
+        <div class="form-group"><label>Top Banner (ad-top)</label><textarea id="ad-top-html" placeholder="<a href=&quot;…&quot;><img src=&quot;…&quot;/></a>"></textarea></div>
+        <div class="form-group"><label>Mid Rectangle (ad-mid)</label><textarea id="ad-mid-html" placeholder="<a href=&quot;…&quot;><img src=&quot;…&quot;/></a>"></textarea></div>
+        <div class="form-group"><label>Sidebar (ad-sidebar)</label><textarea id="ad-sidebar-html" placeholder="<a href=&quot;…&quot;><img src=&quot;…&quot;/></a>"></textarea></div>
+      </div>
+      <div class="form-section">
+        <h3>AdSense Slot IDs</h3>
+        <div class="form-group"><label>Top Banner Slot ID</label><input id="ad-slot-top" type="text" placeholder="XXXXXXXXXX"/></div>
+        <div class="form-group"><label>Mid Rectangle Slot ID</label><input id="ad-slot-mid" type="text" placeholder="XXXXXXXXXX"/></div>
+        <div class="form-group"><label>Sidebar Slot ID</label><input id="ad-slot-sidebar" type="text" placeholder="XXXXXXXXXX"/></div>
+      </div>
+      <button class="btn btn-primary" onclick="saveAds()">💾 Generate ads.js</button>
+      <div id="ads-status" class="status-msg"></div>
+      <div style="margin-top:1rem">
+        <textarea id="ads-output" style="width:100%;background:#111;border:1px solid #222;color:#0f0;padding:1rem;border-radius:5px;font-family:monospace;font-size:.75rem;min-height:120px;display:none" readonly></textarea>
+        <div id="ads-copy-row" style="display:none;margin-top:.5rem">
+          <button class="btn btn-gray" onclick="copyAdsOutput()">📋 Copy to clipboard — then paste into ads.js on GitHub</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Users ── -->
+    <div class="admin-panel" id="panel-users">
+      <div class="panel-title">👤 User Lookup</div>
+      <div class="form-section">
+        <h3>Look up calendars by username</h3>
+        <div class="form-group"><label>Username</label>
+          <div class="input-group">
+            <input id="user-search-input" type="text" placeholder="Enter username…"/>
+            <button class="btn btn-primary" onclick="searchUser()">Search</button>
+          </div>
+        </div>
+        <div id="user-status" class="status-msg"></div>
+      </div>
+      <div id="user-cal-grid" class="cal-grid" style="display:none"></div>
+    </div>
+
+    <!-- ── Settings ── -->
+    <div class="admin-panel" id="panel-settings">
+      <div class="panel-title">⚙️ Site Settings</div>
+      <div class="form-section">
+        <h3>Default Theme</h3>
+        <div class="form-group">
+          <label>Theme shown to all new visitors</label>
+          <select id="default-theme" style="background:#1a1a1a;border:1px solid #333;color:#e0e0e0;padding:.55rem .8rem;border-radius:5px;font-size:.88rem;width:100%">
+            <option value="">🗺 Cartographer's Ink (default)</option>
+            <option value="expanse">🌌 The Outer Expanse</option>
+            <option value="iron">⚔️ Iron & Vellum</option>
+            <option value="waypoint">🔷 Waypoint Protocol</option>
+            <option value="verdant">🌿 Verdant Archive</option>
+            <option value="blood">🩸 Blood Court</option>
+            <option value="void">🌌 Void Chronicle</option>
+            <option value="desert">🏜️ Desert Scroll</option>
+            <option value="neon">⚡ Neon Codex</option>
+            <option value="stone">🪨 Stone Tablet</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-section">
+        <h3>Change Admin Password</h3>
+        <div class="form-group"><label>New Password</label><input id="new-pw" type="password" placeholder="New admin password"/></div>
+        <div class="form-group"><label>Confirm Password</label><input id="confirm-pw" type="password" placeholder="Confirm new password"/></div>
+      </div>
+      <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+      <div id="settings-status" class="status-msg"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ══ CONFIG ══ */
+var SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+var SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+var DEFAULT_PW='fcbadmin2026'; /* Change this immediately after first login! */
+var ADMIN_PW_KEY='fcb-admin-pw';
+
+/* ══ AUTH ══ */
+function adminLogin(){
+  var pw=document.getElementById('admin-pw').value;
+  var stored=localStorage.getItem(ADMIN_PW_KEY)||DEFAULT_PW;
+  if(pw===stored){
+    localStorage.setItem('fcb-admin-session','1');
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-app').style.display='block';
+    loadCalendars();
+    loadAdminSettings();
+  } else {
+    var e=document.getElementById('login-err');
+    e.style.display='block';
+    setTimeout(function(){e.style.display='none';},3000);
+  }
+}
+document.getElementById('admin-pw').addEventListener('keydown',function(e){if(e.key==='Enter')adminLogin();});
+
+function adminLogout(){
+  localStorage.removeItem('fcb-admin-session');
+  location.reload();
+}
+
+/* Check existing session */
+if(localStorage.getItem('fcb-admin-session')==='1'){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('admin-app').style.display='block';
+  loadCalendars();
+  loadAdminSettings();
+}
+
+/* ══ PANELS ══ */
+function showPanel(name){
+  document.querySelectorAll('.admin-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.admin-tab').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('panel-'+name).classList.add('active');
+  event.target.classList.add('active');
+  if(name==='calendars') loadCalendars();
+}
+
+/* ══ CALENDARS ══ */
+var _allCals=[];
+async function loadCalendars(){
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/calendars?order=created_at.desc&select=id,title,data,is_public,owner_id,created_at&limit=200',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    _allCals=await res.json();
+    /* Stats */
+    document.getElementById('stat-total').textContent=_allCals.length;
+    document.getElementById('stat-public').textContent=_allCals.filter(function(c){return c.is_public;}).length;
+    document.getElementById('stat-private').textContent=_allCals.filter(function(c){return !c.is_public;}).length;
+    renderCals(_allCals);
+  }catch(e){ showStatus('cal-status','Failed to load calendars','err'); }
+}
+
+function filterCals(){
+  var q=(document.getElementById('cal-search').value||'').toLowerCase();
+  var f=document.getElementById('cal-filter').value;
+  var filtered=_allCals.filter(function(c){
+    var d=c.data||{};
+    var title=(c.title||d.w||'').toLowerCase();
+    var matchQ=!q||title.indexOf(q)>-1||c.id.indexOf(q)>-1;
+    var matchF=f==='all'||(f==='public'&&c.is_public)||(f==='private'&&!c.is_public);
+    return matchQ&&matchF;
+  });
+  renderCals(filtered);
+}
+
+function renderCals(cals){
+  var grid=document.getElementById('cal-grid');
+  if(!cals.length){grid.innerHTML='<div style="color:#555;padding:2rem">No calendars found.</div>';return;}
+  grid.innerHTML=cals.map(function(c){
+    var d=c.data||{};
+    var title=c.title||d.w||'Untitled';
+    var months=(d.months||[]).length;
+    var date=c.created_at?c.created_at.slice(0,10):'';
+    var pubBadge=c.is_public?'<span class="badge badge-pub">PUBLIC</span>':'<span class="badge badge-prv">PRIVATE</span>';
+    return '<div class="cal-item">'+
+      '<div class="cal-item-title">'+title+' '+pubBadge+'</div>'+
+      '<div class="cal-item-meta">'+months+' months · '+date+'<br/>ID: <code style="font-size:.68rem;color:#555">'+c.id+'</code></div>'+
+      '<div class="cal-item-actions">'+
+        '<a href="view.html?id='+c.id+'" target="_blank" class="btn btn-gray">View</a>'+
+        (c.is_public
+          ? '<button class="btn btn-warning" onclick="togglePublic(\''+c.id+'\',false,this)">Make Private</button>'
+          : '<button class="btn btn-success" onclick="togglePublic(\''+c.id+'\',true,this)">Make Public</button>')+
+        '<button class="btn btn-danger" onclick="deleteCalAdmin(\''+c.id+'\',this)">Delete</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+async function togglePublic(id,pub,btn){
+  btn.disabled=true;btn.textContent='…';
+  try{
+    await fetch(SB_URL+'/rest/v1/calendars?id=eq.'+id,{
+      method:'PATCH',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+      body:JSON.stringify({is_public:pub})
+    });
+    var cal=_allCals.find(function(c){return c.id===id;});
+    if(cal) cal.is_public=pub;
+    showStatus('cal-status','Updated successfully','ok');
+    filterCals();
+  }catch(e){btn.disabled=false;btn.textContent=pub?'Make Public':'Make Private';showStatus('cal-status','Update failed','err');}
+}
+
+async function deleteCalAdmin(id,btn){
+  if(!confirm('Permanently delete this calendar? Cannot be undone.')) return;
+  btn.disabled=true;btn.textContent='…';
+  try{
+    await fetch(SB_URL+'/rest/v1/calendars?id=eq.'+id,{
+      method:'DELETE',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    _allCals=_allCals.filter(function(c){return c.id!==id;});
+    showStatus('cal-status','Deleted','ok');
+    filterCals();
+  }catch(e){btn.disabled=false;btn.textContent='Delete';showStatus('cal-status','Delete failed','err');}
+}
+
+/* ══ USERS ══ */
+function fcbUsernameToUid(str){
+  str='fcb:'+str.toLowerCase();
+  var h1=0xdeadbeef^str.length,h2=0x41c6ce57^str.length;
+  for(var i=0;i<str.length;i++){var ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  var a=(h1>>>0).toString(16).padStart(8,'0');var b=(h2>>>0).toString(16).padStart(8,'0');
+  var c=Math.imul(h1,h2)>>>0;var d=(c^0xdeadbeef).toString(16).padStart(8,'0');
+  var e=((h1+h2)>>>0).toString(16).padStart(8,'0');
+  return a+'-'+b.slice(0,4)+'-4'+b.slice(5,8)+'-a'+d.slice(1,4)+'-'+d.slice(4)+e.slice(0,8);
+}
+
+async function searchUser(){
+  var username=document.getElementById('user-search-input').value.trim();
+  if(!username){showStatus('user-status','Enter a username','err');return;}
+  var uid=fcbUsernameToUid(username);
+  showStatus('user-status','Searching…','ok');
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/calendars?owner_id=eq.'+encodeURIComponent(uid)+'&order=created_at.desc&select=id,title,data,is_public,created_at',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    var rows=await res.json();
+    var grid=document.getElementById('user-cal-grid');
+    grid.style.display='';
+    showStatus('user-status','Found '+rows.length+' calendar'+(rows.length!==1?'s':'')+' for "'+username+'" (UID: '+uid+')','ok');
+    if(!rows.length){grid.innerHTML='<div style="color:#555">No calendars found for this username.</div>';return;}
+    grid.innerHTML=rows.map(function(c){
+      var d=c.data||{};var title=c.title||d.w||'Untitled';
+      var pubBadge=c.is_public?'<span class="badge badge-pub">PUBLIC</span>':'<span class="badge badge-prv">PRIVATE</span>';
+      return '<div class="cal-item">'+
+        '<div class="cal-item-title">'+title+' '+pubBadge+'</div>'+
+        '<div class="cal-item-meta">'+c.created_at.slice(0,10)+'</div>'+
+        '<div class="cal-item-actions">'+
+          '<a href="view.html?id='+c.id+'" target="_blank" class="btn btn-gray">View</a>'+
+          '<button class="btn btn-danger" onclick="deleteCalAdmin(\''+c.id+'\',this)">Delete</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }catch(e){showStatus('user-status','Search failed','err');}
+}
+
+/* ══ SEO ══ */
+function loadAdminSettings(){
+  var s=JSON.parse(localStorage.getItem('fcb-admin-settings')||'{}');
+  if(s.seo){
+    var seo=s.seo;
+    ['index-title','index-desc','index-og','index-kw','gallery-title','gallery-desc'].forEach(function(k){
+      var el=document.getElementById('seo-'+k);if(el&&seo[k]) el.value=seo[k];
+    });
+  }
+  if(s.ads){
+    var ads=s.ads;
+    var modeEl=document.getElementById('ad-mode-select');if(modeEl&&ads.mode) modeEl.value=ads.mode;
+    var clientEl=document.getElementById('ad-client-id');if(clientEl&&ads.client) clientEl.value=ads.client;
+    ['top','mid','sidebar'].forEach(function(slot){
+      var h=document.getElementById('ad-'+slot+'-html');if(h&&ads['html_'+slot]) h.value=ads['html_'+slot];
+      var si=document.getElementById('ad-slot-'+slot);if(si&&ads['slot_'+slot]) si.value=ads['slot_'+slot];
+    });
+  }
+  if(s.defaultTheme){
+    var dt=document.getElementById('default-theme');if(dt) dt.value=s.defaultTheme;
+  }
+}
+
+function saveSEO(){
+  var s=JSON.parse(localStorage.getItem('fcb-admin-settings')||'{}');
+  s.seo={};
+  ['index-title','index-desc','index-og','index-kw','gallery-title','gallery-desc'].forEach(function(k){
+    var el=document.getElementById('seo-'+k);if(el) s.seo[k]=el.value;
+  });
+  localStorage.setItem('fcb-admin-settings',JSON.stringify(s));
+  showStatus('seo-status','SEO settings saved locally. Copy values into HTML files on GitHub to apply.','ok');
+}
+
+/* ══ ADS ══ */
+function saveAds(){
+  var mode=document.getElementById('ad-mode-select').value;
+  var client=document.getElementById('ad-client-id').value.trim();
+  var slots={top:document.getElementById('ad-slot-top').value.trim(),mid:document.getElementById('ad-slot-mid').value.trim(),sidebar:document.getElementById('ad-slot-sidebar').value.trim()};
+  var htmls={top:document.getElementById('ad-top-html').value,mid:document.getElementById('ad-mid-html').value,sidebar:document.getElementById('ad-sidebar-html').value};
+
+  /* Save to localStorage */
+  var s=JSON.parse(localStorage.getItem('fcb-admin-settings')||'{}');
+  s.ads={mode:mode,client:client,slot_top:slots.top,slot_mid:slots.mid,slot_sidebar:slots.sidebar,html_top:htmls.top,html_mid:htmls.mid,html_sidebar:htmls.sidebar};
+  localStorage.setItem('fcb-admin-settings',JSON.stringify(s));
+
+  /* Generate ads.js content */
+  var output="/* Fantasy Calendar Builder — ads.js (generated by admin panel) */\n"+
+    "var AD_MODE = '"+mode+"';\n"+
+    "var ADSENSE_CLIENT = '"+client+"';\n"+
+    "var CUSTOM_ADS = {\n"+
+    "  'ad-top':    "+JSON.stringify(htmls.top)+",\n"+
+    "  'ad-mid':    "+JSON.stringify(htmls.mid)+",\n"+
+    "  'ad-sidebar':"+JSON.stringify(htmls.sidebar)+"\n};\n"+
+    "var AD_SLOTS = {\n"+
+    "  'ad-top':     { adsense: '"+slots.top+"', width:'728px',mobileWidth:'320px',height:'90px',mobileHeight:'50px' },\n"+
+    "  'ad-mid':     { adsense: '"+slots.mid+"', width:'300px',mobileWidth:'300px',height:'250px',mobileHeight:'250px' },\n"+
+    "  'ad-sidebar': { adsense: '"+slots.sidebar+"', width:'160px',mobileWidth:'0px',height:'600px',mobileHeight:'0px' }\n};\n"+
+    "(function(){\n  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',injectAds);}else{injectAds();}\n"+
+    "  function injectAds(){\n    if(AD_MODE==='off') return;\n"+
+    "    if(AD_MODE==='adsense'){var s=document.createElement('script');s.async=true;s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+ADSENSE_CLIENT;s.crossOrigin='anonymous';document.head.appendChild(s);}\n"+
+    "    Object.keys(AD_SLOTS).forEach(function(id){\n      var el=document.getElementById(id);if(!el)return;\n"+
+    "      var slot=AD_SLOTS[id];var isMobile=window.innerWidth<600;\n"+
+    "      if(id==='ad-sidebar'&&isMobile){el.style.display='none';return;}\n"+
+    "      el.style.display='flex';el.style.justifyContent='center';el.style.minHeight=isMobile?slot.mobileHeight:slot.height;\n"+
+    "      if(AD_MODE==='custom'){el.innerHTML=CUSTOM_ADS[id]||'';}\n"+
+    "      else if(AD_MODE==='adsense'){el.innerHTML='<ins class=\"adsbygoogle\" style=\"display:block;width:'+(isMobile?slot.mobileWidth:slot.width)+';height:'+(isMobile?slot.mobileHeight:slot.height)+'\" data-ad-client=\"'+ADSENSE_CLIENT+'\" data-ad-slot=\"'+slot.adsense+'\"></ins>';try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}\n"+
+    "    });\n  }\n})();";
+
+  var out=document.getElementById('ads-output');
+  var row=document.getElementById('ads-copy-row');
+  out.value=output;out.style.display='block';row.style.display='block';
+  showStatus('ads-status','ads.js generated! Copy it and paste into GitHub.','ok');
+}
+
+function copyAdsOutput(){
+  var out=document.getElementById('ads-output');
+  out.select();document.execCommand('copy');
+  showStatus('ads-status','Copied to clipboard!','ok');
+}
+
+/* ══ SETTINGS ══ */
+function saveSettings(){
+  var theme=document.getElementById('default-theme').value;
+  var newPw=document.getElementById('new-pw').value;
+  var confirmPw=document.getElementById('confirm-pw').value;
+  var s=JSON.parse(localStorage.getItem('fcb-admin-settings')||'{}');
+  s.defaultTheme=theme;
+  if(newPw){
+    if(newPw!==confirmPw){showStatus('settings-status','Passwords do not match','err');return;}
+    if(newPw.length<6){showStatus('settings-status','Password must be at least 6 characters','err');return;}
+    localStorage.setItem(ADMIN_PW_KEY,newPw);
+    document.getElementById('new-pw').value='';
+    document.getElementById('confirm-pw').value='';
+  }
+  localStorage.setItem('fcb-admin-settings',JSON.stringify(s));
+  /* Apply default theme to localStorage for new visitors */
+  if(!localStorage.getItem('fcb-theme')) localStorage.setItem('fcb-theme',theme);
+  showStatus('settings-status','Settings saved!','ok');
+}
+
+/* ══ HELPERS ══ */
+function showStatus(id,msg,type){
+  var el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=msg;
+  el.className='status-msg '+(type==='ok'?'ok':'err');
+  setTimeout(function(){if(el) el.className='status-msg';},4000);
+}
+</script>
+</body>
+</html>
