@@ -72,6 +72,12 @@ function injectHTML(){
         <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.2);border-radius:6px;padding:.6rem .8rem;margin-bottom:.9rem;font-size:.73rem;color:#8a7040;line-height:1.5">
           📌 Your calendars are saved to this browser only. Don't sign out unless you're sure — there's no way to recover your data on another device.
         </div>
+        <div style="display:flex;gap:.6rem;margin-bottom:.6rem">
+          <button class="fcb-btn" onclick="fcbExportData()" style="flex:1;font-size:.82rem;padding:.5rem">📦 Export my data</button>
+          <button class="fcb-btn" onclick="document.getElementById('fcb-import-input').click()" style="flex:1;font-size:.82rem;padding:.5rem;background:transparent;border:1px solid #c8a04a;color:#c8a04a">📂 Import data</button>
+          <input type="file" id="fcb-import-input" accept=".json" style="display:none" onchange="fcbImportData(this)"/>
+        </div>
+        <div id="fcb-import-msg" style="font-size:.75rem;margin-bottom:.6rem;display:none;padding:.4rem .6rem;border-radius:4px"></div>
         <button class="fcb-btn-out" onclick="fcbSignOut()">Sign out / Change username</button>
       </div>
     </div>
@@ -104,6 +110,74 @@ window.fcbSaveUsername=function(){
   fcbCloseModal();
   if(window.updateSaveUI) updateSaveUI();
   if(window.loadMyCreations) loadMyCreations();
+};
+
+/* ── Export all calendar data as JSON file ── */
+window.fcbExportData=async function(){
+  var uid=localStorage.getItem('fcb-uid');
+  var username=localStorage.getItem('fcb-username');
+  if(!uid||!username){ alert('No data to export.'); return; }
+  try{
+    var SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+    var SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+    var res=await fetch(SB_URL+'/rest/v1/calendars?owner_id=eq.'+encodeURIComponent(uid)+'&select=*',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    if(!res.ok) throw new Error('fetch failed');
+    var calendars=await res.json();
+    var bundle={
+      version:1,
+      username:username,
+      uid:uid,
+      exported_at:new Date().toISOString(),
+      calendars:calendars
+    };
+    var blob=new Blob([JSON.stringify(bundle,null,2)],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download='fcb-backup-'+username+'-'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }catch(e){
+    alert('Export failed — make sure you are connected to the internet.');
+  }
+};
+
+/* ── Import calendar data from JSON file ── */
+window.fcbImportData=async function(input){
+  var file=input.files[0];
+  if(!file) return;
+  var msg=document.getElementById('fcb-import-msg');
+  function showMsg(txt,color){ if(msg){msg.textContent=txt;msg.style.display='block';msg.style.background=color==='ok'?'rgba(0,80,0,.4)':'rgba(80,0,0,.4)';msg.style.color=color==='ok'?'#90cc90':'#ff9090';} }
+  try{
+    var text=await file.text();
+    var bundle=JSON.parse(text);
+    if(!bundle.version||!bundle.calendars){ showMsg('Invalid backup file.','err'); return; }
+    var uid=localStorage.getItem('fcb-uid')||window.FCB_AUTH.getUid();
+    var SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+    var SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+    var count=0;
+    for(var i=0;i<bundle.calendars.length;i++){
+      var cal=bundle.calendars[i];
+      /* Give it a new ID to avoid conflicts, assign to current user */
+      var newId='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+        var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
+      });
+      var payload={id:newId,data:cal.data,owner_id:uid,is_public:cal.is_public||false,title:cal.title||'Imported Calendar',created_at:cal.created_at};
+      var res=await fetch(SB_URL+'/rest/v1/calendars',{
+        method:'POST',
+        headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+        body:JSON.stringify(payload)
+      });
+      if(res.ok) count++;
+    }
+    showMsg('✓ Imported '+count+' calendar'+(count!==1?'s':'')+' successfully!','ok');
+    if(window.loadMyCreations) loadMyCreations();
+  }catch(e){
+    showMsg('Import failed — check the file and try again.','err');
+  }
+  input.value='';
 };
 
 window.fcbSignOut=function(){
