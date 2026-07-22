@@ -59,13 +59,19 @@ function injectHTML(){
         <div class="fcb-logo">🌙 Choose a username</div>
         <div class="fcb-sub">Pick a name to save your calendars to My Creations. No email or password needed.</div>
         <div class="fcb-rules">3–20 characters · letters, numbers, underscores only</div>
+        <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.3);border-radius:6px;padding:.7rem .9rem;margin-bottom:.9rem;font-size:.76rem;color:#c8a04a;line-height:1.6">
+          ⚠️ <strong>Important:</strong> Your calendars are saved to this browser only. There is no cloud account — if you sign out, clear your browser data, or switch devices, you will lose access to your saved calendars. Keep your username safe!
+        </div>
         <div id="fcb-setup-msg" class="fcb-msg"></div>
         <input class="fcb-input" id="fcb-uname-input" type="text" placeholder="your_username" maxlength="20" autocomplete="off" spellcheck="false"/>
-        <button class="fcb-btn" onclick="fcbSaveUsername()">Continue →</button>
+        <button class="fcb-btn" onclick="fcbSaveUsername()">I understand — Continue →</button>
       </div>
       <div id="fcb-view-in" style="display:none">
         <div class="fcb-logo">🌙 Fantasy Calendar Builder</div>
         <div class="fcb-sub" id="fcb-in-lbl">Signed in</div>
+        <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.2);border-radius:6px;padding:.6rem .8rem;margin-bottom:.9rem;font-size:.73rem;color:#8a7040;line-height:1.5">
+          📌 Your calendars are saved to this browser only. Don't sign out unless you're sure — there's no way to recover your data on another device.
+        </div>
         <button class="fcb-btn-out" onclick="fcbSignOut()">Sign out / Change username</button>
       </div>
     </div>
@@ -101,6 +107,8 @@ window.fcbSaveUsername=function(){
 };
 
 window.fcbSignOut=function(){
+  var confirmed=confirm('⚠️ Warning: Your saved calendars are stored in this browser only.\n\nIf you sign out, you will lose access to them unless you use the exact same username again on this device.\n\nAre you sure you want to sign out?');
+  if(!confirmed) return;
   localStorage.removeItem('fcb-username');
   window.FCB_AUTH.profile=null;
   updateNav();
