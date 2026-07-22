@@ -270,6 +270,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
     <a href="builder.html" class="nav-cta">Build free →</a>
   </div>
 </nav>
+<div id="ad-top" style="display:none;margin:.5rem auto;max-width:1100px;padding:0 1.5rem"></div>
 <div class="page-header">
   <h1>Fantasy Calendars</h1>
   <p>Explore real fictional world calendars — or browse your own creations.</p>
@@ -281,6 +282,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
   <button class="gallery-tab" id="tab-my" onclick="switchTab('my')" style="display:none">⭐ My Creations</button>
 </div>
 <div class="gallery" id="gallery"></div>
+<div id="ad-mid" style="display:none;margin:1rem auto 2rem;max-width:400px;text-align:center"></div>
 <div id="favs-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div id="my-creations-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div class="cta-strip">
@@ -848,6 +850,7 @@ async function delCal(btn){deleteCalendar(btn.dataset.del,btn);}async function d
 }
 </script>
 <script src="auth.js"></script>
+<script src="ads.js"></script>
 <script>
 /* Update fav buttons once auth is ready */
 (function(){
