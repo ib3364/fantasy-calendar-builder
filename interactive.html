@@ -3,7 +3,24 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Interactive View — Fantasy Calendar Builder</title>
+<meta name="description" content="Explore this fantasy calendar in an immersive interactive view. Customise themes, fonts and icons. Export as a self-contained HTML file."/>
+<meta name="keywords" content="interactive fantasy calendar, immersive calendar, fantasy world lore, interactive worldbuilding"/>
+<meta name="author" content="Fantasy Calendar Builder"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://fantasy-calendar-builder.vercel.app/interactive.html"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://fantasy-calendar-builder.vercel.app/interactive.html"/>
+<meta property="og:title" content="Interactive Fantasy Calendar"/>
+<meta property="og:description" content="Explore this fantasy calendar in an immersive interactive view. Customise themes, fonts and icons. Export as a self-contained HTML file."/>
+<meta property="og:image" content="https://fantasy-calendar-builder.vercel.app/og-image.png"/>
+<meta property="og:site_name" content="Fantasy Calendar Builder"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Interactive Fantasy Calendar"/>
+<meta name="twitter:description" content="Explore this fantasy calendar in an immersive interactive view. Customise themes, fonts and icons. Export as a self-contained HTML file."/>
+<meta name="twitter:image" content="https://fantasy-calendar-builder.vercel.app/og-image.png"/>
+<title>Interactive Calendar View — Fantasy Calendar Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
@@ -1766,7 +1783,7 @@ function ivExport(){
 
   const html = `<!DOCTYPE html><html data-theme="${IV.theme}"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${(IV.data.w||'Calendar')} — Interactive</title>
+<title>Interactive Calendar View — Fantasy Calendar Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet"/>
 ${IV.font&&!IV.font.startsWith('Custom-')?`<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(IV.font)}:ital@0;1&display=swap" rel="stylesheet"/>`:''}
 <style>${nbCss}
