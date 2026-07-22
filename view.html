@@ -497,21 +497,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 [data-theme="stone"] .cal-month-accent{height:3px!important;opacity:.6;box-shadow:inset 0 -1px 2px rgba(0,0,0,.4)}
 [data-theme="stone"] .btn-download{color:#2a2826}
 
-/* ── FORMAT TOGGLE (PNG / JPEG) inside layout picker ── */
-.fmt-row{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;padding:.7rem 1.2rem .5rem;border-bottom:1px solid var(--border2)}
-.fmt-label{font-size:.72rem;color:var(--text-dim);font-family:var(--font-body);letter-spacing:.05em;text-transform:uppercase}
-.fmt-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.3rem .85rem;font-size:.8rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);clip-path:var(--btn-clip);transition:none}
-.fmt-btn.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
-.fmt-btn:not(.active):hover{border-color:var(--accent);color:var(--accent)}
-/* Locked theme options for guests */
-.theme-opt:disabled{opacity:.45;cursor:not-allowed}
-.theme-opt:disabled::after{content:' 🔒';font-size:.65rem}
-#theme-lock-notice{padding:.5rem .9rem;font-size:.73rem;color:var(--text-dim);font-family:var(--font-body);border-top:1px solid var(--border2);text-align:center}
-#theme-lock-notice a{color:var(--accent);cursor:pointer;text-decoration:underline}
-
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
-<script src="html2canvas.min.js"></script>
 </head>
 <body>
 <div class="scan-line"></div>
@@ -519,10 +506,10 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-actions">
     <a href="#" id="edit-link" class="btn-edit">✏️ Edit this calendar</a>
-    <button class="btn-download" onclick="authGatedDownload()">📥 Download Image</button>
+    <button class="btn-download" onclick="openLayoutPicker()">📥 Download PNG</button>
     <a href="#" id="interactive-link" class="btn-interactive">📖 View interactive →</a>
     <a href="builder.html" class="btn-build">Build your own →</a>
-    <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.82rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);white-space:nowrap">Sign In</a>
+    <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.82rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);white-space:nowrap">Set username</a>
   </div>
 </nav>
 <div class="page">
@@ -548,16 +535,15 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
   <div id="theme-menu">
     <div class="theme-label-hdr">CHOOSE THEME</div>
     <button class="theme-opt" data-theme="">🗺 Cartographer's Ink</button>
-    <button class="theme-opt" data-theme="expanse" disabled>🌌 The Outer Expanse</button>
-    <button class="theme-opt" data-theme="iron" disabled>⚔️ Iron &amp; Vellum</button>
-    <button class="theme-opt" data-theme="waypoint" disabled>🔷 Waypoint Protocol</button>
-    <button class="theme-opt" data-theme="verdant" disabled>🌿 Verdant Archive</button>
-    <button class="theme-opt" data-theme="blood" disabled>🩸 Blood Court</button>
-    <button class="theme-opt" data-theme="void" disabled>🌌 Void Chronicle</button>
-    <button class="theme-opt" data-theme="desert" disabled>🏜️ Desert Scroll</button>
-    <button class="theme-opt" data-theme="neon" disabled>⚡ Neon Codex</button>
-    <button class="theme-opt" data-theme="stone" disabled>🪨 Stone Tablet</button>
-    <div id="theme-lock-notice">🔒 <a onclick="FCB_AUTH.openModal()">Sign in</a> to unlock all themes</div>
+    <button class="theme-opt" data-theme="expanse">🌌 The Outer Expanse</button>
+    <button class="theme-opt" data-theme="iron">⚔️ Iron &amp; Vellum</button>
+    <button class="theme-opt" data-theme="waypoint">🔷 Waypoint Protocol</button>
+    <button class="theme-opt" data-theme="verdant">🌿 Verdant Archive</button>
+    <button class="theme-opt" data-theme="blood">🩸 Blood Court</button>
+    <button class="theme-opt" data-theme="void">🌌 Void Chronicle</button>
+    <button class="theme-opt" data-theme="desert">🏜️ Desert Scroll</button>
+    <button class="theme-opt" data-theme="neon">⚡ Neon Codex</button>
+    <button class="theme-opt" data-theme="stone">🪨 Stone Tablet</button>
   </div>
 </div>
 
@@ -704,9 +690,8 @@ function toggleDrawer(pill){
   pill.textContent=open?'lore ▴':'lore ▾';
 }
 
-async function downloadWithLayout(layoutId, format){
+async function downloadWithLayout(layoutId){
   if(!calData){alert('No calendar to download.');return;}
-  const isJpeg=(format==='jpeg');
 
   const btn=document.querySelector('.btn-download');
   const origText=btn?btn.textContent:'';
@@ -792,14 +777,12 @@ async function downloadWithLayout(layoutId, format){
 
     const worldName=(calData.w||'my-world').toLowerCase().replace(/[^a-z0-9]+/g,'-');
     const layoutSuffix=layoutId&&layoutId!=='card'?'-'+layoutId:'';
-    const ext=isJpeg?'jpg':'png';
-    const mimeType=isJpeg?'image/jpeg':'image/png';
-    const dataUrl=isJpeg?canvas.toDataURL('image/jpeg',0.92):canvas.toDataURL('image/png');
+    const dataUrl=canvas.toDataURL('image/png');
 
     // Mobile-safe download: try anchor click, fallback to open in new tab
     try{
       const link=document.createElement('a');
-      link.download=worldName+layoutSuffix+'-calendar.'+ext;
+      link.download=worldName+layoutSuffix+'-calendar.png';
       link.href=dataUrl;
       document.body.appendChild(link);
       link.click();
@@ -951,16 +934,9 @@ function renderLayoutPicker(){
   `).join('');
 }
 
-function setFmt(fmt, btn){
-  document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
 async function triggerDownload(layoutId){
-  const activeFmtBtn=document.querySelector('.fmt-btn.active');
-  const fmt=(activeFmtBtn&&activeFmtBtn.dataset.fmt)||'png';
   closeLayoutPicker();
-  await downloadWithLayout(layoutId, fmt);
+  await downloadWithLayout(layoutId);
 }
 
 </script>
@@ -973,11 +949,6 @@ async function triggerDownload(layoutId){
       <button class="layout-picker-close" onclick="closeLayoutPicker()">&#x2715;</button>
     </div>
     <div class="layout-picker-subtitle">Each layout uses your active theme. The image is pixel-perfect — exactly what you see on screen.</div>
-    <div class="fmt-row">
-      <span class="fmt-label">Format:</span>
-      <button class="fmt-btn active" data-fmt="png" onclick="setFmt('png',this)">PNG</button>
-      <button class="fmt-btn" data-fmt="jpeg" onclick="setFmt('jpeg',this)">JPEG</button>
-    </div>
     <div class="layout-options" id="layout-options-grid"></div>
     <div class="layout-picker-note">⚡ Tip: the lore sheet layout forces all lore open — great for sharing your worldbuilding notes.</div>
   </div>
@@ -1178,29 +1149,6 @@ async function handleFontUpload(e) {
     <div id="font-picker-grid"></div>
   </div>
 </div>
-<script>
-/* ── Auth-gated download ── */
-function authGatedDownload(){
-  if(window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()){
-    openLayoutPicker();
-  } else {
-    /* Show a friendly prompt instead of silently blocking */
-    var overlay=document.createElement('div');
-    overlay.id='dl-auth-prompt';
-    overlay.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;padding:1rem';
-    overlay.innerHTML=`
-      <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:2rem;max-width:360px;width:100%;text-align:center;font-family:var(--font-body);color:var(--text)">
-        <div style="font-size:2rem;margin-bottom:.8rem">📥</div>
-        <div style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:.5rem">Sign in to download</div>
-        <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:1.3rem;line-height:1.5">Create a free account to download your calendar as PNG or JPEG — takes 30 seconds.</div>
-        <button onclick="document.getElementById('dl-auth-prompt').remove();FCB_AUTH.openModal()" style="width:100%;background:var(--accent);color:var(--bg);border:none;padding:.65rem;border-radius:6px;font-family:var(--font-display);font-weight:700;font-size:.9rem;cursor:pointer;margin-bottom:.5rem">Sign In / Create Account</button>
-        <button onclick="document.getElementById('dl-auth-prompt').remove()" style="width:100%;background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.55rem;border-radius:6px;font-family:var(--font-body);font-size:.82rem;cursor:pointer">Maybe later</button>
-      </div>`;
-    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
-    document.body.appendChild(overlay);
-  }
-}
-</script>
 <script src="auth.js"></script>
 </body>
 </html>
