@@ -242,20 +242,16 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 [data-theme="stone"] .cal-month-accent{height:3px!important;opacity:.6;box-shadow:inset 0 -1px 2px rgba(0,0,0,.4)}
 [data-theme="stone"] .btn-download{color:#2a2826}
 
-/* ── Gallery tabs ── */
-.gallery-tabs{display:flex;gap:.5rem;justify-content:center;margin:0 auto 2rem;padding:0 1.5rem;max-width:700px;flex-wrap:wrap}
-.gallery-tab{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.5rem 1.4rem;font-size:.85rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);clip-path:var(--btn-clip);transition:border-color .15s,color .15s}
+.gallery-tabs{display:flex;gap:.5rem;justify-content:center;margin:0 auto 2rem;padding:0 1.5rem;flex-wrap:wrap}
+.gallery-tab{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:.5rem 1.4rem;font-size:.85rem;cursor:pointer;font-family:var(--font-body);border-radius:var(--radius-btn);transition:border-color .15s,color .15s}
 .gallery-tab:hover{border-color:var(--accent);color:var(--accent)}
 .gallery-tab.active{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:700}
-.gallery-tab.locked{opacity:.5;cursor:default}
-/* My Creations empty state */
 .my-creations-empty{text-align:center;padding:4rem 1.5rem;color:var(--text-dim);font-family:var(--font-body)}
 .my-creations-empty .icon{font-size:2.5rem;margin-bottom:1rem}
 .my-creations-empty p{margin-bottom:1.2rem;font-size:.95rem}
-/* Calendar card visibility badge */
 .vis-badge{display:inline-block;font-size:.65rem;padding:.15rem .5rem;border-radius:3px;margin-left:.4rem;vertical-align:middle}
-.vis-badge.public{background:rgba(var(--accent-rgb),.15);color:var(--accent);border:1px solid rgba(var(--accent-rgb),.3)}
-.vis-badge.private{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
+.vis-badge.public{background:rgba(var(--accent-rgb),.15);color:var(--accent)}
+.vis-badge.private{background:var(--surface2);color:var(--text-dim)}
 
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&display=swap"/>
@@ -266,7 +262,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-links">
     <a href="gallery.html" style="color:var(--accent)">Gallery</a>
-    <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false">Sign In</a>
+    <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false">Set username</a>
     <a href="builder.html" class="nav-cta">Build free →</a>
   </div>
 </nav>
@@ -277,7 +273,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 </div>
 <div class="gallery-tabs">
   <button class="gallery-tab active" id="tab-franchise" onclick="switchTab('franchise')">📚 Popular Franchises</button>
-  <button class="gallery-tab" id="tab-my" onclick="switchTab('my')">⭐ My Creations</button>
+  <button class="gallery-tab" id="tab-my" onclick="switchTab('my')" style="display:none">⭐ My Creations</button>
 </div>
 <div class="gallery" id="gallery"></div>
 <div id="my-creations-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
@@ -707,109 +703,53 @@ renderGallery();
   updateActive();
 })();
 </script>
-<script src="auth.js"></script>
-<script>
-/* ── Gallery tabs + My Creations ── */
-const SB_URL_G='https://rqrqxrngqtaywmhkdoal.supabase.co';
-const SB_KEY_G='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
-var _currentTab='franchise';
 
+<script>
+var SB_URL_G='https://rqrqxrngqtaywmhkdoal.supabase.co';
+var SB_KEY_G='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+var _currentTab='franchise';
 function switchTab(tab){
   _currentTab=tab;
   document.querySelectorAll('.gallery-tab').forEach(function(b){b.classList.remove('active');});
-  var activeBtn=document.getElementById('tab-'+tab);
-  if(activeBtn) activeBtn.classList.add('active');
-  var gallery=document.getElementById('gallery');
-  var myPanel=document.getElementById('my-creations-panel');
-  if(tab==='franchise'){
-    if(gallery) gallery.style.display='';
-    if(myPanel) myPanel.style.display='none';
-  } else if(tab==='my'){
-    if(gallery) gallery.style.display='none';
-    if(myPanel) myPanel.style.display='';
-    loadMyCreations();
-  }
+  var ab=document.getElementById('tab-'+tab);if(ab)ab.classList.add('active');
+  var gallery=document.getElementById('gallery');var myPanel=document.getElementById('my-creations-panel');
+  if(tab==='franchise'){if(gallery)gallery.style.display='';if(myPanel)myPanel.style.display='none';}
+  else{if(gallery)gallery.style.display='none';if(myPanel)myPanel.style.display='';loadMyCreations();}
 }
-
 async function loadMyCreations(){
-  var panel=document.getElementById('my-creations-panel');
-  if(!panel) return;
-
-  /* If auth not ready or user not signed in, show lock screen immediately */
-  if(!window.FCB_AUTH||!window.FCB_AUTH.isSignedIn()){
-    panel.innerHTML='<div class="my-creations-empty"><div class="icon">🔒</div><p>Sign in to see your saved calendars.</p><button class="btn-primary" onclick="FCB_AUTH.openModal()">Sign In / Create Account</button></div>';
-    return;
-  }
-
+  var panel=document.getElementById('my-creations-panel');if(!panel)return;
+  var uid=localStorage.getItem('fcb-uid');var name=localStorage.getItem('fcb-username');
+  if(!uid||!name){panel.innerHTML='<div class="my-creations-empty"><div class="icon">🌙</div><p>Set a username to save and view your calendars here.</p><button class="btn-primary" onclick="FCB_AUTH.openModal()">Set username</button></div>';return;}
   panel.innerHTML='<div class="my-creations-empty"><div class="icon">⏳</div><p>Loading your calendars…</p></div>';
   try{
-    var uid=window.FCB_AUTH.user.id;
-    var token=SB_KEY_G;
-    try{
-      var sessionRes=await window.FCB_AUTH.db.auth.getSession();
-      if(sessionRes.data&&sessionRes.data.session) token=sessionRes.data.session.access_token;
-    }catch(e){}
-    var controller=new AbortController();
-    var fetchTimeout=setTimeout(function(){controller.abort();},8000);
-    var res=await fetch(SB_URL_G+'/rest/v1/calendars?owner_id=eq.'+uid+'&order=created_at.desc&select=id,title,is_public,data,created_at',{
-      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+token},
-      signal:controller.signal
-    });
-    clearTimeout(fetchTimeout);
-    if(!res.ok) throw new Error('fetch failed');
+    var ctrl=new AbortController();var t=setTimeout(function(){ctrl.abort();},8000);
+    var res=await fetch(SB_URL_G+'/rest/v1/calendars?owner_id=eq.'+encodeURIComponent(uid)+'&order=created_at.desc&select=id,title,is_public,data,created_at',{headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+SB_KEY_G},signal:ctrl.signal});
+    clearTimeout(t);if(!res.ok)throw new Error('failed');
     var rows=await res.json();
-    if(!rows.length){
-      panel.innerHTML='<div class="my-creations-empty"><div class="icon">🌙</div><p>You haven\'t saved any calendars yet.</p><a href="builder.html" class="btn-primary">Build your first calendar</a></div>';
-      return;
-    }
+    if(!rows.length){panel.innerHTML='<div class="my-creations-empty"><div class="icon">🌙</div><p>No saved calendars yet.</p><a href="builder.html" class="btn-primary">Build your first calendar</a></div>';return;}
     var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem">';
     rows.forEach(function(row){
-      var d=row.data||{};
-      var title=row.title||d.w||'Untitled';
+      var d=row.data||{};var title=row.title||d.w||'Untitled';
       var vis=row.is_public?'<span class="vis-badge public">🌐 Public</span>':'<span class="vis-badge private">🔒 Private</span>';
-      var viewUrl=window.location.origin+'/view.html?id='+row.id;
-      var interactiveUrl=window.location.origin+'/interactive.html?mode=interactive&id='+row.id;
       html+='<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-card);padding:1.2rem">';
       html+='<div style="font-family:var(--font-display);font-size:1.05rem;color:var(--accent);margin-bottom:.3rem">'+title+vis+'</div>';
-      html+='<div style="font-size:.78rem;color:var(--text-dim);margin-bottom:.9rem">'+((d.months||[]).length||'?')+' months · '+(d.moons||[]).length+' moons</div>';
+      html+='<div style="font-size:.78rem;color:var(--text-dim);margin-bottom:.9rem">'+((d.months||[]).length||'?')+' months</div>';
       html+='<div style="display:flex;gap:.5rem;flex-wrap:wrap">';
-      html+='<a href="'+viewUrl+'" class="btn-view" style="flex:1;text-align:center">View →</a>';
-      html+='<a href="'+interactiveUrl+'" class="btn-view" style="flex:1;text-align:center">Interactive →</a>';
-      html+='<button onclick="deleteCalendar(\''+row.id+'\',this)" style="background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.35rem .7rem;border-radius:var(--radius-btn);cursor:pointer;font-size:.75rem">🗑</button>';
+      html+='<a href="view.html?id='+row.id+'" class="btn-view" style="flex:1;text-align:center">View →</a>';
+      html+='<a href="interactive.html?mode=interactive&id='+row.id+'" class="btn-view" style="flex:1;text-align:center">Interactive →</a>';
+      html+='<button data-del="'+row.id+'" onclick="delCal(this)" style="background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.35rem .7rem;border-radius:var(--radius-btn);cursor:pointer;font-size:.75rem">🗑</button>';
       html+='</div></div>';
     });
-    html+='</div>';
-    panel.innerHTML=html;
-  }catch(e){
-    panel.innerHTML='<div class="my-creations-empty"><div class="icon">⚠️</div><p>Could not load your calendars. Try again later.</p></div>';
-  }
+    panel.innerHTML=html+'</div>';
+  }catch(e){panel.innerHTML='<div class="my-creations-empty"><div class="icon">⚠️</div><p>Could not load calendars. Try again later.</p></div>';}
 }
-
-/* Refresh My Creations when page is restored from back/forward cache */
-window.addEventListener('pageshow',function(e){
-  if(e.persisted&&_currentTab==='my') loadMyCreations();
-});
-
-async function deleteCalendar(id, btn){
-  if(!confirm('Delete this calendar? This cannot be undone.')) return;
-  btn.textContent='…';
-  try{
-    await fetch(SB_URL_G+'/rest/v1/calendars?id=eq.'+id,{
-      method:'DELETE',
-      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+window.FCB_AUTH.db.auth.session.access_token}
-    });
-    loadMyCreations();
-  }catch(e){btn.textContent='🗑';}
+async function delCal(btn){deleteCalendar(btn.dataset.del,btn);}async function deleteCalendar(id,btn){
+  if(!confirm('Delete this calendar?'))return;btn.textContent='…';
+  try{await fetch(SB_URL_G+'/rest/v1/calendars?id=eq.'+id,{method:'DELETE',headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+SB_KEY_G}});loadMyCreations();}
+  catch(e){btn.textContent='🗑';}
 }
-
-/* Re-check auth on tab — handles case where auth resolves after tab was clicked */
-setInterval(function(){
-  if(_currentTab!=='my') return;
-  var panel=document.getElementById('my-creations-panel');
-  if(!panel) return;
-  var needsReload=panel.innerHTML.indexOf('Sign in')>-1||panel.innerHTML.indexOf('sign in')>-1;
-  if(needsReload&&window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()) loadMyCreations();
-},800);
 </script>
+<script src="auth.js"></script>
+
 </body>
 </html>
