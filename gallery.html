@@ -278,11 +278,13 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 </div>
 <div class="gallery-tabs">
   <button class="gallery-tab active" id="tab-franchise" onclick="switchTab('franchise')">📚 Popular Franchises</button>
+  <button class="gallery-tab" id="tab-public" onclick="switchTab('public')">🌐 Public</button>
   <button class="gallery-tab" id="tab-favs" onclick="switchTab('favs')" style="display:none">❤️ Favorites</button>
   <button class="gallery-tab" id="tab-my" onclick="switchTab('my')" style="display:none">⭐ My Creations</button>
 </div>
 <div class="gallery" id="gallery"></div>
 <div id="ad-mid" style="display:none;margin:1rem auto 2rem;max-width:400px;text-align:center"></div>
+<div id="public-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div id="favs-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div id="my-creations-panel" style="display:none;max-width:1100px;margin:0 auto;padding:0 1.5rem 5rem"></div>
 <div class="cta-strip">
@@ -755,13 +757,60 @@ function switchTab(tab){
   document.querySelectorAll('.gallery-tab').forEach(function(b){b.classList.remove('active');});
   var ab=document.getElementById('tab-'+tab); if(ab) ab.classList.add('active');
   var gallery=document.getElementById('gallery');
+  var publicPanel=document.getElementById('public-panel');
   var favsPanel=document.getElementById('favs-panel');
   var myPanel=document.getElementById('my-creations-panel');
   gallery.style.display=tab==='franchise'?'':'none';
+  publicPanel.style.display=tab==='public'?'':'none';
   favsPanel.style.display=tab==='favs'?'':'none';
   myPanel.style.display=tab==='my'?'':'none';
+  if(tab==='public') loadPublic();
   if(tab==='favs') loadFavs();
   if(tab==='my') loadMyCreations();
+}
+
+async function loadPublic(){
+  var panel=document.getElementById('public-panel'); if(!panel) return;
+  panel.innerHTML='<div class="my-creations-empty"><div class="icon">⏳</div><p>Loading public calendars…</p></div>';
+  try{
+    var ctrl=new AbortController();
+    var t=setTimeout(function(){ctrl.abort();},8000);
+    var res=await fetch(SB_URL_G+'/rest/v1/calendars?is_public=eq.true&order=created_at.desc&select=id,title,data,created_at',{
+      headers:{'apikey':SB_KEY_G,'Authorization':'Bearer '+SB_KEY_G},
+      signal:ctrl.signal
+    });
+    clearTimeout(t);
+    if(!res.ok) throw new Error('failed');
+    var rows=await res.json();
+    if(!rows.length){
+      panel.innerHTML='<div class="my-creations-empty"><div class="icon">🌐</div><p>No public calendars yet — be the first to share one!</p><a href="builder.html" class="btn-primary">Build a calendar</a></div>';
+      return;
+    }
+    var html='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem">';
+    rows.forEach(function(row){
+      var d=row.data||{};
+      var title=row.title||d.w||'Untitled';
+      var months=(d.months||[]).length||'?';
+      var moons=(d.moons||[]).length;
+      var events=(d.events||[]).length;
+      var date=row.created_at?row.created_at.slice(0,10):'';
+      var favId=row.id;
+      var favs=getFavs();
+      var isFav=favs.indexOf(favId)>-1;
+      html+='<div style="background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-card);padding:1.2rem;position:relative">';
+      html+='<button class="btn-fav'+(isFav?' active':'')+'" data-favid="'+favId+'" onclick="toggleFav(this)" title="'+(isFav?'Remove from':'Add to')+' Favorites">❤️</button>';
+      html+='<div style="font-family:var(--font-display);font-size:1.05rem;color:var(--accent);margin-bottom:.25rem;padding-right:2rem">'+title+'</div>';
+      if(d.e) html+='<div style="font-size:.78rem;color:var(--text-dim);font-style:italic;margin-bottom:.4rem">'+d.e+'</div>';
+      html+='<div style="font-size:.75rem;color:var(--text-dim);margin-bottom:.9rem">'+months+' months · '+moons+' moons · '+events+' events'+(date?' · '+date:'')+'</div>';
+      html+='<div style="display:flex;gap:.5rem;flex-wrap:wrap">';
+      html+='<a href="view.html?id='+row.id+'" class="btn-view" style="flex:1;text-align:center">View →</a>';
+      html+='<a href="interactive.html?mode=interactive&id='+row.id+'" class="btn-view" style="flex:1;text-align:center">Interactive →</a>';
+      html+='</div></div>';
+    });
+    panel.innerHTML=html+'</div>';
+  }catch(e){
+    panel.innerHTML='<div class="my-creations-empty"><div class="icon">⚠️</div><p>Could not load public calendars. Try again later.</p></div>';
+  }
 }
 
 function loadFavs(){
