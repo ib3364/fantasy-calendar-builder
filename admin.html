@@ -96,7 +96,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#e0e0e
   <nav class="admin-nav">
     <h1>🌙 FCB Admin</h1>
     <button class="admin-tab active" onclick="showPanel('calendars')">🗓 Calendars</button>
-    <button class="admin-tab" onclick="showPanel('seo')">🔍 SEO</button>
     <button class="admin-tab" onclick="showPanel('ads')">📢 Ads</button>
     <button class="admin-tab" onclick="showPanel('users')">👤 Users</button>
     <button class="admin-tab" onclick="showPanel('settings')">⚙️ Settings</button>
@@ -122,26 +121,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#e0e0e
       </div>
       <div id="cal-status" class="status-msg"></div>
       <div class="cal-grid" id="cal-grid"><div style="color:#555;padding:2rem">Loading…</div></div>
-    </div>
-
-    <!-- ── SEO ── -->
-    <div class="admin-panel" id="panel-seo">
-      <div class="panel-title">🔍 SEO Settings</div>
-      <div class="form-section">
-        <h3>Homepage (index.html)</h3>
-        <div class="form-group"><label>Page Title</label><input id="seo-index-title" type="text" placeholder="Fantasy Calendar Builder — Build your world's calendar in 10 minutes"/></div>
-        <div class="form-group"><label>Meta Description</label><textarea id="seo-index-desc" placeholder="Create custom fantasy calendars with months, moon phases, holidays and seasons…"></textarea></div>
-        <div class="form-group"><label>OG Image URL</label><input id="seo-index-og" type="text" placeholder="https://…"/></div>
-        <div class="form-group"><label>Keywords (comma-separated)</label><input id="seo-index-kw" type="text" placeholder="fantasy calendar, world building, D&D calendar…"/></div>
-      </div>
-      <div class="form-section">
-        <h3>Gallery (gallery.html)</h3>
-        <div class="form-group"><label>Page Title</label><input id="seo-gallery-title" type="text" placeholder="Fantasy Calendars — Browse fictional world calendars"/></div>
-        <div class="form-group"><label>Meta Description</label><textarea id="seo-gallery-desc" placeholder="Explore calendars from Middle-earth, Tamriel, Faerûn and more…"></textarea></div>
-      </div>
-      <button class="btn btn-primary" onclick="saveSEO()">💾 Save SEO Settings</button>
-      <div id="seo-status" class="status-msg"></div>
-      <div style="margin-top:1.5rem;font-size:.78rem;color:#555">⚠️ SEO settings are saved here for reference. To apply them, copy the values into the &lt;head&gt; of each HTML file on GitHub.</div>
     </div>
 
     <!-- ── Ads ── -->
@@ -398,39 +377,6 @@ async function searchUser(){
       '</div>';
     }).join('');
   }catch(e){showStatus('user-status','Search failed','err');}
-}
-
-/* ══ SEO ══ */
-function loadAdminSettings(){
-  var s=JSON.parse(localStorage.getItem('fcb-admin-settings')||'{}');
-  if(s.seo){
-    var seo=s.seo;
-    ['index-title','index-desc','index-og','index-kw','gallery-title','gallery-desc'].forEach(function(k){
-      var el=document.getElementById('seo-'+k);if(el&&seo[k]) el.value=seo[k];
-    });
-  }
-  if(s.ads){
-    var ads=s.ads;
-    var modeEl=document.getElementById('ad-mode-select');if(modeEl&&ads.mode) modeEl.value=ads.mode;
-    var clientEl=document.getElementById('ad-client-id');if(clientEl&&ads.client) clientEl.value=ads.client;
-    ['top','mid','sidebar'].forEach(function(slot){
-      var h=document.getElementById('ad-'+slot+'-html');if(h&&ads['html_'+slot]) h.value=ads['html_'+slot];
-      var si=document.getElementById('ad-slot-'+slot);if(si&&ads['slot_'+slot]) si.value=ads['slot_'+slot];
-    });
-  }
-  if(s.defaultTheme){
-    var dt=document.getElementById('default-theme');if(dt) dt.value=s.defaultTheme;
-  }
-}
-
-function saveSEO(){
-  var s=JSON.parse(localStorage.getItem('fcb-admin-settings')||'{}');
-  s.seo={};
-  ['index-title','index-desc','index-og','index-kw','gallery-title','gallery-desc'].forEach(function(k){
-    var el=document.getElementById('seo-'+k);if(el) s.seo[k]=el.value;
-  });
-  localStorage.setItem('fcb-admin-settings',JSON.stringify(s));
-  showStatus('seo-status','SEO settings saved locally. Copy values into HTML files on GitHub to apply.','ok');
 }
 
 /* ══ ADS ══ */
