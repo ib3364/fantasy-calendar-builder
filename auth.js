@@ -1,524 +1,125 @@
-/* ═══════════════════════════════════════════════════════
-   Fantasy Calendar Builder — auth.js
-   Self-contained auth module: modal + Supabase Auth
-   Supports: Email, Google, Facebook, X (Twitter), Reddit
-   ═══════════════════════════════════════════════════════ */
+/* Fantasy Calendar Builder — auth.js (username-only, no email/OAuth) */
 (function(){
 'use strict';
 
-const SUPA_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
-const SUPA_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
-const SITE_URL='https://fantasy-calendar-builder.vercel.app';
-const SDK_URL='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-
-/* ── Public API ── */
 window.FCB_AUTH={
-  user:null, profile:null, db:null,
-  openModal:function(){ authShowModal(); },
-  isSignedIn:function(){ return !!window.FCB_AUTH.user; }
+  profile:null,
+  isSignedIn:function(){ return !!localStorage.getItem('fcb-username'); },
+  openModal:function(){ fcbShowModal(); },
+  getUid:function(){
+    var uid=localStorage.getItem('fcb-uid');
+    if(!uid){ uid='u'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('fcb-uid',uid); }
+    return uid;
+  }
 };
 
-/* ─────────────────────────────────────────
-   1. INJECT CSS
-───────────────────────────────────────── */
+var _name=localStorage.getItem('fcb-username');
+if(_name) window.FCB_AUTH.profile={username:_name};
+
 function injectCSS(){
-  const s=document.createElement('style');
+  var s=document.createElement('style');
   s.textContent=`
-  /* ── Auth modal overlay ── */
-  #fcb-auth-overlay{
-    display:none;position:fixed;inset:0;z-index:99999;
-    background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);
-    align-items:center;justify-content:center;padding:1rem;
-  }
+  #fcb-auth-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
   #fcb-auth-overlay.open{display:flex}
-
-  /* ── Modal box ── */
-  #fcb-auth-box{
-    background:#1a1205;border:1px solid #c8a04a;border-radius:12px;
-    padding:2.2rem 2.2rem 1.8rem;width:100%;max-width:400px;
-    position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.8);
-    color:#e8d8a8;font-family:Georgia,'Times New Roman',serif;
-    animation:fcbModalIn .2s ease-out;
-  }
-  @keyframes fcbModalIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-
-  #fcb-auth-close{
-    position:absolute;top:.9rem;right:1rem;background:transparent;
-    border:none;color:#c8a04a;font-size:1.3rem;cursor:pointer;
-    line-height:1;padding:.25rem .4rem;border-radius:4px;
-  }
+  #fcb-auth-box{background:#1a1205;border:1px solid #c8a04a;border-radius:12px;padding:2.2rem;width:100%;max-width:380px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.8);color:#e8d8a8;font-family:Georgia,serif;animation:fcbIn .2s ease-out}
+  @keyframes fcbIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+  #fcb-auth-close{position:absolute;top:.9rem;right:1rem;background:transparent;border:none;color:#c8a04a;font-size:1.3rem;cursor:pointer;padding:.25rem .4rem;border-radius:4px}
   #fcb-auth-close:hover{background:rgba(200,160,74,.15)}
-
-  .fcb-auth-logo{
-    font-family:'Cinzel',Georgia,serif;font-size:1.15rem;
-    color:#c8a04a;margin-bottom:.25rem;letter-spacing:.03em;
-  }
-  .fcb-auth-sub{
-    font-size:.78rem;color:#8a7040;margin-bottom:1.5rem;line-height:1.5;
-  }
-
-  /* OAuth buttons */
-  .fcb-oauth-btn{
-    display:flex;align-items:center;gap:.9rem;width:100%;
-    background:#241808;border:1px solid #4a3418;color:#e8d8a8;
-    padding:.62rem 1rem;margin-bottom:.55rem;border-radius:6px;
-    font-size:.84rem;cursor:pointer;font-family:Georgia,serif;
-    transition:border-color .15s,background .15s;text-align:left;
-  }
-  .fcb-oauth-btn:hover{border-color:#c8a04a;background:#2e1e08}
-  .fcb-oauth-icon{font-size:1.05rem;width:22px;text-align:center;flex-shrink:0}
-
-  /* Divider */
-  .fcb-divider{
-    display:flex;align-items:center;gap:.8rem;
-    margin:.9rem 0;color:#6a5030;font-size:.73rem;
-  }
-  .fcb-divider::before,.fcb-divider::after{
-    content:'';flex:1;height:1px;background:#3a2c10;
-  }
-
-  /* Inputs */
-  .fcb-input{
-    width:100%;background:#0e0b04;border:1px solid #4a3818;
-    color:#e8d8a8;padding:.6rem .85rem;border-radius:5px;
-    font-size:.87rem;font-family:Georgia,serif;outline:none;
-    box-sizing:border-box;margin-bottom:.65rem;
-  }
+  .fcb-logo{font-family:'Cinzel',Georgia,serif;font-size:1.15rem;color:#c8a04a;margin-bottom:.3rem}
+  .fcb-sub{font-size:.8rem;color:#8a7040;margin-bottom:1.2rem;line-height:1.5}
+  .fcb-rules{font-size:.72rem;color:#6a5028;margin-bottom:.8rem;line-height:1.5}
+  .fcb-input{width:100%;background:#0e0b04;border:1px solid #4a3818;color:#e8d8a8;padding:.6rem .85rem;border-radius:5px;font-size:.9rem;font-family:Georgia,serif;outline:none;box-sizing:border-box;margin-bottom:.65rem}
   .fcb-input:focus{border-color:#c8a04a}
   .fcb-input::placeholder{color:#5a4828}
-
-  /* Buttons */
-  .fcb-btn-primary{
-    width:100%;background:#c8a04a;color:#1a1005;border:none;
-    padding:.65rem;border-radius:5px;font-size:.9rem;font-weight:700;
-    font-family:'Cinzel',Georgia,serif;cursor:pointer;
-    letter-spacing:.04em;transition:background .15s;
-  }
-  .fcb-btn-primary:hover{background:#e0b860}
-  .fcb-btn-secondary{
-    width:100%;background:transparent;border:1px solid #c8a04a;
-    color:#c8a04a;padding:.58rem;border-radius:5px;font-size:.85rem;
-    font-family:Georgia,serif;cursor:pointer;margin-top:.5rem;
-    transition:background .15s;
-  }
-  .fcb-btn-secondary:hover{background:rgba(200,160,74,.1)}
-
-  /* Messages */
-  .fcb-msg{
-    font-size:.77rem;padding:.5rem .7rem;border-radius:4px;
-    margin-bottom:.6rem;display:none;line-height:1.4;
-  }
+  .fcb-msg{font-size:.77rem;padding:.5rem .7rem;border-radius:4px;margin-bottom:.6rem;display:none;line-height:1.4}
   .fcb-msg.show{display:block}
   .fcb-msg.error{background:#2a0808;color:#ff9090;border:1px solid #6a1818}
-  .fcb-msg.info{background:#08101a;color:#90bbdd;border:1px solid #1a3a5a}
-  .fcb-msg.success{background:#081808;color:#90cc90;border:1px solid #1a4a1a}
-
-  /* Switch link */
-  .fcb-switch{
-    text-align:center;margin-top:1rem;font-size:.77rem;color:#8a7040;
-  }
-  .fcb-switch a{color:#c8a04a;cursor:pointer;text-decoration:underline}
-
-  /* Nav sign-in link styling */
-  #fcb-nav-auth{
-    color:var(--text-muted,#9a8068);text-decoration:none;
-    font-size:.9rem;cursor:pointer;font-family:var(--font-body,Georgia,serif);
-    transition:color .15s;
-  }
+  .fcb-btn{width:100%;background:#c8a04a;color:#1a1005;border:none;padding:.65rem;border-radius:5px;font-size:.9rem;font-weight:700;font-family:'Cinzel',Georgia,serif;cursor:pointer;letter-spacing:.04em}
+  .fcb-btn:hover{background:#e0b860}
+  .fcb-btn-out{width:100%;background:transparent;border:1px solid #c8a04a;color:#c8a04a;padding:.58rem;border-radius:5px;font-size:.85rem;font-family:Georgia,serif;cursor:pointer;margin-top:.5rem}
+  .fcb-btn-out:hover{background:rgba(200,160,74,.1)}
+  #fcb-nav-auth{color:var(--text-muted,#9a8068);text-decoration:none;font-size:.9rem;cursor:pointer;font-family:var(--font-body,Georgia,serif)}
   #fcb-nav-auth:hover{color:var(--accent,#c8a04a)}
-  #fcb-nav-auth.signed-in{color:var(--accent,#c8a04a);font-weight:600}
-
-  /* Username hint */
-  .fcb-uname-rules{
-    font-size:.72rem;color:#6a5028;margin-bottom:1rem;line-height:1.5;
-  }
+  #fcb-nav-auth.has-name{color:var(--accent,#c8a04a);font-weight:600}
   `;
   document.head.appendChild(s);
 }
 
-/* ─────────────────────────────────────────
-   2. INJECT MODAL HTML
-───────────────────────────────────────── */
 function injectHTML(){
-  const wrap=document.createElement('div');
-  wrap.innerHTML=`
-  <div id="fcb-auth-overlay">
+  var d=document.createElement('div');
+  d.innerHTML=`<div id="fcb-auth-overlay">
     <div id="fcb-auth-box">
-      <button id="fcb-auth-close" onclick="authCloseModal()" aria-label="Close">✕</button>
-
-      <!-- ── View: sign in / sign up ── -->
-      <div id="fcb-view-main">
-        <div class="fcb-auth-logo" id="fcb-main-title">🌙 Sign In</div>
-        <div class="fcb-auth-sub" id="fcb-main-sub">Sign in to save calendars, download images and unlock all themes.</div>
-
-        <button class="fcb-oauth-btn" onclick="authOAuth('google')">
-          <span class="fcb-oauth-icon">🔵</span>Continue with Google
-        </button>
-
-        <div class="fcb-divider">or continue with email</div>
-
-        <div id="fcb-main-msg" class="fcb-msg"></div>
-        <input class="fcb-input" id="fcb-email" type="email" placeholder="Email address" autocomplete="email"/>
-        <input class="fcb-input" id="fcb-password" type="password" placeholder="Password (min 6 chars)" autocomplete="current-password"/>
-        <button class="fcb-btn-primary" id="fcb-main-action-btn" onclick="authEmailAction()">Sign In</button>
-        <div class="fcb-switch" id="fcb-switch-row">
-          New here? <a onclick="authToggleMode()">Create an account</a>
-        </div>
+      <button id="fcb-auth-close" onclick="fcbCloseModal()">✕</button>
+      <div id="fcb-view-setup">
+        <div class="fcb-logo">🌙 Choose a username</div>
+        <div class="fcb-sub">Pick a name to save your calendars to My Creations. No email or password needed.</div>
+        <div class="fcb-rules">3–20 characters · letters, numbers, underscores only</div>
+        <div id="fcb-setup-msg" class="fcb-msg"></div>
+        <input class="fcb-input" id="fcb-uname-input" type="text" placeholder="your_username" maxlength="20" autocomplete="off" spellcheck="false"/>
+        <button class="fcb-btn" onclick="fcbSaveUsername()">Continue →</button>
       </div>
-
-      <!-- ── View: username setup (new users) ── -->
-      <div id="fcb-view-username" style="display:none">
-        <div class="fcb-auth-logo">🌙 One last step!</div>
-        <div class="fcb-auth-sub">Choose a username for your account.</div>
-        <div class="fcb-uname-rules">Letters, numbers and underscores only · 3–20 characters</div>
-        <div id="fcb-uname-msg" class="fcb-msg"></div>
-        <input class="fcb-input" id="fcb-username" type="text" placeholder="your_username" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false"/>
-        <button class="fcb-btn-primary" onclick="authSaveUsername()">Continue →</button>
-      </div>
-
-      <!-- ── View: signed in ── -->
-      <div id="fcb-view-signedin" style="display:none">
-        <div class="fcb-auth-logo">🌙 Fantasy Calendar Builder</div>
-        <div class="fcb-auth-sub" id="fcb-signedin-label">Signed in</div>
-        <button class="fcb-btn-secondary" style="margin-top:1.2rem" onclick="authSignOut()">Sign Out</button>
+      <div id="fcb-view-in" style="display:none">
+        <div class="fcb-logo">🌙 Fantasy Calendar Builder</div>
+        <div class="fcb-sub" id="fcb-in-lbl">Signed in</div>
+        <button class="fcb-btn-out" onclick="fcbSignOut()">Sign out / Change username</button>
       </div>
     </div>
-  </div>
-  `;
-  document.body.appendChild(wrap);
-
-  /* close on backdrop click */
-  document.getElementById('fcb-auth-overlay').addEventListener('click',function(e){
-    if(e.target.id==='fcb-auth-overlay') authCloseModal();
-  });
-  /* Enter key on password */
-  document.getElementById('fcb-password').addEventListener('keydown',function(e){
-    if(e.key==='Enter') authEmailAction();
-  });
-  /* Enter key on username */
-  document.getElementById('fcb-username').addEventListener('keydown',function(e){
-    if(e.key==='Enter') authSaveUsername();
-  });
+  </div>`;
+  document.body.appendChild(d);
+  document.getElementById('fcb-auth-overlay').addEventListener('click',function(e){ if(e.target.id==='fcb-auth-overlay') fcbCloseModal(); });
+  document.getElementById('fcb-uname-input').addEventListener('keydown',function(e){ if(e.key==='Enter') fcbSaveUsername(); });
 }
 
-/* ─────────────────────────────────────────
-   3. MODAL CONTROLS
-───────────────────────────────────────── */
-function openOverlay(){
-  var overlay=document.getElementById('fcb-auth-overlay');
-  if(overlay) overlay.classList.add('open');
+function fcbShowModal(){
+  var name=localStorage.getItem('fcb-username');
+  document.getElementById('fcb-view-setup').style.display=name?'none':'';
+  document.getElementById('fcb-view-in').style.display=name?'':'none';
+  if(name){ var l=document.getElementById('fcb-in-lbl'); if(l) l.textContent='Signed in as '+name; }
+  document.getElementById('fcb-auth-overlay').classList.add('open');
 }
-function authShowModal(){
-  var profile=window.FCB_AUTH.profile;
-  var cachedName=localStorage.getItem('fcb-username');
-  var name=profile?profile.username:cachedName;
-  if(name){
-    showView('signedin');
-    var lbl=document.getElementById('fcb-signedin-label');
-    if(lbl) lbl.textContent='Signed in as '+name;
-  } else {
-    showView('main');
+window.fcbCloseModal=function(){ document.getElementById('fcb-auth-overlay').classList.remove('open'); };
+
+window.fcbSaveUsername=function(){
+  var raw=(document.getElementById('fcb-uname-input').value||'').trim();
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(raw)){
+    var m=document.getElementById('fcb-setup-msg');
+    if(m){ m.textContent='3–20 characters, letters/numbers/underscores only.'; m.className='fcb-msg show error'; }
+    return;
   }
-  openOverlay();
-}
-window.authCloseModal=function(){
-  var overlay=document.getElementById('fcb-auth-overlay');
-  if(overlay) overlay.classList.remove('open');
+  localStorage.setItem('fcb-username',raw);
+  window.FCB_AUTH.getUid();
+  window.FCB_AUTH.profile={username:raw};
+  updateNav();
+  fcbCloseModal();
+  if(window.updateSaveUI) updateSaveUI();
+  if(window.loadMyCreations) loadMyCreations();
 };
-function showView(v){
-  ['main','username','signedin'].forEach(function(n){
-    var el=document.getElementById('fcb-view-'+n);
-    if(el) el.style.display=(n===v)?'':'none';
-  });
-}
-function setMsg(elId, txt, type){
-  var el=document.getElementById(elId);
-  if(!el) return;
-  el.textContent=txt;
-  el.className='fcb-msg'+(txt?' show':'')+' '+(type||'');
-}
 
-/* ─────────────────────────────────────────
-   4. NAV BUTTON UPDATE
-───────────────────────────────────────── */
+window.fcbSignOut=function(){
+  localStorage.removeItem('fcb-username');
+  window.FCB_AUTH.profile=null;
+  updateNav();
+  fcbCloseModal();
+  if(window.updateSaveUI) updateSaveUI();
+  if(window.loadMyCreations) loadMyCreations();
+};
+
 function updateNav(){
   var btn=document.getElementById('fcb-nav-auth');
-  var p=window.FCB_AUTH.profile;
-  /* Set body attribute — reliable sync signal for gates across all pages */
-  document.body.setAttribute('data-fcb-auth', p ? 'in' : 'out');
-  /* Enable/disable theme buttons based on auth state */
-  var themeOpts=document.querySelectorAll('.theme-opt:not([data-theme=""])');
-  var lockNotice=document.getElementById('theme-lock-notice');
-  themeOpts.forEach(function(o){ o.disabled=!p; });
-  if(lockNotice) lockNotice.style.display=p?'none':'block';
+  var name=localStorage.getItem('fcb-username');
+  var myTab=document.getElementById('tab-my');
+  if(myTab) myTab.style.display=name?'':'none';
   if(!btn) return;
-  if(p){
-    localStorage.setItem('fcb-username',p.username);
-    btn.textContent='👤 '+p.username;
-    btn.classList.add('signed-in');
-    btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
-    var lbl=document.getElementById('fcb-signedin-label');
-    if(lbl) lbl.textContent='Signed in as '+p.username;
-  } else {
-    btn.textContent='Sign In';
-    btn.classList.remove('signed-in');
-    btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
-  }
+  if(name){ btn.textContent='👤 '+name; btn.classList.add('has-name'); }
+  else { btn.textContent='Set username'; btn.classList.remove('has-name'); }
+  btn.onclick=function(e){ e.preventDefault(); fcbShowModal(); };
 }
 
-/* Show cached username instantly — only clears when session is confirmed null */
-(function(){
-  var cached=localStorage.getItem('fcb-username');
-  if(!cached) return;
-  var t=setInterval(function(){
-    var btn=document.getElementById('fcb-nav-auth');
-    if(btn){
-      btn.textContent='👤 '+cached;
-      btn.classList.add('signed-in');
-      /* clicking while auth still loading opens modal — will show correct view once resolved */
-      btn.onclick=function(e){ e.preventDefault(); authShowModal(); };
-      clearInterval(t);
-    }
-  },30);
-})();
-
-/* ─────────────────────────────────────────
-   5. OAUTH
-───────────────────────────────────────── */
-window.authOAuth=async function(provider){
-  setMsg('fcb-main-msg','Redirecting to '+provider+'…','info');
-  /* Save current page URL so we can return here after OAuth */
-  localStorage.setItem('fcb-return-url',window.location.href);
-  /* Let the current page save any state before the redirect */
-  try{ document.dispatchEvent(new CustomEvent('fcb-before-oauth')); }catch(e){}
-  /* Small delay so event handlers can run */
-  await new Promise(function(r){ setTimeout(r,120); });
-  var result=await window.FCB_AUTH.db.auth.signInWithOAuth({
-    provider:provider,
-    options:{ redirectTo: SITE_URL }
-  });
-  if(result.error){
-    localStorage.removeItem('fcb-return-url');
-    setMsg('fcb-main-msg',result.error.message,'error');
-  }
-};
-
-/* ─────────────────────────────────────────
-   6. EMAIL AUTH
-───────────────────────────────────────── */
-var _authMode='signin';
-window.authToggleMode=function(){
-  _authMode=(_authMode==='signin')?'signup':'signin';
-  var btn=document.getElementById('fcb-main-action-btn');
-  var row=document.getElementById('fcb-switch-row');
-  var title=document.getElementById('fcb-main-title');
-  var sub=document.getElementById('fcb-main-sub');
-  if(_authMode==='signup'){
-    if(btn) btn.textContent='Create Account';
-    if(row) row.innerHTML='Already have an account? <a onclick="authToggleMode()">Sign in</a>';
-    if(title) title.textContent='🌙 Create Account';
-    if(sub) sub.textContent='Join free to save calendars, download images and unlock all themes.';
-  } else {
-    if(btn) btn.textContent='Sign In';
-    if(row) row.innerHTML='New here? <a onclick="authToggleMode()">Create an account</a>';
-    if(title) title.textContent='🌙 Sign In';
-    if(sub) sub.textContent='Sign in to save calendars, download images and unlock all themes.';
-  }
-  setMsg('fcb-main-msg','','');
-};
-
-window.authEmailAction=async function(){
-  var email=document.getElementById('fcb-email').value.trim();
-  var pass=document.getElementById('fcb-password').value;
-  if(!email||!pass){ setMsg('fcb-main-msg','Please enter your email and password.','error'); return; }
-  try{
-    if(_authMode==='signup'){
-      if(pass.length<6){ setMsg('fcb-main-msg','Password must be at least 6 characters.','error'); return; }
-      setMsg('fcb-main-msg','Creating account…','info');
-      var sr=await window.FCB_AUTH.db.auth.signUp({email:email,password:pass});
-      if(sr.error){ setMsg('fcb-main-msg',sr.error.message,'error'); return; }
-      setMsg('fcb-main-msg','✓ Account created! You can now sign in.','success');
-    } else {
-      setMsg('fcb-main-msg','Signing in…','info');
-      var sr=await window.FCB_AUTH.db.auth.signInWithPassword({email:email,password:pass});
-      if(sr.error){
-        var msg=sr.error.message;
-        if(msg.indexOf('Invalid')>-1) msg='Wrong email or password — please try again.';
-        if(msg.indexOf('confirmed')>-1) msg='Please confirm your email first, or contact support.';
-        setMsg('fcb-main-msg',msg,'error');
-        return;
-      }
-    }
-  } catch(e){
-    setMsg('fcb-main-msg','Something went wrong — please try again.','error');
-  }
-};
-
-/* ─────────────────────────────────────────
-   7. USERNAME SETUP
-───────────────────────────────────────── */
-window.authSaveUsername=async function(){
-  var raw=document.getElementById('fcb-username').value.trim();
-  if(!/^[a-zA-Z0-9_]{3,20}$/.test(raw)){
-    setMsg('fcb-uname-msg','3–20 characters, letters/numbers/underscores only.','error');
-    return;
-  }
-  setMsg('fcb-uname-msg','Saving…','info');
-  var id=window.FCB_AUTH.user.id;
-  var ins=await window.FCB_AUTH.db.from('profiles').insert({id:id,username:raw});
-  if(ins.error){
-    var msg=ins.error.code==='23505'?'That username is taken — try another.':ins.error.message;
-    setMsg('fcb-uname-msg',msg,'error');
-    return;
-  }
-  window.FCB_AUTH.profile={id:id,username:raw};
-  updateNav();
-  var returnUrl=localStorage.getItem('fcb-return-url');
-  if(returnUrl&&returnUrl!==window.location.href){
-    localStorage.removeItem('fcb-return-url');
-    window.location.href=returnUrl;
-  } else {
-    authCloseModal();
-  }
-};
-
-/* ─────────────────────────────────────────
-   8. SIGN OUT
-───────────────────────────────────────── */
-window.authSignOut=async function(){
-  /* Clear ALL Supabase keys from localStorage */
-  Object.keys(localStorage)
-    .filter(function(k){ return k.startsWith('sb-')||k==='fcb-username'; })
-    .forEach(function(k){ localStorage.removeItem(k); });
-  /* Also clear sessionStorage */
-  try{ sessionStorage.clear(); }catch(e){}
-  /* Try Supabase signOut */
-  if(window.FCB_AUTH.db){
-    try{ await window.FCB_AUTH.db.auth.signOut(); }catch(e){}
-  }
-  /* Force full page reload — kills all in-memory session state */
-  window.location.reload();
-};
-
-/* ─────────────────────────────────────────
-   9. SESSION HANDLER
-───────────────────────────────────────── */
-async function handleSession(session){
-  window.FCB_AUTH.user=session.user;
-  var result=await window.FCB_AUTH.db
-    .from('profiles').select('*').eq('id',session.user.id).maybeSingle();
-  if(!result.data){
-    showView('username');
-    openOverlay();
-  } else {
-    window.FCB_AUTH.profile=result.data;
-    updateNav();
-    var returnUrl=localStorage.getItem('fcb-return-url');
-    if(returnUrl&&returnUrl!==window.location.href){
-      localStorage.removeItem('fcb-return-url');
-      window.location.href=returnUrl;
-    } else {
-      var overlay=document.getElementById('fcb-auth-overlay');
-      if(overlay&&overlay.classList.contains('open')) authCloseModal();
-    }
-  }
-}
-
-/* ─────────────────────────────────────────
-   10. LOAD SUPABASE SDK + INIT
-───────────────────────────────────────── */
-function loadSDK(){
-  return new Promise(function(res,rej){
-    if(window.supabase){res();return;}
-    var s=document.createElement('script');
-    s.src=SDK_URL; s.onload=res; s.onerror=rej;
-    document.head.appendChild(s);
-  });
-}
-
-async function authInit(){
+function init(){
   injectCSS();
   injectHTML();
-  try{
-    await loadSDK();
-  } catch(e){
-    console.warn('FCB Auth: could not load Supabase SDK',e);
-    return;
-  }
-  window.FCB_AUTH.db=window.supabase.createClient(SUPA_URL,SUPA_KEY);
-
-  /* Re-check auth when browser restores page from back/forward cache */
-  window.addEventListener('pageshow',async function(e){
-    if(!e.persisted) return;
-    /* Update nav display text from cache (cosmetic only — does NOT set data-fcb-auth) */
-    var cached=localStorage.getItem('fcb-username');
-    if(cached){
-      var btn=document.getElementById('fcb-nav-auth');
-      if(btn&&!window.FCB_AUTH.profile){
-        btn.textContent='👤 '+cached;
-        btn.classList.add('signed-in');
-      }
-    }
-    /* Verify with Supabase — this is the authoritative check that sets data-fcb-auth */
-    try{
-      var sess=await window.FCB_AUTH.db.auth.getSession();
-      if(sess.data&&sess.data.session){
-        await handleSession(sess.data.session);
-      } else {
-        window.FCB_AUTH.user=null;
-        window.FCB_AUTH.profile=null;
-        localStorage.removeItem('fcb-username');
-        updateNav();
-      }
-    }catch(e){ console.warn('FCB Auth: pageshow check failed',e); }
-  });
-
-  /* onAuthStateChange with INITIAL_SESSION handles everything on load */
-  window.FCB_AUTH.db.auth.onAuthStateChange(async function(event,session){
-    if(event==='INITIAL_SESSION'){
-      /* Page load with existing session — restore quietly, no popup */
-      if(session){
-        window.FCB_AUTH.user=session.user;
-        var r1=await window.FCB_AUTH.db
-          .from('profiles').select('*').eq('id',session.user.id).maybeSingle();
-        if(r1.data){
-          /* Profile found */
-          window.FCB_AUTH.profile=r1.data;
-          updateNav();
-        } else if(r1.error){
-          /* DB error (Supabase paused?) — user IS signed in, keep cached name showing */
-          console.warn('FCB Auth: profile fetch error',r1.error.message);
-        } else {
-          /* No profile yet — new user needs username */
-          updateNav();
-          showView('username');
-          openOverlay();
-        }
-      } else {
-        /* No session — clear cache and show Sign In */
-        localStorage.removeItem('fcb-username');
-        updateNav();
-      }
-    }
-    if(event==='SIGNED_IN'){
-      if(session) await handleSession(session);
-    }
-    if(event==='SIGNED_OUT'){
-      window.FCB_AUTH.user=null;
-      window.FCB_AUTH.profile=null;
-      localStorage.removeItem('fcb-username');
-      updateNav();
-    }
-  });
-
-  /* Nav will be updated by INITIAL_SESSION event above */
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',updateNav);
+  else updateNav();
 }
-
-/* Wait for DOM ready */
-if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',authInit);
-} else {
-  authInit();
-}
-
+init();
 })();
