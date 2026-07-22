@@ -655,11 +655,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
 <nav>
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <span class="nav-step">Step <span id="current-step-num">1</span> of 5</span>
-  <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.85rem;color:var(--text-muted);text-decoration:none">Sign In</a>
+  <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.85rem;color:var(--text-muted);text-decoration:none">Set username</a>
 </nav>
-<div id="fork-banner" style="display:none;background:rgba(var(--accent-rgb),.1);border-bottom:1px solid rgba(var(--accent-rgb),.25);padding:.55rem 1.2rem;font-size:.78rem;color:var(--text-muted);font-family:var(--font-body);text-align:center">
-  🍴 You're editing a shared calendar — <strong style="color:var(--accent)">saving will create your own copy</strong> in My Creations. The original won't be changed.
-</div>
 <div class="progress-bar">
   <div class="prog-step active" id="prog-1" onclick="goStep(1)">① Basics</div>
   <div class="prog-step" id="prog-2" onclick="goStep(2)">② Months</div>
@@ -741,16 +738,14 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 2
         <div class="copy-confirm" id="copy-confirm">✓ Copied! Share this link anywhere.</div>
         <div class="hint" style="margin-top:.8rem">Anyone with this link sees your exact calendar.</div>
       </div>
-      <!-- Save to My Creations (signed-in users only) -->
-      <div class="share-box" id="save-to-account-box" style="margin-top:1rem">
+      <div class="share-box" style="margin-top:1rem">
         <div class="share-box-title">SAVE TO MY CREATIONS</div>
-        <div id="save-auth-prompt" style="display:none">
-          <div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.7rem">Sign in to save this calendar to your account and access it anytime.</div>
-          <button class="btn-secondary" onclick="FCB_AUTH.openModal()" style="width:100%">Sign In / Create Account</button>
+        <div id="save-username-prompt" style="display:none;font-size:.82rem;color:var(--text-muted)">
+          Set a username first to save your calendars.
+          <button class="btn-secondary" onclick="FCB_AUTH.openModal()" style="margin-top:.5rem;width:100%">Set username</button>
         </div>
         <div id="save-form" style="display:none">
-          <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem">
-            <label style="font-size:.8rem;color:var(--text-muted);font-family:var(--font-body)">Visibility:</label>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem;flex-wrap:wrap">
             <button class="btn-secondary" id="visibility-toggle" onclick="toggleVisibility()" style="font-size:.78rem;padding:.3rem .8rem">🔒 Private</button>
             <span id="visibility-hint" style="font-size:.73rem;color:var(--text-dim)">Only you can see this</span>
           </div>
@@ -851,14 +846,9 @@ function showViewChooser(){
   const modal=document.getElementById('view-chooser-modal');
   if(!modal)return;
   modal.classList.add('open');
+  // Wire buttons — they wait for the save to finish if still in progress
   document.getElementById('vc-normal').onclick=()=>openShared('view',false);
   document.getElementById('vc-interactive').onclick=()=>openShared('interactive',true);
-  /* Show correct save UI */
-  var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
-  var authRow=document.getElementById('vc-save-auth');
-  var formRow=document.getElementById('vc-save-form');
-  if(authRow) authRow.style.display=signedIn?'none':'block';
-  if(formRow) formRow.style.display=signedIn?'flex':'none';
 }
 function closeViewChooser(){const m=document.getElementById('view-chooser-modal');if(m)m.classList.remove('open');}
 
@@ -1144,9 +1134,6 @@ function updatePreview(){
 (function loadFromUrl(){
   const params=new URLSearchParams(window.location.search);
   const c=params.get('c');if(!c)return;
-  /* Show fork banner — this is someone else's calendar being edited */
-  var banner=document.getElementById('fork-banner');
-  if(banner) banner.style.display='block';
   try{
     const data=JSON.parse(decodeURIComponent(atob(c)));
     document.getElementById('world-name').value=data.w||'';
@@ -1412,115 +1399,61 @@ function startFresh(){
   goStep(1);
 }
 
-/* ── Save to My Creations ── */
+/* ── Save to My Creations (username-only) ── */
 var _saveIsPublic=false;
-var _savedAccountId=null;
+var _savedCalId=null;
 
 function updateSaveUI(){
-  var prompt=document.getElementById('save-auth-prompt');
+  var hasUsername=!!localStorage.getItem('fcb-username');
+  var prompt=document.getElementById('save-username-prompt');
   var form=document.getElementById('save-form');
-  if(!prompt||!form)return;
-  var signedIn=window.FCB_AUTH&&window.FCB_AUTH.isSignedIn();
-  prompt.style.display=signedIn?'none':'block';
-  form.style.display=signedIn?'block':'none';
-  /* reset save state if user changed */
-  if(!signedIn){_savedAccountId=null;}
+  if(prompt) prompt.style.display=hasUsername?'none':'block';
+  if(form) form.style.display=hasUsername?'block':'none';
 }
 
 function toggleVisibility(){
   _saveIsPublic=!_saveIsPublic;
-  var label=_saveIsPublic?'🌐 Public':'🔒 Private';
-  /* update both old step-5 toggle and popup toggle */
-  var b1=document.getElementById('visibility-toggle');
-  var b2=document.getElementById('vc-vis-toggle');
-  var h1=document.getElementById('visibility-hint');
-  if(b1) b1.textContent=label;
-  if(b2) b2.textContent=label;
-  if(h1) h1.textContent=_saveIsPublic?'Anyone can browse this calendar':'Only you can see this';
+  var btn=document.getElementById('visibility-toggle');
+  var hint=document.getElementById('visibility-hint');
+  if(btn) btn.textContent=_saveIsPublic?'🌐 Public':'🔒 Private';
+  if(hint) hint.textContent=_saveIsPublic?'Anyone can browse this':'Only you can see this';
 }
 
 async function saveToAccount(){
-  if(!window.FCB_AUTH||!window.FCB_AUTH.isSignedIn()){FCB_AUTH.openModal();return;}
-  /* Disable both save buttons */
-  var btns=[document.getElementById('save-btn'),document.getElementById('vc-save-btn')];
-  var msgs=[document.getElementById('save-msg'),document.getElementById('vc-save-msg')];
-  btns.forEach(function(b){if(b){b.disabled=true;b.textContent='Saving…';}});
-  msgs.forEach(function(m){if(m) m.style.display='none';});
+  var username=localStorage.getItem('fcb-username');
+  if(!username){ FCB_AUTH.openModal(); return; }
+  var uid=FCB_AUTH.getUid();
+  var saveBtn=document.getElementById('save-btn');
+  var saveMsg=document.getElementById('save-msg');
+  if(saveBtn){ saveBtn.disabled=true; saveBtn.textContent='Saving…'; }
+  if(saveMsg) saveMsg.style.display='none';
   try{
     var dataObj=buildDataObject();
-    var user=window.FCB_AUTH.user;
     var title=dataObj.w||'Untitled Calendar';
-    var id=_savedAccountId||sbGenId();
-    var payload={id:id,data:dataObj,owner_id:user.id,is_public:_saveIsPublic,title:title};
-    var method=_savedAccountId?'PATCH':'POST';
-    var url=SB_URL+'/rest/v1/calendars'+(method==='PATCH'?'?id=eq.'+id:'');
+    var id=_savedCalId||(function(){ var r=''; for(var i=0;i<8;i++) r+='abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random()*36)]; return r; })();
+    var payload={id:id,data:dataObj,owner_id:uid,is_public:_saveIsPublic,title:title};
+    var method=_savedCalId?'PATCH':'POST';
+    var url=SB_URL+'/rest/v1/calendars'+(_savedCalId?'?id=eq.'+id:'');
     var res=await fetch(url,{
       method:method,
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
       body:JSON.stringify(payload)
     });
-    if(!res.ok)throw new Error('save failed '+res.status);
-    _savedAccountId=id;
-    _shareId=id;
-    var successText=_saveIsPublic?'✓ Saved as public!':'✓ Saved privately!';
-    btns.forEach(function(b){if(b){b.disabled=false;b.textContent='✓ Saved!';}});
-    msgs.forEach(function(m){if(m){m.style.display='inline';m.style.color='var(--accent)';m.textContent=successText;}});
-    setTimeout(function(){btns.forEach(function(b){if(b)b.textContent='💾 Save to My Creations';});},3000);
+    if(!res.ok) throw new Error('save failed '+res.status);
+    _savedCalId=id;
+    if(saveBtn){ saveBtn.disabled=false; saveBtn.textContent='✓ Saved!'; setTimeout(function(){ if(saveBtn) saveBtn.textContent='💾 Save to My Creations'; },3000); }
+    if(saveMsg){ saveMsg.style.display='block'; saveMsg.style.color='var(--accent)'; saveMsg.textContent=_saveIsPublic?'Saved as public!':'Saved privately!'; }
   }catch(e){
-    btns.forEach(function(b){if(b){b.disabled=false;b.textContent='💾 Save to My Creations';}});
-    msgs.forEach(function(m){if(m){m.style.display='inline';m.style.color='#ff9090';m.textContent='Save failed — try again.';}});
+    if(saveBtn){ saveBtn.disabled=false; saveBtn.textContent='💾 Save to My Creations'; }
+    if(saveMsg){ saveMsg.style.display='block'; saveMsg.style.color='#ff9090'; saveMsg.textContent='Save failed — try again.'; }
   }
 }
 
-/* Watch for auth state changes to update the save UI */
-document.addEventListener('DOMContentLoaded',function(){
-  var _authPoll=setInterval(function(){
-    if(window.FCB_AUTH){
-      updateSaveUI();
-      clearInterval(_authPoll);
-      setInterval(updateSaveUI,2000);
-    }
-  },200);
-});
-
-/* ── OAuth state preservation ── */
-/* Save full builder state before Google OAuth redirect */
-document.addEventListener('fcb-before-oauth',function(){
-  try{
-    var snap={
-      s:JSON.parse(JSON.stringify(state)),
-      wl:(document.getElementById('world-lore')||{}).value||''
-    };
-    localStorage.setItem('fcb-builder-snap',JSON.stringify(snap));
-  }catch(e){ console.warn('FCB: could not save builder state',e); }
-});
-
-/* Restore builder state when returning from OAuth redirect */
+/* Poll for auth.js to load then update save UI */
 (function(){
-  var raw=localStorage.getItem('fcb-builder-snap');
-  if(!raw) return;
-  try{
-    localStorage.removeItem('fcb-builder-snap');
-    var saved=JSON.parse(raw);
-    var s=saved.s;
-    state.worldName=s.worldName||'';
-    state.eraName=s.eraName||'';
-    state.numMonths=s.numMonths||10;
-    state.daysWeek=s.daysWeek||7;
-    state.daysMonth=s.daysMonth||30;
-    state.months=s.months||[];
-    state.moons=s.moons||[];
-    state.events=s.events||[];
-    state.icons=s.icons||{world:'',months:[],moons:[],events:[]};
-    document.getElementById('world-name').value=state.worldName;
-    document.getElementById('era-name').value=state.eraName;
-    document.getElementById('num-months').value=state.numMonths;
-    document.getElementById('days-week').value=state.daysWeek;
-    document.getElementById('days-month').value=state.daysMonth;
-    var wlEl=document.getElementById('world-lore');
-    if(wlEl) wlEl.value=saved.wl||'';
-    updatePreview();
-  }catch(e){ console.warn('FCB: could not restore builder state',e); }
+  var t=setInterval(function(){
+    if(window.FCB_AUTH){ updateSaveUI(); clearInterval(t); }
+  },100);
 })();
 
 /* Load an image from a data-url, returns Promise<HTMLImageElement|null> */
@@ -2497,17 +2430,6 @@ async function handleFontUpload(e) {
         <h3>Interactive View</h3>
         <p>An immersive themed experience. Customise icons, backgrounds &amp; fonts, then export a self-contained interactive page.</p>
         <span class="vc-badge">Immersive &amp; unique</span>
-      </div>
-    </div>
-    <!-- Save to My Creations — shown inside the popup -->
-    <div style="margin-top:1.2rem;border-top:1px solid var(--border2);padding-top:1.1rem">
-      <div id="vc-save-auth" style="display:none;text-align:center">
-        <span style="font-size:.8rem;color:var(--text-dim);font-family:var(--font-body)">💾 <a href="#" onclick="FCB_AUTH.openModal();return false" style="color:var(--accent)">Sign in</a> to save this calendar to your account</span>
-      </div>
-      <div id="vc-save-form" style="display:none;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
-        <button class="vc-badge" id="vc-vis-toggle" onclick="toggleVisibility()" style="cursor:pointer;border:1px solid var(--border);background:var(--surface2);padding:.3rem .8rem;font-size:.75rem">🔒 Private</button>
-        <button class="btn-primary" id="vc-save-btn" onclick="saveToAccount()" style="flex:1;min-width:160px;padding:.5rem 1rem;font-size:.85rem">💾 Save to My Creations</button>
-        <span id="vc-save-msg" style="font-size:.75rem;display:none;color:var(--accent)"></span>
       </div>
     </div>
   </div>
