@@ -112,7 +112,7 @@ function fcbShowModal(){
 }
 window.fcbCloseModal=function(){ document.getElementById('fcb-auth-overlay').classList.remove('open'); };
 
-window.fcbSaveUsername=function(){
+window.fcbSaveUsername=async function(){
   var raw=(document.getElementById('fcb-uname-input').value||'').trim();
   if(!/^[a-zA-Z0-9_]{3,20}$/.test(raw)){
     var m=document.getElementById('fcb-setup-msg');
@@ -120,8 +120,22 @@ window.fcbSaveUsername=function(){
     return;
   }
   localStorage.setItem('fcb-username',raw);
-  localStorage.removeItem('fcb-uid'); /* no longer needed — UID derived from username */
   window.FCB_AUTH.profile={username:raw};
+  /* Migrate any calendars saved under old random fcb-uid to new username-derived UID */
+  var oldUid=localStorage.getItem('fcb-uid');
+  var newUid=fcbUsernameToUid(raw);
+  if(oldUid&&oldUid!==newUid){
+    try{
+      var SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+      var SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+      await fetch(SB_URL+'/rest/v1/calendars?owner_id=eq.'+encodeURIComponent(oldUid),{
+        method:'PATCH',
+        headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+        body:JSON.stringify({owner_id:newUid})
+      });
+    }catch(e){ console.warn('FCB: migration failed',e); }
+    localStorage.removeItem('fcb-uid');
+  }
   updateNav();
   fcbCloseModal();
   if(window.updateSaveUI) updateSaveUI();
