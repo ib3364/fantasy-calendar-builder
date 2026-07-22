@@ -225,7 +225,9 @@ function updateNav(){
   var btn=document.getElementById('fcb-nav-auth');
   var name=localStorage.getItem('fcb-username');
   var myTab=document.getElementById('tab-my');
+  var favsTab=document.getElementById('tab-favs');
   if(myTab) myTab.style.display=name?'':'none';
+  if(favsTab) favsTab.style.display=name?'':'none';
   if(!btn) return;
   if(name){ btn.textContent='👤 '+name; btn.classList.add('has-name'); }
   else { btn.textContent='Set username'; btn.classList.remove('has-name'); }
