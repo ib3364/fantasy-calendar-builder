@@ -63,24 +63,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     border-right:none!important;max-height:42vh;overflow-y:auto
   }
   .nb-page-left{border-bottom:1px solid rgba(var(--accent-rgb),.18)}
-  /* Notebook: hide the leather spine — it bisects stacked pages on mobile */
-  .notebook::before{display:none!important}
-  /* Remove the inner-gutter shadows that only work side-by-side */
-  .nb-page-left,.nb-page-right{box-shadow:none!important}
   .hud-left{border-bottom:1px solid rgba(0,229,200,.2)}
-  .cdx-left{border-bottom:1px solid rgba(212,160,64,.25);min-height:42vh}
-  /* Iron/Vellum: stage fills viewport with matching background */
-  .cdx-stage{min-height:100vh!important;background:linear-gradient(170deg,#272013 0%,#221b0e 100%)!important}
-  .cdx-right{min-height:45vh}
-  /* Texture fix: ::after scrolls with content in overflow:auto, leaving top rows bare.
-     Move texture into background property instead — it stays fixed to the element box. */
-  .cdx-page::after{display:none!important}
-  .cdx-page{
-    background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='v'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='90' height='90' filter='url(%23v)' opacity='0.05'/%3E%3C/svg%3E") repeat,
-      linear-gradient(170deg,#272013 0%,#221b0e 100%) !important;
-    background-size:90px 90px, auto !important;
-  }
+  .cdx-left{border-bottom:1px solid rgba(212,160,64,.25)}
   .tac-left{border-bottom:1px solid rgba(42,180,232,.25)}
   .grdn-left{border-bottom:1px solid rgba(80,200,120,.18)}
   .grim-left{border-bottom:1px solid rgba(192,57,43,.25)}
@@ -655,17 +639,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .iv-icon-pop-inner img{width:160px;height:160px;object-fit:contain;display:block;margin:0 auto}
 .iv-icon-pop-name{margin-top:.9rem;font-family:var(--font-display);font-size:1.1rem;color:var(--accent)}
 @keyframes ivPopIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
-/* ── Custom colour picker ── */
-.iv-colorpicker-swatches{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding-bottom:.9rem}
-.iv-colorpicker-swatch{width:100%;aspect-ratio:1;border:2px solid transparent;border-radius:4px;cursor:pointer;padding:0;transition:transform .1s,border-color .1s;position:relative}
-.iv-colorpicker-swatch:hover{transform:scale(1.18);z-index:1}
-.iv-colorpicker-swatch.active{border-color:var(--accent)!important;transform:scale(1.12)}
-.iv-colorpicker-hex-row{display:flex;align-items:center;gap:.6rem;padding-top:.7rem;border-top:1px solid var(--border)}
-.iv-colorpicker-preview{width:36px;height:36px;border-radius:5px;border:1px solid var(--border);flex-shrink:0}
-.iv-colorpicker-hex{flex:1;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem .7rem;font-size:.85rem;border-radius:5px;outline:none;font-family:monospace}
-.iv-colorpicker-hex:focus{border-color:var(--accent)}
-.iv-colorpicker-apply{background:var(--accent);color:var(--bg);border:none;padding:.5rem 1rem;font-size:.85rem;cursor:pointer;border-radius:5px;font-family:var(--font-body);font-weight:700;white-space:nowrap}
-.iv-colorpicker-apply:hover{opacity:.85}
 </style>
 <script>
 /* ═══ Interactive View — core ═══ */
@@ -871,8 +844,8 @@ function ivRenderShell(){
       <div style="display:flex;gap:.6rem">
         <button class="iv-btn iv-btn-ghost" onclick="ivRenderChooser()">← Back</button>
         <button class="iv-btn" onclick="ivShareLink()">🔗 Share link</button>
-        <button class="iv-btn" onclick="ivAuthGatedExport()">⬇ Export HTML</button>
-        <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.78rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);padding:.3rem .5rem">Sign In</a>
+        <button class="iv-btn" onclick="ivExport()">⬇ Export HTML</button>
+        <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.78rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);padding:.3rem .4rem;white-space:nowrap">Set username</a>
       </div>
     </div>
     <div class="iv-share-box" id="iv-share-box" style="display:none">
@@ -932,14 +905,15 @@ function ivEditHTML(){
       <div class="iv-edit-section">
         <div class="iv-edit-label">Lore-page background</div>
         <select class="iv-slot-select" id="iv-bg-month"><option value="">Select a month…</option>${monthOpts}</select>
+        <select class="iv-slot-select" id="iv-bg-lore"><option value="">Select lore entry…</option></select>
         <div class="iv-edit-row">
           <button class="iv-mini-btn" onclick="ivUploadBg()">⬆ Image</button>
-          <button class="iv-mini-btn" onclick="ivOpenColorPicker('bg')" title="Background colour">🎨 Colour</button>
+          <input type="color" id="iv-bg-color" onchange="ivSetBgColor(this.value)" title="Background colour" style="width:34px;height:30px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer"/>
           <button class="iv-mini-btn" onclick="ivClearBg()">Clear</button>
         </div>
         <div class="iv-edit-row" style="margin-top:.5rem">
           <span style="font-size:.74rem;color:var(--text-muted)">Text colour</span>
-          <button class="iv-mini-btn" onclick="ivOpenColorPicker('text')" title="Text colour">🎨 Colour</button>
+          <input type="color" id="iv-text-color" onchange="ivSetTextColor(this.value)" title="Text colour for this lore page" style="width:34px;height:30px;border:1px solid var(--border);border-radius:4px;background:none;cursor:pointer"/>
           <button class="iv-mini-btn" onclick="ivClearTextColor()">Reset</button>
         </div>
         <div class="iv-edit-hint">Each lore entry can have its own background and text colour — handy when a background image clashes with the default text.</div>
@@ -949,6 +923,18 @@ function ivEditHTML(){
   </div>`;
 }
 
+/* Populate lore-entry dropdown when a month is chosen for bg */
+document.addEventListener('change',e=>{
+  if(e.target&&e.target.id==='iv-bg-month'){
+    const mi=parseInt(e.target.value);
+    const sel=document.getElementById('iv-bg-lore');
+    if(isNaN(mi)){sel.innerHTML='<option value="">Select lore entry…</option>';return;}
+    const entries=ivSplitLore(IV.months[mi].lore);
+    sel.innerHTML='<option value="">Select lore entry…</option>'+
+      (entries.length?entries.map((_,i)=>`<option value="${i}">Lore page ${i+1}</option>`).join('')
+       :'<option value="">(no lore)</option>');
+  }
+});
 </script>
 <script>
 /* ═══ CARTOGRAPHER NOTEBOOK renderer ═══ */
@@ -1636,80 +1622,28 @@ function ivUploadBg(){
 }
 function ivSetBgColor(color){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  if(isNaN(mi)){alert('Pick a month first.');return;}
-  const li=0;
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){alert('Pick a month and lore entry first.');return;}
   IV.perLoreBg[mi+':'+li]=color;IV.selectedMonth=mi;IV.lorePage=li;ivRenderStage();
 }
 function ivClearBg(){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  if(isNaN(mi))return;
-  const li=0;
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li))return;
   delete IV.perLoreBg[mi+':'+li];ivRenderStage();
 }
 function ivSetTextColor(color){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  if(isNaN(mi)){alert('Pick a month first.');return;}
-  const li=0;
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){alert('Pick a month and lore entry first.');return;}
   IV.perLoreColor[mi+':'+li]=color;IV.selectedMonth=mi;IV.lorePage=li;ivRenderStage();
 }
 function ivClearTextColor(){
   const mi=parseInt(document.getElementById('iv-bg-month').value);
-  if(isNaN(mi))return;
-  const li=0;
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li))return;
   delete IV.perLoreColor[mi+':'+li];ivRenderStage();
 }
-
-/* ── Custom colour picker ── */
-var _ivCPTarget='bg';
-const IV_PALETTE=[
-  '#ffffff','#f5f0e8','#e8dcc8','#d4c4a0','#c4b088','#a89060','#8a7050','#6a5030',
-  '#8b0000','#c0392b','#922b21','#641e16','#4a0a0a','#e74c3c','#ff6b6b','#ffb3b3',
-  '#0a0e1a','#1a2740','#1e3a5f','#1a5276','#2471a3','#3498db','#5dade2','#aed6f1',
-  '#0f2808','#1b5e20','#2e7d32','#388e3c','#4caf50','#81c784','#a5d6a7','#c8e6c9',
-  '#1f1035','#2d1b4e','#4a0e8f','#7b1fa2','#9c27b0','#ba68c8','#ce93d8','#e1bee7',
-  '#78350f','#b45309','#d97706','#f59e0b','#fbbf24','#fcd34d','#333333','#000000'
-];
-function ivOpenColorPicker(target){
-  _ivCPTarget=target;
-  const title=document.getElementById('iv-colorpicker-title');
-  if(title)title.textContent=target==='bg'?'🎨 Background colour':'✍ Text colour';
-  const grid=document.getElementById('iv-colorpicker-swatches');
-  if(grid)grid.innerHTML=IV_PALETTE.map(c=>`<button class="iv-colorpicker-swatch" style="background:${c}" onclick="ivPickSwatch('${c}',this)" title="${c}"></button>`).join('');
-  const hex=document.getElementById('iv-colorpicker-hex');
-  const prev=document.getElementById('iv-colorpicker-preview');
-  if(hex)hex.value='';
-  if(prev)prev.style.background='transparent';
-  document.getElementById('iv-colorpicker-modal').classList.add('open');
-}
-function ivPickSwatch(color,btn){
-  document.querySelectorAll('.iv-colorpicker-swatch').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const hex=document.getElementById('iv-colorpicker-hex');
-  const prev=document.getElementById('iv-colorpicker-preview');
-  if(hex)hex.value=color.replace('#','');
-  if(prev)prev.style.background=color;
-}
-function ivApplyColorPicker(){
-  const hex=document.getElementById('iv-colorpicker-hex');
-  let raw=hex?hex.value.trim().replace(/[^0-9a-fA-F]/g,''):'';
-  if(!raw){ivCloseColorPicker();return;}
-  if(raw.length===3)raw=raw[0]+raw[0]+raw[1]+raw[1]+raw[2]+raw[2];
-  if(raw.length!==6){alert('Enter a valid 6-digit hex colour e.g. 3a1c0f');return;}
-  const color='#'+raw;
-  if(_ivCPTarget==='bg')ivSetBgColor(color);
-  else ivSetTextColor(color);
-  ivCloseColorPicker();
-}
-function ivCloseColorPicker(){
-  document.getElementById('iv-colorpicker-modal').classList.remove('open');
-}
-document.addEventListener('input',e=>{
-  if(e.target&&e.target.id==='iv-colorpicker-hex'){
-    const raw=e.target.value.replace(/[^0-9a-fA-F]/g,'');
-    const prev=document.getElementById('iv-colorpicker-preview');
-    if(prev&&(raw.length===3||raw.length===6))prev.style.background='#'+raw;
-  }
-});
 
 // Fonts
 function ivUploadFont(){
@@ -2072,48 +2006,7 @@ function ivRenderExportStone(rootId){
   </div>
 </div>
 
-<!-- Custom colour picker modal -->
-<div class="iv-modal" id="iv-colorpicker-modal" onclick="if(event.target.id==='iv-colorpicker-modal')ivCloseColorPicker()">
-  <div class="iv-modal-box" style="max-width:380px">
-    <div class="iv-modal-head">
-      <span class="iv-modal-title" id="iv-colorpicker-title">🎨 Choose colour</span>
-      <button class="iv-modal-close" onclick="ivCloseColorPicker()">✕</button>
-    </div>
-    <div class="iv-modal-body">
-      <div class="iv-colorpicker-swatches" id="iv-colorpicker-swatches"></div>
-      <div class="iv-colorpicker-hex-row">
-        <div class="iv-colorpicker-preview" id="iv-colorpicker-preview" style="background:transparent"></div>
-        <span style="font-size:.8rem;color:var(--text-dim);font-family:monospace">#</span>
-        <input class="iv-colorpicker-hex" id="iv-colorpicker-hex" type="text" maxlength="6" placeholder="hex e.g. 3a1c0f" autocomplete="off" autocorrect="off" spellcheck="false"/>
-        <button class="iv-colorpicker-apply" onclick="ivApplyColorPicker()">Set</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>ivInit();</script>
-<script>
-/* ── Auth-gated Export HTML ── */
-function ivAuthGatedExport(){
-  if(window.FCB_AUTH&&window.FCB_AUTH.isSignedIn()){
-    ivExport();
-  } else {
-    var overlay=document.createElement('div');
-    overlay.id='iv-export-auth-prompt';
-    overlay.style.cssText='position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,0.78);display:flex;align-items:center;justify-content:center;padding:1rem';
-    overlay.innerHTML=`
-      <div style="background:#1a1205;border:1px solid #c8a04a;border-radius:12px;padding:2rem;max-width:360px;width:100%;text-align:center;font-family:Georgia,serif;color:#e8d8a8">
-        <div style="font-size:2rem;margin-bottom:.8rem">⬇</div>
-        <div style="font-family:'Cinzel',Georgia,serif;font-size:1.1rem;color:#c8a04a;margin-bottom:.5rem">Sign in to export</div>
-        <div style="font-size:.82rem;color:#8a7040;margin-bottom:1.3rem;line-height:1.5">Create a free account to export your interactive calendar as a standalone HTML file.</div>
-        <button onclick="document.getElementById('iv-export-auth-prompt').remove();FCB_AUTH.openModal()" style="width:100%;background:#c8a04a;color:#1a1005;border:none;padding:.65rem;border-radius:6px;font-family:'Cinzel',Georgia,serif;font-weight:700;font-size:.9rem;cursor:pointer;margin-bottom:.5rem">Sign In / Create Account</button>
-        <button onclick="document.getElementById('iv-export-auth-prompt').remove()" style="width:100%;background:transparent;border:1px solid #4a3818;color:#8a7040;padding:.55rem;border-radius:6px;font-family:Georgia,serif;font-size:.82rem;cursor:pointer">Maybe later</button>
-      </div>`;
-    overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
-    document.body.appendChild(overlay);
-  }
-}
-</script>
 <script src="auth.js"></script>
 </body>
 </html>
