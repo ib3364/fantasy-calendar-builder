@@ -7,16 +7,32 @@ window.FCB_AUTH={
   isSignedIn:function(){ return !!localStorage.getItem('fcb-username'); },
   openModal:function(){ fcbShowModal(); },
   getUid:function(){
-    var uid=localStorage.getItem('fcb-uid');
-    if(!uid){
-      uid='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
-        var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
-      });
-      localStorage.setItem('fcb-uid',uid);
-    }
-    return uid;
+    /* UID is always derived from username — same username = same UID = same calendars */
+    var username=localStorage.getItem('fcb-username');
+    if(!username) return null;
+    return fcbUsernameToUid(username);
   }
 };
+
+/* Deterministic UUID from username — same input always gives same UUID */
+function fcbUsernameToUid(str){
+  str='fcb:'+str.toLowerCase(); /* namespace prefix */
+  var h1=0xdeadbeef^str.length, h2=0x41c6ce57^str.length;
+  for(var i=0;i<str.length;i++){
+    var ch=str.charCodeAt(i);
+    h1=Math.imul(h1^ch,2654435761);
+    h2=Math.imul(h2^ch,1597334677);
+  }
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+  h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  var a=(h1>>>0).toString(16).padStart(8,'0');
+  var b=(h2>>>0).toString(16).padStart(8,'0');
+  var c=Math.imul(h1,h2)>>>0;
+  var d=(c^0xdeadbeef).toString(16).padStart(8,'0');
+  var e=((h1+h2)>>>0).toString(16).padStart(8,'0');
+  /* Format as valid UUID v4-like */
+  return a+'-'+b.slice(0,4)+'-4'+b.slice(5,8)+'-a'+d.slice(1,4)+'-'+d.slice(4)+e.slice(0,8);
+}
 
 var _name=localStorage.getItem('fcb-username');
 if(_name) window.FCB_AUTH.profile={username:_name};
@@ -60,7 +76,7 @@ function injectHTML(){
         <div class="fcb-sub">Pick a name to save your calendars to My Creations. No email or password needed.</div>
         <div class="fcb-rules">3–20 characters · letters, numbers, underscores only</div>
         <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.3);border-radius:6px;padding:.7rem .9rem;margin-bottom:.9rem;font-size:.76rem;color:#c8a04a;line-height:1.6">
-          ⚠️ <strong>Important:</strong> Your calendars are saved to this browser only. There is no cloud account — if you sign out, clear your browser data, or switch devices, you will lose access to your saved calendars. Keep your username safe!
+          ⚠️ <strong>Important:</strong> Your username IS your key — the same username always gives access to the same calendars on any device or browser. Keep it unique and memorable. If someone else uses the same username, they can see your calendars!
         </div>
         <div id="fcb-setup-msg" class="fcb-msg"></div>
         <input class="fcb-input" id="fcb-uname-input" type="text" placeholder="your_username" maxlength="20" autocomplete="off" spellcheck="false"/>
@@ -70,7 +86,7 @@ function injectHTML(){
         <div class="fcb-logo">🌙 Fantasy Calendar Builder</div>
         <div class="fcb-sub" id="fcb-in-lbl">Signed in</div>
         <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.2);border-radius:6px;padding:.6rem .8rem;margin-bottom:.9rem;font-size:.73rem;color:#8a7040;line-height:1.5">
-          📌 Your calendars are saved to this browser only. Don't sign out unless you're sure — there's no way to recover your data on another device.
+          📌 Your username is your key to your calendars — use the same username on any device to access them. Keep it unique and don't share it.
         </div>
         <div style="display:flex;gap:.6rem;margin-bottom:.6rem">
           <button class="fcb-btn" onclick="fcbExportData()" style="flex:1;font-size:.82rem;padding:.5rem">📦 Export my data</button>
@@ -104,7 +120,7 @@ window.fcbSaveUsername=function(){
     return;
   }
   localStorage.setItem('fcb-username',raw);
-  window.FCB_AUTH.getUid();
+  localStorage.removeItem('fcb-uid'); /* no longer needed — UID derived from username */
   window.FCB_AUTH.profile={username:raw};
   updateNav();
   fcbCloseModal();
@@ -181,7 +197,7 @@ window.fcbImportData=async function(input){
 };
 
 window.fcbSignOut=function(){
-  var confirmed=confirm('⚠️ Warning: Your saved calendars are stored in this browser only.\n\nIf you sign out, you will lose access to them unless you use the exact same username again on this device.\n\nAre you sure you want to sign out?');
+  var confirmed=confirm('Sign out?\n\nYou can always sign back in with the same username to access your calendars on any device.\n\nMake sure you remember your username!');
   if(!confirmed) return;
   localStorage.removeItem('fcb-username');
   window.FCB_AUTH.profile=null;
