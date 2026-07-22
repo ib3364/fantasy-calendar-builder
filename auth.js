@@ -8,7 +8,12 @@ window.FCB_AUTH={
   openModal:function(){ fcbShowModal(); },
   getUid:function(){
     var uid=localStorage.getItem('fcb-uid');
-    if(!uid){ uid='u'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('fcb-uid',uid); }
+    if(!uid){
+      uid='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+        var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
+      });
+      localStorage.setItem('fcb-uid',uid);
+    }
     return uid;
   }
 };
