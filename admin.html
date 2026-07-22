@@ -119,6 +119,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#e0e0e
           <option value="private">Private only</option>
         </select>
       </div>
+      <!-- Bulk actions -->
+      <div style="display:flex;gap:.6rem;align-items:center;margin-bottom:1rem;flex-wrap:wrap">
+        <label style="font-size:.8rem;color:#888;cursor:pointer;display:flex;align-items:center;gap:.4rem">
+          <input type="checkbox" id="select-all-chk" onchange="toggleSelectAll(this)"/> Select all visible
+        </label>
+        <span id="selected-count" style="font-size:.78rem;color:#666"></span>
+        <button class="btn btn-danger" id="bulk-delete-btn" onclick="bulkDelete()" style="display:none">🗑 Delete selected</button>
+        <button class="btn btn-warning" id="bulk-private-btn" onclick="bulkSetPublic(false)" style="display:none">Make Private</button>
+        <button class="btn btn-success" id="bulk-public-btn" onclick="bulkSetPublic(true)" style="display:none">Make Public</button>
+      </div>
       <div id="cal-status" class="status-msg"></div>
       <div class="cal-grid" id="cal-grid"><div style="color:#555;padding:2rem">Loading…</div></div>
     </div>
@@ -160,20 +170,26 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#e0e0e
       </div>
     </div>
 
-    <!-- ── Users ── -->
+    <!-- ── Owners ── -->
     <div class="admin-panel" id="panel-users">
-      <div class="panel-title">👤 User Lookup</div>
+      <div class="panel-title">👤 Calendar Owners</div>
+      <div style="font-size:.82rem;color:#666;margin-bottom:1.5rem">Calendars grouped by owner UID. Since accounts are username-based, search by username to find their calendars.</div>
       <div class="form-section">
-        <h3>Look up calendars by username</h3>
-        <div class="form-group"><label>Username</label>
+        <h3>Search by username</h3>
+        <div class="form-group">
           <div class="input-group">
-            <input id="user-search-input" type="text" placeholder="Enter username…"/>
+            <input id="user-search-input" type="text" placeholder="Enter exact username…"/>
             <button class="btn btn-primary" onclick="searchUser()">Search</button>
           </div>
         </div>
         <div id="user-status" class="status-msg"></div>
       </div>
       <div id="user-cal-grid" class="cal-grid" style="display:none"></div>
+      <div class="form-section" style="margin-top:1.5rem">
+        <h3>Owners summary (by UID)</h3>
+        <button class="btn btn-gray" onclick="loadOwners()">Load owner summary</button>
+        <div id="owners-list" style="margin-top:1rem"></div>
+      </div>
     </div>
 
     <!-- ── Settings ── -->
@@ -287,15 +303,18 @@ function filterCals(){
 
 function renderCals(cals){
   var grid=document.getElementById('cal-grid');
-  if(!cals.length){grid.innerHTML='<div style="color:#555;padding:2rem">No calendars found.</div>';return;}
+  if(!cals.length){grid.innerHTML='<div style="color:#555;padding:2rem">No calendars found.</div>';updateBulkBar();return;}
   grid.innerHTML=cals.map(function(c){
     var d=c.data||{};
     var title=c.title||d.w||'Untitled';
     var months=(d.months||[]).length;
     var date=c.created_at?c.created_at.slice(0,10):'';
     var pubBadge=c.is_public?'<span class="badge badge-pub">PUBLIC</span>':'<span class="badge badge-prv">PRIVATE</span>';
-    return '<div class="cal-item">'+
-      '<div class="cal-item-title">'+title+' '+pubBadge+'</div>'+
+    return '<div class="cal-item" id="item-'+c.id+'">'+
+      '<label style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;cursor:pointer">'+
+        '<input type="checkbox" class="cal-chk" data-id="'+c.id+'" onchange="updateBulkBar()"/>'+
+        '<span class="cal-item-title" style="margin:0">'+title+' '+pubBadge+'</span>'+
+      '</label>'+
       '<div class="cal-item-meta">'+months+' months · '+date+'<br/>ID: <code style="font-size:.68rem;color:#555">'+c.id+'</code></div>'+
       '<div class="cal-item-actions">'+
         '<a href="view.html?id='+c.id+'" target="_blank" class="btn btn-gray">View</a>'+
@@ -306,6 +325,62 @@ function renderCals(cals){
       '</div>'+
     '</div>';
   }).join('');
+  updateBulkBar();
+}
+
+function getSelectedIds(){
+  return Array.from(document.querySelectorAll('.cal-chk:checked')).map(function(c){return c.dataset.id;});
+}
+
+function updateBulkBar(){
+  var ids=getSelectedIds();
+  var count=ids.length;
+  var countEl=document.getElementById('selected-count');
+  var delBtn=document.getElementById('bulk-delete-btn');
+  var prvBtn=document.getElementById('bulk-private-btn');
+  var pubBtn=document.getElementById('bulk-public-btn');
+  if(countEl) countEl.textContent=count?count+' selected':'';
+  [delBtn,prvBtn,pubBtn].forEach(function(b){if(b) b.style.display=count?'':'none';});
+}
+
+function toggleSelectAll(chk){
+  document.querySelectorAll('.cal-chk').forEach(function(c){c.checked=chk.checked;});
+  updateBulkBar();
+}
+
+async function bulkDelete(){
+  var ids=getSelectedIds();
+  if(!ids.length) return;
+  if(!confirm('Delete '+ids.length+' calendar'+(ids.length!==1?'s':'')+' permanently?')) return;
+  showStatus('cal-status','Deleting '+ids.length+' calendars…','ok');
+  var failed=0;
+  for(var i=0;i<ids.length;i++){
+    try{
+      await fetch(SB_URL+'/rest/v1/calendars?id=eq.'+ids[i],{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+      _allCals=_allCals.filter(function(c){return c.id!==ids[i];});
+    }catch(e){failed++;}
+  }
+  document.getElementById('select-all-chk').checked=false;
+  var msg=failed?'Deleted '+(ids.length-failed)+', failed '+failed:'✓ Deleted '+ids.length+' calendars';
+  showStatus('cal-status',msg,failed?'err':'ok');
+  filterCals();
+}
+
+async function bulkSetPublic(pub){
+  var ids=getSelectedIds();
+  if(!ids.length) return;
+  showStatus('cal-status','Updating '+ids.length+' calendars…','ok');
+  var failed=0;
+  for(var i=0;i<ids.length;i++){
+    try{
+      await fetch(SB_URL+'/rest/v1/calendars?id=eq.'+ids[i],{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},body:JSON.stringify({is_public:pub})});
+      var cal=_allCals.find(function(c){return c.id===ids[i];});
+      if(cal) cal.is_public=pub;
+    }catch(e){failed++;}
+  }
+  document.getElementById('select-all-chk').checked=false;
+  showStatus('cal-status',failed?'Updated '+(ids.length-failed)+', failed '+failed:'✓ Updated '+ids.length+' calendars',failed?'err':'ok');
+  filterCals();
 }
 
 async function togglePublic(id,pub,btn){
@@ -424,6 +499,37 @@ function copyAdsOutput(){
   var out=document.getElementById('ads-output');
   out.select();document.execCommand('copy');
   showStatus('ads-status','Copied to clipboard!','ok');
+}
+
+async function loadOwners(){
+  var list=document.getElementById('owners-list');
+  list.innerHTML='<div style="color:#555">Loading…</div>';
+  try{
+    var res=await fetch(SB_URL+'/rest/v1/calendars?select=owner_id,is_public&limit=500',{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    });
+    var rows=await res.json();
+    var map={};
+    rows.forEach(function(r){
+      var uid=r.owner_id||'(no owner)';
+      if(!map[uid]) map[uid]={total:0,pub:0};
+      map[uid].total++;
+      if(r.is_public) map[uid].pub++;
+    });
+    var sorted=Object.keys(map).sort(function(a,b){return map[b].total-map[a].total;});
+    list.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'+
+      '<tr style="color:#666;border-bottom:1px solid #222"><th style="text-align:left;padding:.4rem">Owner UID</th><th style="padding:.4rem">Total</th><th style="padding:.4rem">Public</th><th style="padding:.4rem">Private</th></tr>'+
+      sorted.map(function(uid){
+        var m=map[uid];
+        return '<tr style="border-bottom:1px solid #1a1a1a">'+
+          '<td style="padding:.4rem;font-family:monospace;font-size:.7rem;color:#888">'+uid+'</td>'+
+          '<td style="padding:.4rem;text-align:center;color:#fff">'+m.total+'</td>'+
+          '<td style="padding:.4rem;text-align:center;color:#4f4">'+m.pub+'</td>'+
+          '<td style="padding:.4rem;text-align:center;color:#888">'+(m.total-m.pub)+'</td>'+
+        '</tr>';
+      }).join('')+
+    '</table>';
+  }catch(e){list.innerHTML='<div style="color:#f66">Failed to load owners.</div>';}
 }
 
 /* ══ SETTINGS ══ */
