@@ -845,6 +845,7 @@ function ivRenderShell(){
         <button class="iv-btn iv-btn-ghost" onclick="ivRenderChooser()">← Back</button>
         <button class="iv-btn" onclick="ivShareLink()">🔗 Share link</button>
         <button class="iv-btn" onclick="ivExport()">⬇ Export HTML</button>
+        <button class="iv-btn" id="iv-save-btn" onclick="ivSaveToCreations()" style="background:var(--accent2,var(--accent));color:var(--bg)">💾 Save</button>
         <a href="#" id="fcb-nav-auth" onclick="FCB_AUTH.openModal();return false" style="font-size:.78rem;color:var(--text-muted);text-decoration:none;font-family:var(--font-body);padding:.3rem .4rem;white-space:nowrap">Set username</a>
       </div>
     </div>
@@ -2007,6 +2008,33 @@ function ivRenderExportStone(rootId){
 </div>
 
 <script>ivInit();</script>
+<script>
+/* ── Save to My Creations from interactive view ── */
+async function ivSaveToCreations(){
+  var username=localStorage.getItem('fcb-username');
+  if(!username){ FCB_AUTH.openModal(); return; }
+  var uid=FCB_AUTH.getUid();
+  var btn=document.getElementById('iv-save-btn');
+  if(btn){ btn.disabled=true; btn.textContent='Saving…'; }
+  try{
+    var SB_URL='https://rqrqxrngqtaywmhkdoal.supabase.co';
+    var SB_KEY='sb_publishable_Hvg22Fb6JhnA81umnhoSYw_uIitY5E7';
+    var dataObj=IV.data||{};
+    var title=dataObj.w||'Untitled Calendar';
+    var id=(function(){ var r=''; for(var i=0;i<8;i++) r+='abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random()*36)]; return r; })();
+    var payload={id:id,data:dataObj,owner_id:uid,is_public:false,title:title};
+    var res=await fetch(SB_URL+'/rest/v1/calendars',{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error('failed');
+    if(btn){ btn.disabled=false; btn.textContent='✓ Saved!'; setTimeout(function(){if(btn)btn.textContent='💾 Save';},3000); }
+  }catch(e){
+    if(btn){ btn.disabled=false; btn.textContent='Save failed'; setTimeout(function(){if(btn)btn.textContent='💾 Save';},3000); }
+  }
+}
+</script>
 <script src="auth.js"></script>
 </body>
 </html>
