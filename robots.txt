@@ -1,0 +1,9 @@
+# Fantasy Calendar Builder — robots.txt
+User-agent: *
+Allow: /
+
+# Don't index the admin panel
+Disallow: /admin.html
+
+# Sitemap location
+Sitemap: https://fantasy-calendar-builder.vercel.app/sitemap.xml
