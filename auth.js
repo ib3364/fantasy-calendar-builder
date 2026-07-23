@@ -218,6 +218,8 @@ window.fcbSignOut=function(){
   updateNav();
   fcbCloseModal();
   if(window.updateSaveUI) updateSaveUI();
+  /* If on gallery, switch back to franchise tab and hide protected tabs */
+  if(window.switchTab) switchTab('franchise');
   if(window.loadMyCreations) loadMyCreations();
 };
 
