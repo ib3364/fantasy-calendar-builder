@@ -1454,7 +1454,7 @@ async function saveToAccount(){
     var dataObj=buildDataObject();
     var title=dataObj.w||'Untitled Calendar';
     var id=_savedCalId||(function(){ var r=''; for(var i=0;i<8;i++) r+='abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random()*36)]; return r; })();
-    var payload={id:id,data:dataObj,owner_id:uid,is_public:_saveIsPublic,title:title};
+    var payload={id:id,data:dataObj,owner_id:uid,username:username,is_public:_saveIsPublic,title:title};
     var method=_savedCalId?'PATCH':'POST';
     var url=SB_URL+'/rest/v1/calendars'+(_savedCalId?'?id=eq.'+id:'');
     var res=await fetch(url,{
