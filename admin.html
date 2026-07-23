@@ -186,8 +186,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#0d0d0d;color:#e0e0e
       </div>
       <div id="user-cal-grid" class="cal-grid" style="display:none"></div>
       <div class="form-section" style="margin-top:1.5rem">
-        <h3>Owners summary (by UID)</h3>
-        <button class="btn btn-gray" onclick="loadOwners()">Load owner summary</button>
+        <h3>All users with saved calendars</h3>
+        <button class="btn btn-gray" onclick="loadOwners()">Load users</button>
         <div id="owners-list" style="margin-top:1rem"></div>
       </div>
     </div>
@@ -276,7 +276,7 @@ function showPanel(name){
 var _allCals=[];
 async function loadCalendars(){
   try{
-    var res=await fetch(SB_URL+'/rest/v1/calendars?order=created_at.desc&select=id,title,data,is_public,owner_id,created_at&limit=200',{
+    var res=await fetch(SB_URL+'/rest/v1/calendars?order=created_at.desc&select=id,title,data,is_public,owner_id,username,created_at&limit=200',{
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
     });
     _allCals=await res.json();
@@ -315,7 +315,7 @@ function renderCals(cals){
         '<input type="checkbox" class="cal-chk" data-id="'+c.id+'" onchange="updateBulkBar()"/>'+
         '<span class="cal-item-title" style="margin:0">'+title+' '+pubBadge+'</span>'+
       '</label>'+
-      '<div class="cal-item-meta">'+months+' months · '+date+'<br/>ID: <code style="font-size:.68rem;color:#555">'+c.id+'</code></div>'+
+      '<div class="cal-item-meta">'+months+' months · '+date+(c.username?' · 👤 '+c.username:'')+'<br/>ID: <code style="font-size:.68rem;color:#555">'+c.id+'</code></div>'+
       '<div class="cal-item-actions">'+
         '<a href="view.html?id='+c.id+'" target="_blank" class="btn btn-gray">View</a>'+
         (c.is_public
@@ -505,31 +505,40 @@ async function loadOwners(){
   var list=document.getElementById('owners-list');
   list.innerHTML='<div style="color:#555">Loading…</div>';
   try{
-    var res=await fetch(SB_URL+'/rest/v1/calendars?select=owner_id,is_public&limit=500',{
+    var res=await fetch(SB_URL+'/rest/v1/calendars?select=username,is_public&limit=500',{
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
     });
     var rows=await res.json();
     var map={};
     rows.forEach(function(r){
-      var uid=r.owner_id||'(no owner)';
-      if(!map[uid]) map[uid]={total:0,pub:0};
-      map[uid].total++;
-      if(r.is_public) map[uid].pub++;
+      var name=r.username||'(no username)';
+      if(!map[name]) map[name]={total:0,pub:0};
+      map[name].total++;
+      if(r.is_public) map[name].pub++;
     });
     var sorted=Object.keys(map).sort(function(a,b){return map[b].total-map[a].total;});
-    list.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.8rem">'+
-      '<tr style="color:#666;border-bottom:1px solid #222"><th style="text-align:left;padding:.4rem">Owner UID</th><th style="padding:.4rem">Total</th><th style="padding:.4rem">Public</th><th style="padding:.4rem">Private</th></tr>'+
-      sorted.map(function(uid){
-        var m=map[uid];
+    list.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:.82rem">'+
+      '<tr style="color:#666;border-bottom:1px solid #222">'+
+        '<th style="text-align:left;padding:.5rem">Username</th>'+
+        '<th style="padding:.5rem;text-align:center">Total</th>'+
+        '<th style="padding:.5rem;text-align:center">Public</th>'+
+        '<th style="padding:.5rem;text-align:center">Private</th>'+
+        '<th style="padding:.5rem">Actions</th>'+
+      '</tr>'+
+      sorted.map(function(name){
+        var m=map[name];
         return '<tr style="border-bottom:1px solid #1a1a1a">'+
-          '<td style="padding:.4rem;font-family:monospace;font-size:.7rem;color:#888">'+uid+'</td>'+
-          '<td style="padding:.4rem;text-align:center;color:#fff">'+m.total+'</td>'+
-          '<td style="padding:.4rem;text-align:center;color:#4f4">'+m.pub+'</td>'+
-          '<td style="padding:.4rem;text-align:center;color:#888">'+(m.total-m.pub)+'</td>'+
+          '<td style="padding:.5rem;color:#fff;font-weight:600">'+name+'</td>'+
+          '<td style="padding:.5rem;text-align:center;color:#fff">'+m.total+'</td>'+
+          '<td style="padding:.5rem;text-align:center;color:#4f4">'+m.pub+'</td>'+
+          '<td style="padding:.5rem;text-align:center;color:#888">'+(m.total-m.pub)+'</td>'+
+          '<td style="padding:.5rem">'+
+            (name!=='(no username)'?'<button class="btn btn-gray" style="font-size:.72rem" onclick="document.getElementById(\'user-search-input\').value=\''+name+'\';searchUser()">View calendars</button>':'')+
+          '</td>'+
         '</tr>';
       }).join('')+
     '</table>';
-  }catch(e){list.innerHTML='<div style="color:#f66">Failed to load owners.</div>';}
+  }catch(e){list.innerHTML='<div style="color:#f66">Failed to load users.</div>';}
 }
 
 /* ══ SETTINGS ══ */
