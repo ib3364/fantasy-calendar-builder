@@ -2039,7 +2039,8 @@ async function ivSaveToCreations(){
     var dataObj=IV.data||{};
     var title=dataObj.w||'Untitled Calendar';
     var id=(function(){ var r=''; for(var i=0;i<8;i++) r+='abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random()*36)]; return r; })();
-    var payload={id:id,data:dataObj,owner_id:uid,is_public:false,title:title};
+    var uname=localStorage.getItem('fcb-username')||'';
+    var payload={id:id,data:dataObj,owner_id:uid,username:uname,is_public:false,title:title};
     var res=await fetch(SB_URL+'/rest/v1/calendars',{
       method:'POST',
       headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return-minimal'},
