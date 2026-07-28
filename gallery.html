@@ -21,9 +21,9 @@
 <meta name="twitter:description" content="Browse real fictional world calendars — Middle-earth, Tamriel, Faerûn, Roshar, The Continent. Create and share your own fantasy calendar for free."/>
 <meta name="twitter:image" content="https://fantasy-calendar-builder.vercel.app/og-image.png"/>
 <title>Fantasy Calendars Gallery — Middle-earth, Tamriel, Faerûn & More</title>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Share+Tech+Mono&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#f5f0e8;--surface:#ede7d9;--surface2:#e2d9c8;--border:#c9b99a;--border2:#d4c4a8;--accent:#7c5c2e;--accent2:#b8860b;--text:#2a1f0e;--text-muted:#6b5840;--text-dim:#9a8068;--text-dimmer:#b8a080;--text-dimmest:#cdb898;--nav-bg:#ede7d9;--card-border:#c9b99a;--month-name:#7c5c2e;--moon-pill-bg:rgba(124,92,46,0.12);--moon-pill-border:rgba(124,92,46,0.3);--moon-pill-text:#7c5c2e;--accent-rgb:124,92,46;--accent2-dark:#f5f0e8;--radius-card:4px;--radius-pill:3px;--radius-btn:4px;--font-display:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;--font-body:Georgia,'Times New Roman',serif;--btn-clip:none;--card-clip:none;--card-bg:#ede7d9;--shadow:2px 2px 8px rgba(42,31,14,0.2)}
+:root{--bg:#F4F7FE;--surface:#ffffff;--surface2:#eef1fd;--border:#e4e9f7;--border2:#eef1fd;--accent:#422AFB;--accent2:#7551FF;--text:#1B2559;--text-muted:#707EAE;--text-dim:#A3AED0;--text-dimmer:#CBD5E0;--text-dimmest:#E9ECEF;--input-bg:#ffffff;--input-bg2:#F4F7FE;--nav-bg:#ffffff;--preview-bg:#F4F7FE;--card-border:#E9ECEF;--month-name:#422AFB;--moon-pill-bg:rgba(66,42,251,0.08);--moon-pill-border:rgba(66,42,251,0.25);--moon-pill-text:#422AFB;--accent-rgb:66,42,251;--accent2-dark:#ffffff;--radius-card:20px;--radius-pill:9999px;--radius-btn:12px;--radius-input:12px;--font-display:'Poppins',sans-serif;--font-body:'DM Sans',sans-serif;--btn-clip:none;--card-clip:none;--card-bg:#ffffff;--shadow:0 18px 40px rgba(112,144,176,0.16),0 4px 12px rgba(112,144,176,0.08);--prog-done-color:#422AFB;--event-bg:rgba(66,42,251,0.06);--event-color:#422AFB;--event-border:rgba(66,42,251,0.18)}
 [data-theme="waypoint"]{--bg:#F4F7FE;--surface:#ffffff;--surface2:#eef1fd;--border:#e4e9f7;--border2:#eef1fd;--accent:#422AFB;--accent2:#7551FF;--text:#1B2559;--text-muted:#707EAE;--text-dim:#A3AED0;--text-dimmer:#CBD5E0;--text-dimmest:#E9ECEF;--input-bg:#ffffff;--input-bg2:#F4F7FE;--nav-bg:#ffffff;--preview-bg:#F4F7FE;--card-border:#E9ECEF;--month-name:#422AFB;--moon-pill-bg:rgba(66,42,251,0.08);--moon-pill-border:rgba(66,42,251,0.25);--moon-pill-text:#422AFB;--accent-rgb:66,42,251;--accent2-dark:#ffffff;--radius-card:20px;--radius-pill:9999px;--radius-btn:12px;--radius-input:12px;--font-display:'Poppins',sans-serif;--font-body:'DM Sans',sans-serif;--btn-clip:none;--card-clip:none;--card-bg:#ffffff;--shadow:0 18px 40px rgba(112,144,176,0.16),0 4px 12px rgba(112,144,176,0.08);--prog-done-color:#422AFB;--event-bg:rgba(66,42,251,0.06);--event-color:#422AFB;--event-border:rgba(66,42,251,0.18)}
 
 *{margin:0;padding:0;box-sizing:border-box;transition:background-color .4s,border-color .4s,color .4s}
@@ -76,41 +76,29 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 .theme-opt{display:block;width:100%;text-align:left;padding:9px 12px;background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-muted);font-family:var(--font-body)}
 .theme-opt:hover{background:var(--surface2);color:var(--text)}
 .theme-opt.active{color:var(--accent);font-weight:700}
-@keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
-.scan-line{display:none}
 @media(max-width:600px){.cal-grid{grid-template-columns:repeat(2,1fr)}nav .nav-links a:not(.nav-cta){display:none}}
 [data-theme="blood"]{--bg:#000000;--surface:#191C24;--surface2:#14161c;--border:#2a2d38;--border2:#20222b;--accent:#EB1616;--accent2:#ff4d4d;--text:#ffffff;--text-muted:#6C7293;--text-dim:#4a4e63;--text-dimmer:#33364d;--text-dimmest:#202230;--input-bg:#191C24;--input-bg2:#14161c;--nav-bg:#191C24;--card-border:#2a2d38;--month-name:#EB1616;--moon-pill-bg:rgba(235,22,22,0.1);--moon-pill-border:rgba(235,22,22,0.35);--moon-pill-text:#ff6b6b;--accent-rgb:235,22,22;--accent2-dark:#ffffff;--radius-card:8px;--radius-pill:50px;--radius-btn:6px;--font-display:'Roboto',sans-serif;--font-body:'Open Sans',sans-serif;--btn-clip:none;--card-clip:none;--card-bg:#191C24;--shadow:0 4px 20px rgba(0,0,0,0.5);--event-bg:rgba(235,22,22,0.1);--event-color:#ff6b6b;--event-border:rgba(235,22,22,0.4)}
 
 
-/* Void Chronicle body texture — deep starfield */
 
 
-/* Void Chronicle nav — constellation dots */
 
 
-/* Void Chronicle cal-card — cosmic glow */
 
 
-/* Void Chronicle meta pills — cosmic orbs */
 
 
-/* Void Chronicle moon pills */
-
-/* Void Chronicle cal-card download btn */
 
 
-/* Void Chronicle event badge */
+
 
 /* Obsidian Red month tile */
 [data-theme="blood"] .cal-month-tile{background:#191C24;border:1px solid #2a2d38;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 
-/* Void Chronicle month tile identity */
-
-/* Spectral font for void */
 
 
 
-/* ══ NEW THEMES: Desert Scroll · Hotspace · Stone Tablet ══ */
+
 
 [data-theme="neon"]{--bg:#200e35;--surface:#2a1245;--surface2:#25103d;--border:#4d1d85;--border2:#3f1c66;--accent:#1befc5;--accent2:#7836c6;--text:#ffffff;--text-muted:#c7b8dc;--text-dim:#8a6ba8;--text-dimmer:#5a3a78;--text-dimmest:#3a1f52;--input-bg:#25103d;--input-bg2:#200e35;--nav-bg:#200e35;--card-border:#4d1d85;--month-name:#1befc5;--moon-pill-bg:rgba(27,239,197,0.1);--moon-pill-border:rgba(27,239,197,0.35);--moon-pill-text:#1befc5;--accent-rgb:27,239,197;--accent2-dark:#ffffff;--radius-card:12px;--radius-pill:9999px;--radius-btn:8px;--font-display:'Raleway',sans-serif;--font-body:'Raleway',sans-serif;--btn-clip:none;--card-clip:none;--card-bg:#2a1245;--shadow:0 20px 50px rgba(32,14,53,0.5),0 0 40px rgba(27,239,197,0.08);--event-bg:rgba(27,239,197,0.1);--event-color:#1befc5;--event-border:rgba(27,239,197,0.35)}
 [data-theme="neon"] .cal-month-tile{background:rgba(27,239,197,0.05);border:1px solid rgba(77,29,133,0.5);border-radius:10px;box-shadow:0 4px 16px rgba(32,14,53,0.4)}
@@ -132,10 +120,9 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem
 .btn-fav.active{opacity:1}
 
 </style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Raleway:wght@300;400;500;600;700;800;900&display=swap"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Raleway:wght@300;400;500;600;700;800;900&display=swap"/>
 </head>
 <body>
-<div class="scan-line"></div>
 <nav>
   <a href="index.html" class="logo">🌙 Fantasy Calendar Builder</a>
   <div class="nav-links">
