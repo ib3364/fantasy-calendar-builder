@@ -138,6 +138,28 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0}
 .iv-edit-hint{font-size:.7rem;color:var(--text-dim);line-height:1.4;margin-top:.3rem}
 .iv-slot-select{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.45rem;border-radius:4px;font-family:var(--font-body);font-size:.8rem;margin-bottom:.5rem}
 
+/* ── Icon/Font picker modals ── */
+.iv-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:1rem}
+.iv-modal.open{display:flex}
+.iv-modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card,10px);width:100%;max-width:560px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.iv-modal-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.iv-modal-title{font-family:var(--font-display);font-size:1rem;color:var(--text);font-weight:700}
+.iv-modal-close{background:transparent;border:none;color:var(--text-muted);font-size:1.1rem;cursor:pointer;padding:.3rem .5rem;border-radius:4px;line-height:1}
+.iv-modal-close:hover{background:var(--input-bg);color:var(--accent)}
+.iv-modal-search{padding:.8rem 1.2rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.iv-modal-search input{width:100%;background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.55rem .8rem;border-radius:6px;font-size:.85rem;font-family:var(--font-body);outline:none;box-sizing:border-box}
+.iv-modal-search input:focus{border-color:var(--accent)}
+.iv-modal-body{overflow-y:auto;padding:1rem 1.2rem;flex:1}
+.iv-iconlib-cats{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 1.2rem .8rem;flex-shrink:0}
+.iv-icon-cat{background:var(--input-bg);border:1px solid var(--border);color:var(--text-muted);padding:.35rem .7rem;font-size:.72rem;border-radius:999px;cursor:pointer;font-family:var(--font-body)}
+.iv-icon-cat:hover{border-color:var(--accent);color:var(--accent)}
+#iv-iconlib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:.5rem}
+.iv-icon-opt{background:var(--input-bg);border:1px solid var(--border);border-radius:6px;padding:.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.iv-icon-opt:hover{border-color:var(--accent)}
+.iv-font-opt{background:var(--input-bg);border:1px solid var(--border);color:var(--text);padding:.5rem .8rem;font-size:.95rem;border-radius:6px;cursor:pointer;text-align:left}
+.iv-font-opt:hover{border-color:var(--accent)}
+.iv-font-opt.active{border-color:var(--accent);background:rgba(var(--accent-rgb),.08);color:var(--accent)}
+
 /* ═══ NOVA HORIZON — clean dashboard-style calendar view ═══ */
 .tac-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.6rem 1.2rem}
 .tac-console{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:#ffffff;border:1px solid #E9ECEF;border-radius:20px;position:relative;overflow:hidden;font-family:var(--font-body),'DM Sans',sans-serif;box-shadow:0 18px 40px rgba(112,144,176,0.16),0 4px 12px rgba(112,144,176,0.08)}
@@ -551,6 +573,83 @@ document.addEventListener('change',e=>{
        :'<option value="">(no lore)</option>');
   }
 });
+
+function ivRenderDetailForTheme(){
+  if(IV.theme==='blood') ivRenderGrimoireDetail();
+  else if(IV.theme==='neon') ivRenderNeonDetail();
+  else ivRenderTacticalDetail();
+}
+
+function ivSelectMonth(i){ IV.selectedMonth=i; IV.lorePage=0;
+  if(IV.theme==='blood'){
+    document.querySelectorAll('.grim-entry').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderGrimoireDetail();
+  } else if(IV.theme==='neon'){
+    document.querySelectorAll('.neon-row').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderNeonDetail();
+  } else {
+    document.querySelectorAll('.tac-wp').forEach((el,idx)=>el.classList.toggle('active',idx===i));
+    ivRenderTacticalDetail();
+  }
+}
+
+function ivLoreNav(dir){
+  IV.lorePage += dir;
+  ivRenderDetailForTheme();
+}
+
+function ivSetBgColor(value){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){ alert('Pick a month and lore entry first.'); return; }
+  IV.perLoreBg[mi+':'+li]=value;
+  ivRenderDetailForTheme();
+}
+
+function ivClearBg(){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)) return;
+  delete IV.perLoreBg[mi+':'+li];
+  ivRenderDetailForTheme();
+}
+
+function ivSetTextColor(value){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){ alert('Pick a month and lore entry first.'); return; }
+  IV.perLoreColor[mi+':'+li]=value;
+  ivRenderDetailForTheme();
+}
+
+function ivClearTextColor(){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)) return;
+  delete IV.perLoreColor[mi+':'+li];
+  ivRenderDetailForTheme();
+}
+
+function ivUploadBg(){
+  const mi=parseInt(document.getElementById('iv-bg-month').value);
+  const li=parseInt(document.getElementById('iv-bg-lore').value);
+  if(isNaN(mi)||isNaN(li)){ alert('Pick a month and lore entry first.'); return; }
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange=()=>{
+    const file=inp.files[0]; if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      ivCompressImg(reader.result,900,(img)=>{
+        IV.perLoreBg[mi+':'+li]='url('+img+') center/cover no-repeat';
+        showFcbToast('Background image set');
+        ivRenderDetailForTheme();
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
 </script>
 <script>
 /* ═══ Nova Horizon renderer ═══ */
@@ -727,6 +826,12 @@ function ivRenderNeonDetail(){
   </div>`;
 }
 
+function ivOpenFontLib(){
+  document.getElementById('iv-fontlib-search').value='';
+  ivRenderFontGrid('');
+  document.getElementById('iv-fontlib-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('iv-fontlib-search').focus(),100);
+}
 function ivRenderFontGrid(filter){
   const f=(filter||'').toLowerCase().trim();
   const grid=document.getElementById('iv-fontlib-grid');
@@ -748,6 +853,28 @@ function ivSelectFontLib(name){
   document.querySelectorAll('.iv-font-opt').forEach(b=>b.classList.toggle('active',b.textContent===name));
   showFcbToast('Font set to '+name);
   setTimeout(ivRenderStage,250);
+}
+
+function ivUploadFont(){
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='.ttf,.otf,.woff,.woff2';
+  inp.onchange=()=>{
+    const file=inp.files[0]; if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const fontName='Custom-'+Date.now();
+      const face=`@font-face{font-family:'${fontName}';src:url(${reader.result})}`;
+      IV.customFontFace=face;
+      IV.font=fontName;
+      const styleEl=document.createElement('style');
+      styleEl.textContent=face;
+      document.head.appendChild(styleEl);
+      showFcbToast('Custom font applied');
+      setTimeout(ivRenderStage,150);
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
 }
 
 const IV_ICON_CATS=[
@@ -803,6 +930,61 @@ function ivSelectIconLib(id){
       ivCloseIconLib();ivRenderStage();ivRestoreSelect('iv-icon-month',mi);
     });
   }).catch(()=>alert('Could not load that icon.'));
+}
+
+function ivCompressImg(dataUrl,maxSize,callback){
+  const img=new Image();
+  img.onload=()=>{
+    let w=img.width, h=img.height;
+    if(w>maxSize||h>maxSize){
+      if(w>h){ h=Math.round(h*maxSize/w); w=maxSize; }
+      else { w=Math.round(w*maxSize/h); h=maxSize; }
+    }
+    const canvas=document.createElement('canvas');
+    canvas.width=w; canvas.height=h;
+    const ctx=canvas.getContext('2d');
+    ctx.drawImage(img,0,0,w,h);
+    callback(canvas.toDataURL('image/png'));
+  };
+  img.onerror=()=>callback(dataUrl);
+  img.src=dataUrl;
+}
+
+function ivRestoreSelect(id,value){
+  const el=document.getElementById(id);
+  if(el) el.value=value;
+}
+
+function ivPickIcon(){
+  const mi=parseInt(document.getElementById('iv-icon-month').value);
+  if(isNaN(mi)){ alert('Pick a month first.'); return; }
+  ivOpenIconLib(mi);
+}
+
+function ivUploadIcon(){
+  const mi=parseInt(document.getElementById('iv-icon-month').value);
+  if(isNaN(mi)){ alert('Pick a month first.'); return; }
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange=()=>{
+    const file=inp.files[0]; if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      ivCompressImg(reader.result,64,(small)=>{
+        IV.months[mi].icon=small;
+        showFcbToast('Icon set for '+(IV.months[mi].name||'Month '+(mi+1)));
+        ivRenderStage();
+        ivRestoreSelect('iv-icon-month',mi);
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
+
+function ivShowIconPop(i){
+  ivOpenIconLib(i);
+  ivRestoreSelect('iv-icon-month',i);
 }
 </script>
 <script>
