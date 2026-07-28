@@ -30,7 +30,7 @@
    (theme var blocks copied from view.html so
     the interactive file is fully self-contained)
 ═══════════════════════════════════════ */
-:root{--bg:#f5f0e8;--surface:#ede7d9;--surface2:#e4ddcb;--border:#cbbfa6;--border2:#dad0bb;--accent:#7c5c2e;--accent2:#a67c3e;--text:#3a3020;--text-muted:#5e5440;--text-dim:#8a7c60;--text-dimmer:#a89c80;--text-dimmest:#c2b89c;--input-bg:#f0ebdf;--input-bg2:#e8e1d0;--card-bg:#faf6ee;--card-border:#cbbfa6;--month-name:#5a4420;--moon-pill-bg:rgba(124,92,46,0.08);--moon-pill-border:rgba(124,92,46,0.3);--moon-pill-text:#5a4420;--accent-rgb:124,92,46;--font-display:'Cinzel',Georgia,serif;--font-body:'Cardo',Georgia,serif;--shadow:0 4px 20px rgba(90,70,40,0.15)}
+:root{--bg:#F4F7FE;--surface:#ffffff;--surface2:#eef1fd;--border:#e4e9f7;--border2:#eef1fd;--accent:#422AFB;--accent2:#7551FF;--text:#1B2559;--text-muted:#707EAE;--text-dim:#A3AED0;--text-dimmer:#CBD5E0;--text-dimmest:#E9ECEF;--input-bg:#ffffff;--input-bg2:#F4F7FE;--card-bg:#ffffff;--card-border:#E9ECEF;--month-name:#422AFB;--moon-pill-bg:rgba(66,42,251,0.08);--moon-pill-border:rgba(66,42,251,0.25);--moon-pill-text:#422AFB;--accent-rgb:66,42,251;--font-display:'Poppins',sans-serif;--font-body:'DM Sans',sans-serif;--shadow:0 18px 40px rgba(112,144,176,0.16),0 4px 12px rgba(112,144,176,0.08)}
 [data-theme="waypoint"]{--bg:#F4F7FE;--surface:#ffffff;--surface2:#eef1fd;--border:#e4e9f7;--border2:#eef1fd;--accent:#422AFB;--accent2:#7551FF;--text:#1B2559;--text-muted:#707EAE;--text-dim:#A3AED0;--text-dimmer:#CBD5E0;--text-dimmest:#E9ECEF;--input-bg:#ffffff;--input-bg2:#F4F7FE;--card-bg:#ffffff;--card-border:#E9ECEF;--month-name:#422AFB;--moon-pill-bg:rgba(66,42,251,0.08);--moon-pill-border:rgba(66,42,251,0.25);--moon-pill-text:#422AFB;--accent-rgb:66,42,251;--font-display:'Poppins',sans-serif;--font-body:'DM Sans',sans-serif;--shadow:0 18px 40px rgba(112,144,176,0.16),0 4px 12px rgba(112,144,176,0.08)}
 [data-theme="blood"]{--bg:#000000;--surface:#191C24;--surface2:#14161c;--border:#2a2d38;--border2:#20222b;--accent:#EB1616;--accent2:#ff4d4d;--text:#ffffff;--text-muted:#6C7293;--text-dim:#4a4e63;--text-dimmer:#33364d;--text-dimmest:#202230;--input-bg:#191C24;--input-bg2:#14161c;--card-bg:#191C24;--card-border:#2a2d38;--month-name:#EB1616;--moon-pill-bg:rgba(235,22,22,0.1);--moon-pill-border:rgba(235,22,22,0.35);--moon-pill-text:#ff6b6b;--accent-rgb:235,22,22;--font-display:'Roboto',sans-serif;--font-body:'Open Sans',sans-serif;--shadow:0 4px 20px rgba(0,0,0,0.5)}
 [data-theme="neon"]{--bg:#200e35;--surface:#2a1245;--surface2:#25103d;--border:#4d1d85;--border2:#3f1c66;--accent:#1befc5;--accent2:#7836c6;--text:#ffffff;--text-muted:#c7b8dc;--text-dim:#8a6ba8;--text-dimmer:#5a3a78;--text-dimmest:#3a1f52;--input-bg:#25103d;--input-bg2:#200e35;--card-bg:#2a1245;--card-border:#4d1d85;--month-name:#1befc5;--moon-pill-bg:rgba(27,239,197,0.1);--moon-pill-border:rgba(27,239,197,0.35);--moon-pill-text:#1befc5;--accent-rgb:27,239,197;--font-display:'Raleway',sans-serif;--font-body:'Raleway',sans-serif;--shadow:0 20px 50px rgba(32,14,53,0.5)}
@@ -825,9 +825,9 @@ function ivExport(){
 <title>Interactive Calendar View — Fantasy Calendar Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Raleway:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 ${IV.font&&!IV.font.startsWith('Custom-')?`<link href="https://fonts.googleapis.com/css2?family=${encodeURIComponent(IV.font)}:ital@0;1&display=swap" rel="stylesheet"/>`:''}
-<style>${nbCss}
+<${'style'}>${nbCss}
 ${IV.customFontFace?IV.customFontFace:''}
-body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}</style>
+body{margin:0}.iv-toolbar,.iv-edit-sidebar{display:none!important}.iv-stage{position:static!important;inset:auto!important}<${'/style'}>
 </head><body>
 <div id="iv-root"></div>
 <${'script'}>
