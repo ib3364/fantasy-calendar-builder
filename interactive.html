@@ -38,7 +38,7 @@
 [data-theme="blood"]{--bg:#000000;--surface:#191C24;--surface2:#14161c;--border:#2a2d38;--border2:#20222b;--accent:#EB1616;--accent2:#ff4d4d;--text:#ffffff;--text-muted:#6C7293;--text-dim:#4a4e63;--text-dimmer:#33364d;--text-dimmest:#202230;--input-bg:#191C24;--input-bg2:#14161c;--card-bg:#191C24;--card-border:#2a2d38;--month-name:#EB1616;--moon-pill-bg:rgba(235,22,22,0.1);--moon-pill-border:rgba(235,22,22,0.35);--moon-pill-text:#ff6b6b;--accent-rgb:235,22,22;--font-display:'Roboto',sans-serif;--font-body:'Open Sans',sans-serif;--shadow:0 4px 20px rgba(0,0,0,0.5)}
 [data-theme="void"]{--bg:#06040e;--surface:#0e0a1e;--surface2:#0a0818;--border:#3a2060;--border2:#241440;--accent:#9b59b6;--accent2:#c39bd3;--text:#e8d8f8;--text-muted:#a880c8;--text-dim:#5a3878;--text-dimmer:#361e4e;--text-dimmest:#1e1030;--input-bg:#080612;--input-bg2:#06040e;--card-bg:#0e0a1e;--card-border:#3a2060;--month-name:#c39bd3;--moon-pill-bg:rgba(155,89,182,0.1);--moon-pill-border:rgba(155,89,182,0.35);--moon-pill-text:#c39bd3;--accent-rgb:155,89,182;--font-display:'Spectral',serif;--font-body:'Spectral',serif;--shadow:0 4px 32px rgba(0,0,0,0.9)}
 [data-theme="desert"]{--bg:#3a1e0e;--surface:#4e2a14;--surface2:#42230f;--border:#8a4a1e;--border2:#5e3216;--accent:#e8852e;--accent2:#f0b860;--text:#f8e4c0;--text-muted:#d8a874;--text-dim:#a86840;--text-dimmer:#7a4828;--text-dimmest:#52301a;--input-bg:#341a0c;--input-bg2:#2e160a;--card-bg:#4e2a14;--card-border:#8a4a1e;--month-name:#f0b860;--moon-pill-bg:rgba(232,133,46,0.12);--moon-pill-border:rgba(232,133,46,0.4);--moon-pill-text:#f0b860;--accent-rgb:232,133,46;--font-display:'Cinzel',serif;--font-body:'Cardo',serif;--shadow:0 4px 18px rgba(20,8,0,0.5)}
-[data-theme="neon"]{--bg:#0a0612;--surface:#140a1e;--surface2:#0f0818;--border:#ff2d95;--border2:#3a1830;--accent:#ff2d95;--accent2:#00f0ff;--text:#f8e8ff;--text-muted:#c890d8;--text-dim:#a050a0;--text-dimmer:#6a2860;--text-dimmest:#3a1838;--input-bg:#0c0616;--input-bg2:#0a0512;--card-bg:#140a1e;--card-border:#ff2d95;--month-name:#00f0ff;--moon-pill-bg:rgba(255,45,149,0.1);--moon-pill-border:rgba(255,45,149,0.4);--moon-pill-text:#ff2d95;--accent-rgb:255,45,149;--font-display:'Orbitron',sans-serif;--font-body:'Rajdhani',monospace;--shadow:0 0 30px rgba(255,45,149,0.12)}
+[data-theme="neon"]{--bg:#200e35;--surface:#2a1245;--surface2:#25103d;--border:#4d1d85;--border2:#3f1c66;--accent:#1befc5;--accent2:#7836c6;--text:#ffffff;--text-muted:#c7b8dc;--text-dim:#8a6ba8;--text-dimmer:#5a3a78;--text-dimmest:#3a1f52;--input-bg:#25103d;--input-bg2:#200e35;--card-bg:#2a1245;--card-border:#4d1d85;--month-name:#1befc5;--moon-pill-bg:rgba(27,239,197,0.1);--moon-pill-border:rgba(27,239,197,0.35);--moon-pill-text:#1befc5;--accent-rgb:27,239,197;--font-display:'Raleway',sans-serif;--font-body:'Raleway',sans-serif;--shadow:0 20px 50px rgba(32,14,53,0.5)}
 [data-theme="stone"]{--bg:#2a2826;--surface:#34322e;--surface2:#2e2c28;--border:#5a564e;--border2:#403c36;--accent:#9a8c70;--accent2:#bcaa86;--text:#d8d2c4;--text-muted:#a8a090;--text-dim:#787060;--text-dimmer:#585044;--text-dimmest:#3e3a32;--input-bg:#262420;--input-bg2:#222019;--card-bg:#34322e;--card-border:#5a564e;--month-name:#bcaa86;--moon-pill-bg:rgba(154,140,112,0.1);--moon-pill-border:rgba(154,140,112,0.35);--moon-pill-text:#bcaa86;--accent-rgb:154,140,112;--font-display:'Cinzel',serif;--font-body:'Cardo',serif;--shadow:inset 0 2px 4px rgba(0,0,0,0.4),0 3px 8px rgba(0,0,0,0.5)}
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -87,7 +87,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
   .grim-left{border-bottom:1px solid rgba(235,22,22,.18)}
   .star-left{border-bottom:1px solid rgba(155,89,182,.2)}
   .scrl-left{border-bottom:1px solid rgba(232,133,46,.22)}
-  .neon-left{border-bottom:1px solid rgba(0,229,255,.25)}
+  .neon-left{border-bottom:1px solid rgba(27,239,197,.18)}
   .stn-left{border-bottom:2px solid rgba(0,0,0,.3)}
   /* trim heavy content padding on phones */
   .nb-page,.hud-left,.hud-right,.cdx-page,.tac-left,.tac-right,.grdn-left,.grdn-right,.grim-left,.grim-right,.star-left,.star-right,.scrl-left,.scrl-right,.neon-left,.neon-right,.stn-left,.stn-right{
@@ -521,49 +521,45 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .scrl-nav-label{font-family:'Cinzel',serif;font-size:.74rem;color:rgba(232,133,46,.65);letter-spacing:.08em}
 .scrl-empty{color:rgba(232,133,46,.4);text-align:center;margin-top:3rem;font-family:'Cinzel',serif;font-style:italic}
 
-/* ═══ ROTARY DIAL / CYBERTERMINAL (Neon Codex) ═══ */
+/* ═══ HOTSPACE — purple/mint SaaS-style calendar view ═══ */
 .neon-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.6rem 1.2rem}
-.neon-term{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:linear-gradient(165deg,#140a18 0%,#0a060e 100%);border:1px solid rgba(255,45,149,.5);border-radius:6px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(255,45,149,.12),inset 0 0 60px rgba(255,45,149,.03);font-family:var(--font-body),'Rajdhani',sans-serif}
-/* CRT scanline overlay */
-.neon-term::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(255,45,149,.03) 2px,rgba(255,45,149,.03) 3px)}
-.neon-term::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at 50% 0%,rgba(0,229,255,.05),transparent 60%)}
-.neon-left{border-right:1px solid rgba(0,229,255,.25);padding:1.3rem 1.1rem;overflow-y:auto;position:relative;z-index:2}
+.neon-term{display:grid;grid-template-columns:300px 1fr;width:min(1000px,100%);max-height:84vh;background:#2a1245;border:1px solid #4d1d85;border-radius:16px;position:relative;overflow:hidden;box-shadow:0 20px 50px rgba(32,14,53,.5);font-family:var(--font-body),'Raleway',sans-serif}
+.neon-left{border-right:1px solid #4d1d85;padding:1.3rem 1.1rem;overflow-y:auto;position:relative;z-index:2;background:#200e35}
 .neon-right{padding:1.6rem 1.7rem;overflow-y:auto;position:relative;z-index:2}
-.neon-sys-label{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.18em;color:#00e5ff;text-transform:uppercase;margin-bottom:.5rem;text-shadow:0 0 8px rgba(0,229,255,.6)}
-.neon-world-name{font-family:var(--font-body),'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:#ff2d95;letter-spacing:.04em;line-height:1.25;margin-bottom:.3rem;text-shadow:0 0 12px rgba(255,45,149,.7),0 0 24px rgba(255,45,149,.3)}
-.neon-era{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:rgba(0,229,255,.7);letter-spacing:.08em;margin-bottom:.9rem}
-.neon-world-lore{font-size:.8rem;line-height:1.6;color:#d8a8c8;border:1px solid rgba(255,45,149,.3);border-left:2px solid #ff2d95;background:rgba(255,45,149,.04);padding:.6rem .7rem;margin-bottom:1rem}
-.neon-index-label{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.16em;color:rgba(0,229,255,.6);text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px dashed rgba(0,229,255,.25)}
+.neon-sys-label{font-family:var(--font-body),'Raleway',sans-serif;font-size:.7rem;letter-spacing:.06em;color:#c7b8dc;text-transform:uppercase;margin-bottom:.5rem;font-weight:600}
+.neon-world-name{font-family:var(--font-display),'Raleway',sans-serif;font-size:1.15rem;font-weight:700;color:#ffffff;line-height:1.25;margin-bottom:.3rem}
+.neon-era{font-family:var(--font-body),'Raleway',sans-serif;font-size:.76rem;color:#8a6ba8;margin-bottom:.9rem}
+.neon-world-lore{font-size:.82rem;line-height:1.6;color:#c7b8dc;border:1px solid #4d1d85;border-radius:10px;background:#25103d;padding:.65rem .75rem;margin-bottom:1rem}
+.neon-index-label{font-family:var(--font-body),'Raleway',sans-serif;font-size:.7rem;letter-spacing:.05em;color:#8a6ba8;text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.5rem;border-bottom:1px solid #4d1d85;font-weight:600}
 .neon-month-list{list-style:none;margin:0;padding:0}
-.neon-row{display:flex;align-items:center;gap:.55rem;padding:.45rem .55rem;cursor:pointer;color:#c890b0;font-size:.88rem;letter-spacing:.02em;border:1px solid transparent;transition:all .15s;position:relative;margin-bottom:2px}
-.neon-row:hover{background:rgba(255,45,149,.06);color:#ffb0d8}
-.neon-row.active{background:rgba(255,45,149,.1);border-color:rgba(255,45,149,.5);color:#ff2d95;box-shadow:0 0 12px rgba(255,45,149,.2),inset 0 0 12px rgba(255,45,149,.05)}
-.neon-cursor{font-family:'Share Tech Mono',monospace;color:rgba(0,229,255,.5);font-size:.8rem;flex-shrink:0;transition:all .15s}
-.neon-row:hover .neon-cursor{color:#00e5ff}
-.neon-row.active .neon-cursor{color:#00e5ff;text-shadow:0 0 8px rgba(0,229,255,.7);animation:neon-blink 1.2s steps(2) infinite}
-@keyframes neon-blink{0%,100%{opacity:1}50%{opacity:.3}}
-.neon-row-id{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:rgba(0,229,255,.55);min-width:1.8rem}
-.neon-row.active .neon-row-id{color:#00e5ff}
+.neon-row{display:flex;align-items:center;gap:.55rem;padding:.5rem .6rem;cursor:pointer;color:#c7b8dc;font-size:.9rem;border:1px solid transparent;border-radius:10px;transition:all .15s;position:relative;margin-bottom:2px}
+.neon-row:hover{background:#3f1c66;color:#ffffff}
+.neon-row.active{background:rgba(27,239,197,.12);border-color:rgba(27,239,197,.4);color:#1befc5}
+.neon-cursor{width:7px;height:7px;border-radius:50%;background:#5a3a78;flex-shrink:0;transition:all .15s}
+.neon-row:hover .neon-cursor{background:#8a6ba8}
+.neon-row.active .neon-cursor{background:#1befc5;box-shadow:0 0 0 4px rgba(27,239,197,.18)}
+.neon-row-id{font-family:var(--font-body),'Raleway',sans-serif;font-size:.7rem;color:#5a3a78;min-width:1.8rem;font-weight:600}
+.neon-row.active .neon-row-id{color:#1befc5}
 .neon-row-name{flex:1}
-.neon-row-ico{width:16px;height:16px;object-fit:contain;opacity:0;transition:opacity .2s;filter:drop-shadow(0 0 4px rgba(255,45,149,.7))}
+.neon-row-ico{width:16px;height:16px;object-fit:contain;opacity:0;transition:opacity .2s}
 .neon-row:hover .neon-row-ico{opacity:1}
-/* readout */
+/* month detail panel */
 .neon-readout{position:relative}
-.neon-readout.glitch{animation:neon-glitch .28s steps(3)}
-@keyframes neon-glitch{0%{opacity:.4;transform:translateX(-2px)}33%{opacity:.8;transform:translateX(2px)}66%{opacity:.6;transform:translateX(-1px)}100%{opacity:1;transform:translateX(0)}}
-.neon-data-name{font-family:var(--font-body),'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:#ff2d95;letter-spacing:.05em;line-height:1.1;text-shadow:0 0 14px rgba(255,45,149,.7),0 0 30px rgba(255,45,149,.3)}
-.neon-data-stat{font-family:'Share Tech Mono',monospace;font-size:.74rem;color:#00e5ff;letter-spacing:.1em;text-transform:uppercase;margin-top:.35rem;text-shadow:0 0 8px rgba(0,229,255,.5)}
-.neon-scanbar{height:3px;margin:1rem 0 1.1rem;background:linear-gradient(90deg,#ff2d95,#00e5ff 50%,transparent);box-shadow:0 0 10px rgba(255,45,149,.5);position:relative}
-.neon-data-label{font-family:'Share Tech Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:rgba(0,229,255,.6);text-transform:uppercase;margin-bottom:.45rem}
-.neon-data-body{font-size:.93rem;line-height:1.8;color:#e0c0d4;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
-.neon-entry{margin-top:.9rem;padding:.55rem .75rem;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.3);border-left:3px solid #00e5ff;font-size:.84rem;color:#c8eef4;letter-spacing:.02em}
-.neon-entry-tag{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:#00e5ff;margin-right:.4rem;text-shadow:0 0 6px rgba(0,229,255,.5)}
-.neon-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.4rem;padding-top:.9rem;border-top:1px dashed rgba(255,45,149,.25)}
-.neon-nav-btn{background:rgba(255,45,149,.06);border:1px solid rgba(255,45,149,.4);color:#ff2d95;font-family:'Share Tech Mono',monospace;font-size:.7rem;letter-spacing:.06em;padding:.35rem .8rem;cursor:pointer;text-transform:uppercase;transition:all .15s}
-.neon-nav-btn:hover:not(:disabled){background:rgba(255,45,149,.16);box-shadow:0 0 12px rgba(255,45,149,.4)}
-.neon-nav-btn:disabled{opacity:.25;cursor:default}
-.neon-nav-counter{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:#00e5ff;letter-spacing:.08em}
-.neon-empty{color:rgba(255,45,149,.4);text-align:center;margin-top:3rem;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+.neon-readout.glitch{animation:neon-fade .22s ease-out}
+@keyframes neon-fade{0%{opacity:.4;transform:translateX(6px)}100%{opacity:1;transform:translateX(0)}}
+.neon-data-name{font-family:var(--font-display),'Raleway',sans-serif;font-size:1.6rem;font-weight:700;color:#ffffff;line-height:1.1}
+.neon-data-stat{font-family:var(--font-body),'Raleway',sans-serif;font-size:.78rem;color:#1befc5;font-weight:600;margin-top:.35rem}
+.neon-scanbar{height:1px;margin:1rem 0 1.1rem;background:#4d1d85}
+.neon-data-label{font-family:var(--font-body),'Raleway',sans-serif;font-size:.7rem;letter-spacing:.05em;color:#8a6ba8;text-transform:uppercase;margin-bottom:.5rem;font-weight:600}
+.neon-data-body{font-size:.95rem;line-height:1.8;color:#ffffff;overflow-wrap:break-word;word-break:break-word;white-space:pre-wrap;min-height:90px}
+.neon-entry{margin-top:.9rem;padding:.6rem .8rem;background:#25103d;border:1px solid #4d1d85;border-radius:10px;border-left:3px solid #1befc5;font-size:.86rem;color:#ffffff}
+.neon-entry-tag{font-family:var(--font-body),'Raleway',sans-serif;font-size:.68rem;color:#1befc5;font-weight:700;margin-right:.4rem}
+.neon-nav{display:flex;align-items:center;justify-content:space-between;margin-top:1.4rem;padding-top:.9rem;border-top:1px solid #4d1d85}
+.neon-nav-btn{background:#25103d;border:1px solid #4d1d85;border-radius:9999px;color:#1befc5;font-family:var(--font-body),'Raleway',sans-serif;font-weight:600;font-size:.76rem;padding:.4rem .9rem;cursor:pointer}
+.neon-nav-btn:hover:not(:disabled){background:rgba(27,239,197,.12)}
+.neon-nav-btn:disabled{opacity:.3;cursor:default}
+.neon-nav-counter{font-family:var(--font-body),'Raleway',sans-serif;font-size:.76rem;color:#8a6ba8;font-weight:600}
+.neon-empty{color:#8a6ba8;text-align:center;margin-top:3rem;font-family:var(--font-body),'Raleway',sans-serif}
 
 /* ═══ CARVED STONE MONOLITH (Stone Tablet) ═══ */
 .stn-stage{display:flex;align-items:stretch;justify-content:center;min-height:100%;padding:1.8rem 1.4rem}
@@ -1479,17 +1475,17 @@ function ivRenderNeon(canvasId){
   const fontStyle=IV.font?`style="--font-body:'${IV.font}',sans-serif"`:'';
   el.innerHTML=`<div class="neon-stage"><div class="neon-term" ${fontStyle}>
     <div class="neon-left">
-      <div class="neon-sys-label">SYS // BRIEF</div>
+      <div class="neon-sys-label">World Overview</div>
       <div class="neon-world-name">${w}</div>
       ${era?`<div class="neon-era">${era}</div>`:''}
       ${IV.data.wl?`<div class="neon-world-lore">${IV.data.wl}</div>`:''}
-      <div class="neon-index-label">INDEX // SELECT · ${IV.months.length}</div>
+      <div class="neon-index-label">Months · ${IV.months.length}</div>
       <ul class="neon-month-list">
         ${IV.months.map((m,i)=>`
           <li class="neon-row ${i===IV.selectedMonth?'active':''}" onclick="ivSelectMonth(${i})" ${m.icon?`ondblclick="ivShowIconPop(${i})"`:''}>
-            <span class="neon-cursor">${i===IV.selectedMonth?'›':'·'}</span>
-            <span class="neon-row-id">#${String(i+1).padStart(2,'0')}</span>
-            <span class="neon-row-name">${m.name||'Node '+(i+1)}</span>
+            <span class="neon-cursor"></span>
+            <span class="neon-row-id">${String(i+1).padStart(2,'0')}</span>
+            <span class="neon-row-name">${m.name||'Month '+(i+1)}</span>
             ${m.icon?`<img class="neon-row-ico" src="${m.icon}" alt=""/>`:''}
           </li>`).join('')}
       </ul>
@@ -1501,7 +1497,7 @@ function ivRenderNeon(canvasId){
 
 function ivRenderNeonDetail(){
   const d=document.getElementById('neon-detail'); if(!d)return;
-  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="neon-empty">▮ NO DATA // SELECT NODE</div>';return;}
+  const m=IV.months[IV.selectedMonth]; if(!m){d.innerHTML='<div class="neon-empty">No month selected</div>';return;}
   const loreEntries=ivSplitLore(m.lore);
   const totalPages=Math.max(1,loreEntries.length);
   if(IV.lorePage>=totalPages)IV.lorePage=0;
@@ -1515,17 +1511,17 @@ function ivRenderNeonDetail(){
   const inheritStyle=txtColor?' style="color:inherit"':'';
   const inheritStrong=txtColor?'color:inherit;':'';
   d.innerHTML=`<div class="neon-readout glitch">
-    <div class="neon-data-name"${inheritStyle}>${m.name||'Node '+(IV.selectedMonth+1)}</div>
-    <div class="neon-data-stat"${inheritStyle}>${m.days||''} days${evs.length?' // '+evs.length+' entr'+(evs.length>1?'ies':'y'):''}</div>
+    <div class="neon-data-name"${inheritStyle}>${m.name||'Month '+(IV.selectedMonth+1)}</div>
+    <div class="neon-data-stat"${inheritStyle}>${m.days||''} days${evs.length?' · '+evs.length+' event'+(evs.length>1?'s':''):''}</div>
     <div class="neon-scanbar"></div>
-    <div class="neon-data-label"${inheritStyle}>▸ DATA LOG${totalPages>1?' // '+(IV.lorePage+1)+'/'+totalPages:''}</div>
-    <div class="neon-data-body"${inheritStyle}>${curLore||'<span style="opacity:.5">// no data on record</span>'}</div>
-    ${evs.map(e=>`<div class="neon-entry" style="${inheritStrong}"><span class="neon-entry-tag">▸ EVT</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
+    <div class="neon-data-label"${inheritStyle}>Lore${totalPages>1?' · '+(IV.lorePage+1)+'/'+totalPages:''}</div>
+    <div class="neon-data-body"${inheritStyle}>${curLore||'<span style="opacity:.5">No lore added yet</span>'}</div>
+    ${evs.map(e=>`<div class="neon-entry" style="${inheritStrong}"><span class="neon-entry-tag">EVENT</span>${e.icon?`<img src="${e.icon}" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"/>`:(e.emoji?e.emoji+' ':'')}<strong${inheritStyle}>${e.name}</strong>${ivSplitLore(e.lore)[0]?' — '+ivSplitLore(e.lore)[0]:''}</div>`).join('')}
     ${totalPages>1?`
       <div class="neon-nav">
-        <button class="neon-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>[&lt;] Prev</button>
+        <button class="neon-nav-btn" onclick="ivLoreNav(-1)" ${IV.lorePage===0?'disabled':''}>← Previous</button>
         <span class="neon-nav-counter">${IV.lorePage+1} / ${totalPages}</span>
-        <button class="neon-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>Next [&gt;]</button>
+        <button class="neon-nav-btn" onclick="ivLoreNav(1)" ${IV.lorePage===totalPages-1?'disabled':''}>Next →</button>
       </div>`:''}
   </div>`;
 }
@@ -1952,12 +1948,12 @@ function ivRenderExportNeon(rootId){
   const w=IV.w||'Your World', era=IV.e||'';
   const fontStyle=IV.font?('style="--font-body:'+String.fromCharCode(39)+IV.font+String.fromCharCode(39)+',sans-serif"'):'';
   root.innerHTML='<div class="neon-stage"><div class="neon-term" '+fontStyle+'>'+
-    '<div class="neon-left"><div class="neon-sys-label">SYS // BRIEF</div>'+
+    '<div class="neon-left"><div class="neon-sys-label">World Overview</div>'+
     '<div class="neon-world-name">'+w+'</div>'+
     (era?'<div class="neon-era">'+era+'</div>':'')+
     (IV.wl?'<div class="neon-world-lore">'+IV.wl+'</div>':'')+
-    '<div class="neon-index-label">INDEX // SELECT · '+IV.months.length+'</div>'+
-    '<ul class="neon-month-list">'+IV.months.map(function(m,i){return '<li class="neon-row'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="neon-cursor">'+(i===0?'›':'·')+'</span><span class="neon-row-id">#'+String(i+1).padStart(2,'0')+'</span><span class="neon-row-name">'+(m.name||'Node '+(i+1))+'</span>'+(m.icon?'<img class="neon-row-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
+    '<div class="neon-index-label">Months · '+IV.months.length+'</div>'+
+    '<ul class="neon-month-list">'+IV.months.map(function(m,i){return '<li class="neon-row'+(i===0?' active':'')+'" onclick="ivSelectMonth('+i+')"'+(m.icon?' ondblclick="ivShowIconPop('+i+')"':'')+'><span class="neon-cursor"></span><span class="neon-row-id">'+String(i+1).padStart(2,'0')+'</span><span class="neon-row-name">'+(m.name||'Month '+(i+1))+'</span>'+(m.icon?'<img class="neon-row-ico" src="'+m.icon+'" alt=""/>':'')+'</li>';}).join('')+'</ul></div>'+
     '<div class="neon-right" id="neon-detail"></div></div></div>';
   ivRenderNeonDetail();
 }
