@@ -42,26 +42,26 @@ function injectCSS(){
   s.textContent=`
   #fcb-auth-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.78);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
   #fcb-auth-overlay.open{display:flex}
-  #fcb-auth-box{background:#1a1205;border:1px solid #c8a04a;border-radius:12px;padding:2.2rem;width:100%;max-width:380px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.8);color:#e8d8a8;font-family:Georgia,serif;animation:fcbIn .2s ease-out}
+  #fcb-auth-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card,12px);padding:2.2rem;width:100%;max-width:380px;position:relative;box-shadow:var(--shadow,0 24px 80px rgba(0,0,0,0.8));color:var(--text);font-family:var(--font-body);animation:fcbIn .2s ease-out}
   @keyframes fcbIn{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
-  #fcb-auth-close{position:absolute;top:.9rem;right:1rem;background:transparent;border:none;color:#c8a04a;font-size:1.3rem;cursor:pointer;padding:.25rem .4rem;border-radius:4px}
-  #fcb-auth-close:hover{background:rgba(200,160,74,.15)}
-  .fcb-logo{font-family:'Cinzel',Georgia,serif;font-size:1.15rem;color:#c8a04a;margin-bottom:.3rem}
-  .fcb-sub{font-size:.8rem;color:#8a7040;margin-bottom:1.2rem;line-height:1.5}
-  .fcb-rules{font-size:.72rem;color:#6a5028;margin-bottom:.8rem;line-height:1.5}
-  .fcb-input{width:100%;background:#0e0b04;border:1px solid #4a3818;color:#e8d8a8;padding:.6rem .85rem;border-radius:5px;font-size:.9rem;font-family:Georgia,serif;outline:none;box-sizing:border-box;margin-bottom:.65rem}
-  .fcb-input:focus{border-color:#c8a04a}
-  .fcb-input::placeholder{color:#5a4828}
+  #fcb-auth-close{position:absolute;top:.9rem;right:1rem;background:transparent;border:none;color:var(--text-muted);font-size:1.3rem;cursor:pointer;padding:.25rem .4rem;border-radius:4px}
+  #fcb-auth-close:hover{background:rgba(var(--accent-rgb),.15);color:var(--accent)}
+  .fcb-logo{font-family:var(--font-display);font-size:1.15rem;color:var(--accent);margin-bottom:.3rem}
+  .fcb-sub{font-size:.8rem;color:var(--text-muted);margin-bottom:1.2rem;line-height:1.5}
+  .fcb-rules{font-size:.72rem;color:var(--text-dim);margin-bottom:.8rem;line-height:1.5}
+  .fcb-input{width:100%;background:var(--input-bg,var(--bg));border:1px solid var(--border);color:var(--text);padding:.6rem .85rem;border-radius:var(--radius-input,5px);font-size:.9rem;font-family:var(--font-body);outline:none;box-sizing:border-box;margin-bottom:.65rem}
+  .fcb-input:focus{border-color:var(--accent)}
+  .fcb-input::placeholder{color:var(--text-dim)}
   .fcb-msg{font-size:.77rem;padding:.5rem .7rem;border-radius:4px;margin-bottom:.6rem;display:none;line-height:1.4}
   .fcb-msg.show{display:block}
   .fcb-msg.error{background:#2a0808;color:#ff9090;border:1px solid #6a1818}
-  .fcb-btn{width:100%;background:#c8a04a;color:#1a1005;border:none;padding:.65rem;border-radius:5px;font-size:.9rem;font-weight:700;font-family:'Cinzel',Georgia,serif;cursor:pointer;letter-spacing:.04em}
-  .fcb-btn:hover{background:#e0b860}
-  .fcb-btn-out{width:100%;background:transparent;border:1px solid #c8a04a;color:#c8a04a;padding:.58rem;border-radius:5px;font-size:.85rem;font-family:Georgia,serif;cursor:pointer;margin-top:.5rem}
-  .fcb-btn-out:hover{background:rgba(200,160,74,.1)}
-  #fcb-nav-auth{color:var(--text-muted,#9a8068);text-decoration:none;font-size:.9rem;cursor:pointer;font-family:var(--font-body,Georgia,serif)}
-  #fcb-nav-auth:hover{color:var(--accent,#c8a04a)}
-  #fcb-nav-auth.has-name{color:var(--accent,#c8a04a);font-weight:600}
+  .fcb-btn{width:100%;background:var(--accent);color:var(--bg);border:none;padding:.65rem;border-radius:var(--radius-btn,5px);font-size:.9rem;font-weight:700;font-family:var(--font-display);cursor:pointer;letter-spacing:.02em}
+  .fcb-btn:hover{filter:brightness(1.1)}
+  .fcb-btn-out{width:100%;background:transparent;border:1px solid var(--border);color:var(--text);padding:.58rem;border-radius:var(--radius-btn,5px);font-size:.85rem;font-family:var(--font-body);cursor:pointer;margin-top:.5rem}
+  .fcb-btn-out:hover{background:rgba(var(--accent-rgb),.1)}
+  #fcb-nav-auth{color:var(--text-muted);text-decoration:none;font-size:.9rem;cursor:pointer;font-family:var(--font-body)}
+  #fcb-nav-auth:hover{color:var(--accent)}
+  #fcb-nav-auth.has-name{color:var(--accent);font-weight:600}
   `;
   document.head.appendChild(s);
 }
@@ -75,7 +75,7 @@ function injectHTML(){
         <div class="fcb-logo">🌙 Choose a username</div>
         <div class="fcb-sub">Pick a name to save your calendars to My Creations. No email or password needed.</div>
         <div class="fcb-rules">3–20 characters · letters, numbers, underscores only</div>
-        <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.3);border-radius:6px;padding:.7rem .9rem;margin-bottom:.9rem;font-size:.76rem;color:#c8a04a;line-height:1.6">
+        <div style="background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.3);border-radius:6px;padding:.7rem .9rem;margin-bottom:.9rem;font-size:.76rem;color:var(--accent);line-height:1.6">
           ⚠️ <strong>Important:</strong> Your username IS your key — the same username always gives access to the same calendars on any device or browser. Keep it unique and memorable. If someone else uses the same username, they can see your calendars!
         </div>
         <div id="fcb-setup-msg" class="fcb-msg"></div>
@@ -85,12 +85,12 @@ function injectHTML(){
       <div id="fcb-view-in" style="display:none">
         <div class="fcb-logo">🌙 Fantasy Calendar Builder</div>
         <div class="fcb-sub" id="fcb-in-lbl">Signed in</div>
-        <div style="background:rgba(200,160,74,.08);border:1px solid rgba(200,160,74,.2);border-radius:6px;padding:.6rem .8rem;margin-bottom:.9rem;font-size:.73rem;color:#8a7040;line-height:1.5">
+        <div style="background:rgba(var(--accent-rgb),.08);border:1px solid rgba(var(--accent-rgb),.2);border-radius:6px;padding:.6rem .8rem;margin-bottom:.9rem;font-size:.73rem;color:var(--text-muted);line-height:1.5">
           📌 Your username is your key to your calendars — use the same username on any device to access them. Keep it unique and don't share it.
         </div>
         <div style="display:flex;gap:.6rem;margin-bottom:.6rem">
           <button class="fcb-btn" onclick="fcbExportData()" style="flex:1;font-size:.82rem;padding:.5rem">📦 Export my data</button>
-          <button class="fcb-btn" onclick="document.getElementById('fcb-import-input').click()" style="flex:1;font-size:.82rem;padding:.5rem;background:transparent;border:1px solid #c8a04a;color:#c8a04a">📂 Import data</button>
+          <button class="fcb-btn" onclick="document.getElementById('fcb-import-input').click()" style="flex:1;font-size:.82rem;padding:.5rem;background:transparent;border:1px solid var(--accent);color:var(--accent)">📂 Import data</button>
           <input type="file" id="fcb-import-input" accept=".json" style="display:none" onchange="fcbImportData(this)"/>
         </div>
         <div id="fcb-import-msg" style="font-size:.75rem;margin-bottom:.6rem;display:none;padding:.4rem .6rem;border-radius:4px"></div>
