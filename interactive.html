@@ -826,6 +826,15 @@ function ivRenderNeonDetail(){
   </div>`;
 }
 
+const IV_FONTS = [
+  { cat: 'Classic Fantasy', fonts: ['Cinzel','Cinzel Decorative','Cormorant Garamond','EB Garamond','Playfair Display','Crimson Text'] },
+  { cat: 'Medieval', fonts: ['IM Fell English','UnifrakturMaguntia','Almendra','Cardo','MedievalSharp','Uncial Antiqua'] },
+  { cat: 'Elegant Serif', fonts: ['Spectral','Lora','Merriweather','Libre Baskerville','Bitter','Vollkorn'] },
+  { cat: 'Sci-Fi / Tech', fonts: ['Orbitron','Rajdhani','Exo 2','Share Tech Mono','Space Mono','Audiowide'] },
+  { cat: 'Handwritten', fonts: ['Kaushan Script','Dancing Script','Satisfy','Pacifico','Caveat','Permanent Marker'] },
+  { cat: 'Display', fonts: ['Abril Fatface','Bebas Neue','Righteous','Philosopher','Italianno','Charmonman'] },
+];
+
 function ivOpenFontLib(){
   document.getElementById('iv-fontlib-search').value='';
   ivRenderFontGrid('');
@@ -983,8 +992,18 @@ function ivUploadIcon(){
 }
 
 function ivShowIconPop(i){
-  ivOpenIconLib(i);
-  ivRestoreSelect('iv-icon-month',i);
+  const m=IV.months[i]; if(!m||!m.icon)return;
+  const existing=document.getElementById('iv-icon-pop'); if(existing)existing.remove();
+  const pop=document.createElement('div');
+  pop.id='iv-icon-pop';
+  pop.style.cssText='position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px)';
+  pop.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card,12px);padding:1.6rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.9rem;box-shadow:0 20px 60px rgba(0,0,0,0.5);max-width:260px">
+    <img src="${m.icon}" style="width:96px;height:96px;object-fit:contain"/>
+    <div style="font-family:var(--font-display);color:var(--text);font-weight:700;font-size:1.05rem;text-align:center">${m.name||'Month '+(i+1)}</div>
+    <button class="iv-mini-btn" onclick="document.getElementById('iv-icon-pop').remove()">Close</button>
+  </div>`;
+  pop.addEventListener('click',e=>{ if(e.target.id==='iv-icon-pop') pop.remove(); });
+  document.body.appendChild(pop);
 }
 </script>
 <script>
