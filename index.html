@@ -22,7 +22,7 @@
 <meta name="twitter:description" content="Build a custom fantasy calendar in 10 minutes. Name your months, add moon phases, pin holidays and seasons. Free, beautiful, and shareable. Perfect for D&D, fantasy writers and worldbuilders."/>
 <meta name="twitter:image" content="https://fantasy-calendar-builder.vercel.app/og-image.png"/>
 <title>Fantasy Calendar Builder — Create Your World's Calendar Free</title>
-<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Share+Tech+Mono&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Share+Tech+Mono&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@400;600;700&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
 :root{--bg:#f5f0e8;--surface:#ede7d9;--surface2:#e2d9c8;--border:#c9b99a;--border2:#d4c4a8;--accent:#7c5c2e;--accent2:#b8860b;--text:#2a1f0e;--text-muted:#6b5840;--text-dim:#9a8068;--text-dimmer:#b8a080;--text-dimmest:#cdb898;--input-bg:#ede7d9;--input-bg2:#e2d9c8;--nav-bg:#ede7d9;--preview-bg:#e8e0d0;--card-border:#c9b99a;--month-name:#7c5c2e;--moon-pill-bg:rgba(124,92,46,0.12);--moon-pill-border:rgba(124,92,46,0.3);--moon-pill-text:#7c5c2e;--accent-rgb:124,92,46;--accent2-dark:#f5f0e8;--radius-card:4px;--radius-pill:3px;--radius-btn:4px;--radius-input:4px;--font-display:'Palatino Linotype','Book Antiqua',Palatino,Georgia,serif;--font-body:Georgia,'Times New Roman',serif;--btn-clip:none;--card-clip:none;--card-bg:#ede7d9;--shadow:2px 2px 8px rgba(42,31,14,0.2);--prog-done-color:#7c5c2e;--event-bg:rgba(184,134,11,0.1);--event-color:#7c5c2e;--event-border:rgba(184,134,11,0.3)}
 [data-theme="expanse"]{--bg:#05090f;--surface:#0b1220;--surface2:#0d1828;--border:#0e4a6a;--border2:#0a2a40;--accent:#00e5c8;--accent2:#0088ff;--text:#b8e8f5;--text-muted:#6ab8d0;--text-dim:#3a7a96;--text-dimmer:#1e4a60;--text-dimmest:#102030;--input-bg:#060d18;--input-bg2:#040a12;--nav-bg:#030810;--preview-bg:#030810;--card-border:#00e5c840;--month-name:#00e5c8;--moon-pill-bg:rgba(0,229,200,0.08);--moon-pill-border:rgba(0,229,200,0.3);--moon-pill-text:#00e5c8;--accent-rgb:0,229,200;--accent2-dark:#000810;--radius-card:0px;--radius-pill:0px;--radius-btn:0px;--radius-input:0px;--font-display:'Share Tech Mono','Courier New',monospace;--font-body:'Share Tech Mono','Courier New',monospace;--btn-clip:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);--card-clip:polygon(12px 0%,100% 0%,100% calc(100% - 12px),calc(100% - 12px) 100%,0% 100%,0% 12px);--card-bg:#060d18;--shadow:0 0 20px rgba(0,229,200,0.08);--prog-done-color:#00e5c8;--event-bg:rgba(0,229,200,0.06);--event-color:#00e5c8;--event-border:rgba(0,229,200,0.2)}
@@ -219,59 +219,40 @@ footer a{color:var(--accent);text-decoration:none}
 /* iron: flicker subtle */
 @keyframes flicker{0%,98%,100%{opacity:1}99%{opacity:.92}}
 [data-theme="iron"] body{animation:flicker 8s infinite}
-[data-theme="blood"]{--bg:#0d0305;--surface:#180608;--surface2:#200a0e;--border:#5c1520;--border2:#3a0d14;--accent:#c0392b;--accent2:#e8a0a0;--text:#f0e0e2;--text-muted:#c89898;--text-dim:#7a4448;--text-dimmer:#4a2428;--text-dimmest:#2a1418;--input-bg:#100406;--input-bg2:#0c0304;--nav-bg:#100406;--card-border:#5c1520;--month-name:#e8a0a0;--moon-pill-bg:rgba(192,57,43,0.1);--moon-pill-border:rgba(192,57,43,0.35);--moon-pill-text:#e8a0a0;--accent-rgb:192,57,43;--accent2-dark:#100406;--radius-card:2px;--radius-pill:1px;--radius-btn:2px;--font-display:'IM Fell English','Palatino Linotype',Georgia,serif;--font-body:'IM Fell English',Georgia,serif;--btn-clip:none;--card-clip:none;--card-bg:#180608;--shadow:0 4px 24px rgba(0,0,0,0.8),inset 0 1px 0 rgba(192,57,43,0.1);--event-bg:rgba(192,57,43,0.1);--event-color:#e8a0a0;--event-border:rgba(192,57,43,0.4)}
+[data-theme="blood"]{--bg:#000000;--surface:#191C24;--surface2:#14161c;--border:#2a2d38;--border2:#20222b;--accent:#EB1616;--accent2:#ff4d4d;--text:#ffffff;--text-muted:#6C7293;--text-dim:#4a4e63;--text-dimmer:#33364d;--text-dimmest:#202230;--input-bg:#191C24;--input-bg2:#14161c;--nav-bg:#191C24;--card-border:#2a2d38;--month-name:#EB1616;--moon-pill-bg:rgba(235,22,22,0.1);--moon-pill-border:rgba(235,22,22,0.35);--moon-pill-text:#ff6b6b;--accent-rgb:235,22,22;--accent2-dark:#ffffff;--radius-card:8px;--radius-pill:50px;--radius-btn:6px;--font-display:'Roboto',sans-serif;--font-body:'Open Sans',sans-serif;--btn-clip:none;--card-clip:none;--card-bg:#191C24;--shadow:0 4px 20px rgba(0,0,0,0.5);--event-bg:rgba(235,22,22,0.1);--event-color:#ff6b6b;--event-border:rgba(235,22,22,0.4)}
 [data-theme="void"]{--bg:#06040e;--surface:#0e0a1e;--surface2:#0a0818;--border:#3a2060;--border2:#241440;--accent:#9b59b6;--accent2:#c39bd3;--text:#e8d8f8;--text-muted:#a880c8;--text-dim:#5a3878;--text-dimmer:#361e4e;--text-dimmest:#1e1030;--input-bg:#080612;--input-bg2:#06040e;--nav-bg:#06040e;--card-border:#3a2060;--month-name:#c39bd3;--moon-pill-bg:rgba(155,89,182,0.1);--moon-pill-border:rgba(155,89,182,0.35);--moon-pill-text:#c39bd3;--accent-rgb:155,89,182;--accent2-dark:#06040e;--radius-card:4px;--radius-pill:99px;--radius-btn:4px;--font-display:'Spectral','Palatino Linotype',Georgia,serif;--font-body:'Spectral',Georgia,serif;--btn-clip:none;--card-clip:none;--card-bg:#0e0a1e;--shadow:0 4px 32px rgba(0,0,0,0.9),0 0 60px rgba(155,89,182,0.05);--event-bg:rgba(155,89,182,0.08);--event-color:#c39bd3;--event-border:rgba(155,89,182,0.3)}
 
-/* Blood Court body texture — dark vein-like noise */
-[data-theme="blood"] body::before{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E")}
 
 /* Void Chronicle body texture — deep starfield */
 [data-theme="void"] body::before{background:radial-gradient(ellipse at 20% 20%,rgba(155,89,182,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(100,60,160,0.04) 0%,transparent 60%)}
 
-/* Blood Court nav — dark drip ornament */
-[data-theme="blood"] nav::after{content:'✦ ✦ ✦';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--accent);letter-spacing:.5em;background:var(--nav-bg);padding:0 .5rem}
 
 /* Void Chronicle nav — constellation dots */
 [data-theme="void"] nav::after{content:'· · ✦ · ·';display:block;position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font-size:.6rem;color:var(--accent);letter-spacing:.3em;background:var(--nav-bg);padding:0 .5rem;opacity:.6}
 
-/* Blood Court cal-card — gothic frame */
-[data-theme="blood"] .cal-card::before{content:'';position:absolute;inset:6px;border:1px solid rgba(192,57,43,0.1);pointer-events:none}
-[data-theme="blood"] .cal-card::after{content:'☩';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--card-bg);padding:0 .6rem;color:var(--accent);font-size:1rem;line-height:1;opacity:.7}
 
 /* Void Chronicle cal-card — cosmic glow */
 [data-theme="void"] .cal-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(155,89,182,0.06) 0%,transparent 60%);pointer-events:none}
 [data-theme="void"] .cal-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(155,89,182,0.5),transparent)}
 
-/* Blood Court meta pills — gothic inset */
-[data-theme="blood"] .cal-meta-pill{border-style:solid;background:rgba(192,57,43,.08);border-color:rgba(192,57,43,.25);color:#c89898;font-style:italic}
-[data-theme="blood"] .cal-meta-pill .pill-icon{display:none}
-[data-theme="blood"] .cal-meta-pill::before{content:'†';color:rgba(192,57,43,.5);margin-right:.25rem;font-size:.7rem}
 
 /* Void Chronicle meta pills — cosmic orbs */
 [data-theme="void"] .cal-meta-pill{background:rgba(155,89,182,.08);border-color:rgba(155,89,182,.25);color:#a880c8;border-radius:99px}
 [data-theme="void"] .cal-meta-pill .pill-icon{font-size:.8em;opacity:.8}
 
-/* Blood Court moon pills */
-[data-theme="blood"] .moon-pill::before{content:'☩ ';font-size:.65rem}
 
 /* Void Chronicle moon pills */
 [data-theme="void"] .moon-pill::before{content:'✦ ';font-size:.65rem}
 
-/* Blood Court cal-card download btn */
-[data-theme="blood"] .btn-download{color:#0d0305}
 /* Void Chronicle cal-card download btn */
 [data-theme="void"] .btn-download{color:#06040e}
 
-/* Blood Court event badge */
-[data-theme="blood"] .cal-event-badge::before{content:'☩ ';font-size:.65em;color:rgba(192,57,43,.6);font-style:normal}
 
 /* Void Chronicle event badge */
 [data-theme="void"] .cal-event-badge::before{content:'✦ ';font-size:.55em;color:rgba(155,89,182,.6)}
 
-/* Blood Court month tile identity */
-[data-theme="blood"] .cal-month-tile{background:linear-gradient(135deg,rgba(192,57,43,0.07) 0%,transparent 60%);border:1px solid rgba(192,57,43,0.2);box-shadow:inset 0 0 0 1px rgba(192,57,43,0.06),0 2px 8px rgba(0,0,0,0.5)}
-[data-theme="blood"] .cal-month-tile::after{content:'';position:absolute;inset:4px;border:1px solid rgba(192,57,43,0.07);pointer-events:none}
-[data-theme="blood"] .cal-month-tile::before{content:'☩';position:absolute;top:3px;right:5px;font-size:6px;color:rgba(192,57,43,0.3);pointer-events:none;line-height:1}
+/* Obsidian Red month tile */
+[data-theme="blood"] .cal-month-tile{background:#191C24;border:1px solid #2a2d38;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
 
 /* Void Chronicle month tile identity */
 [data-theme="void"] .cal-month-tile{background:rgba(155,89,182,0.04);border:1px solid rgba(155,89,182,0.18);border-radius:4px;box-shadow:0 0 20px rgba(155,89,182,0.04),inset 0 0 30px rgba(155,89,182,0.02)}
@@ -339,7 +320,7 @@ footer a{color:var(--accent);text-decoration:none}
 [data-theme="stone"] .btn-download{color:#2a2826}
 
 </style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cardo:ital@0;1&family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&family=Share+Tech+Mono&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap"/>
 </head>
 <body>
 <canvas id="stars-canvas"></canvas>
@@ -446,7 +427,7 @@ footer a{color:var(--accent);text-decoration:none}
     <button class="theme-opt" data-theme="iron">⚔️ Iron &amp; Vellum</button>
     <button class="theme-opt" data-theme="waypoint">🌅 Nova Horizon</button>
     <button class="theme-opt" data-theme="verdant">🌿 Verdant Archive</button>
-    <button class="theme-opt" data-theme="blood">🩸 Blood Court</button>
+    <button class="theme-opt" data-theme="blood">⬛ Obsidian Red</button>
     <button class="theme-opt" data-theme="void">🌌 Void Chronicle</button>
     <button class="theme-opt" data-theme="desert">🏜️ Desert Scroll</button>
     <button class="theme-opt" data-theme="neon">⚡ Neon Codex</button>
